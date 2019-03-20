@@ -1,34 +1,28 @@
 package ar.edu.itba.sia.gps;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
-import gps.api.Heuristic;
-import gps.api.Problem;
-import gps.api.Rule;
-import gps.api.State;
+import ar.edu.itba.sia.gps.api.Heuristic;
+import ar.edu.itba.sia.gps.api.Problem;
+import ar.edu.itba.sia.gps.api.Rule;
+import ar.edu.itba.sia.gps.api.State;
 
 public class GPSEngine {
 
-	Queue<GPSNode> open;
-	Map<State, Integer> bestCosts;
-	Problem problem;
-	long explosionCounter;
-	boolean finished;
-	boolean failed;
-	GPSNode solutionNode;
-	Optional<Heuristic> heuristic;
+	private Deque<GPSNode> open;
+	private Map<State, Integer> bestCosts;
+	private Problem problem;
+	private long explosionCounter;
+	private boolean finished;
+	private boolean failed;
+	private GPSNode solutionNode;
+	private Optional<Heuristic> heuristic;
 
 	// Use this variable in open set order.
 	protected SearchStrategy strategy;
 
 	public GPSEngine(Problem problem, SearchStrategy strategy, Heuristic heuristic) {
-		// TODO: open = *Su queue favorito, TENIENDO EN CUENTA EL ORDEN DE LOS NODOS*
+		open = new ArrayDeque<>();
 		bestCosts = new HashMap<>();
 		this.problem = problem;
 		this.strategy = strategy;
@@ -65,7 +59,7 @@ public class GPSEngine {
 			}
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
-			// TODO: ¿Cómo se agregan los nodos a open en BFS?
+			open.addAll(newCandidates);
 			break;
 		case DFS:
 			if (bestCosts.containsKey(node.getState())) {
@@ -73,7 +67,9 @@ public class GPSEngine {
 			}
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
-			// TODO: ¿Cómo se agregan los nodos a open en DFS?
+			for (GPSNode newNode:newCandidates) {
+				open.push(newNode);
+			}
 			break;
 		case IDDFS:
 			if (bestCosts.containsKey(node.getState())) {
@@ -84,9 +80,9 @@ public class GPSEngine {
 			// TODO: ¿Cómo se agregan los nodos a open en IDDFS?
 			break;
 		case GREEDY:
-			newCandidates = new PriorityQueue<>(/* TODO: Comparator! */);
+			newCandidates = new PriorityQueue<>(Comparator.comparingInt(n -> heuristic.get().getValue(n.getState())));
 			addCandidates(node, newCandidates);
-			// TODO: ¿Cómo se agregan los nodos a open en GREEDY?
+			open.addAll(newCandidates);
 			break;
 		case ASTAR:
 			if (!isBest(node.getState(), node.getCost())) {
@@ -94,7 +90,9 @@ public class GPSEngine {
 			}
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
-			// TODO: ¿Cómo se agregan los nodos a open en A*?
+//			for (GPSNode newNode:newCandidates) {
+//				open.push(newNode);
+//			}
 			break;
 		}
 	}
@@ -117,7 +115,10 @@ public class GPSEngine {
 	}
 
 	private void updateBest(GPSNode node) {
-		bestCosts.put(node.getState(), node.getCost());
+		if(strategy.equals(SearchStrategy.ASTAR))
+			bestCosts.put(node.getState(), node.getCost() + heuristic.get().getValue(node.getState()));
+		else
+			bestCosts.put(node.getState(), node.getCost());
 	}
 
 	// GETTERS FOR THE PEOPLE!
