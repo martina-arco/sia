@@ -1,5 +1,13 @@
 package ar.edu.itba.sia.gps.api;
 
+import ar.edu.itba.sia.gps.model.Box;
+import ar.edu.itba.sia.gps.model.Circle;
+import ar.edu.itba.sia.gps.model.Figure;
+import ar.edu.itba.sia.gps.model.Square;
+
+import java.awt.*;
+import java.util.List;
+
 /**
  * State interface.
  */
@@ -13,6 +21,12 @@ public interface State {
 	 * @return true if self is the same as the state given, false if they are different.
 	 */
 	boolean equals(Object state);
+
+	List<Square> getSquares();
+
+	List<Circle> getCircles();
+
+	List<Point> getPositionsOccupiedBySquares();
 
 
 	/**

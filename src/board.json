@@ -1,0 +1,16 @@
+{
+  "squares": [
+    {"name":"s1", "color": "red", "direction": "U"},
+    {"name":"s2", "color": "orange", "direction":"D"}
+  ],
+
+  "circles": [
+    {"name":"c1", "color":"red"},
+    {"name":"c2", "color":"orange"}
+  ],
+
+  "board": [
+    ["s2", "c1"],
+    ["c2", "s1"]
+  ]
+}
