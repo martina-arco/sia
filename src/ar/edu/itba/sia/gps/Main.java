@@ -6,16 +6,16 @@ public class Main {
     public static void main(String[] args) {
         Options options = new Options();
 
-        Option heuristic = new Option("h", "heuristic", true, "heuristic function used");
+        Option heuristic = new Option("h", "heuristic", true, "Heuristic function used (h1, h2)");
         heuristic.setRequired(true);
         options.addOption(heuristic);
 
-        Option board = new Option("b", "board", true, "initial board state");
+        Option board = new Option("b", "board", true, "Path to json file with initial board state");
         board.setRequired(true);
         options.addOption(board);
 
         Option algorithm = new Option("a", "algorithm", true,
-                "search algorithm used (BFS, DFS, IDDFS, greedy, A*)");
+                "Search algorithm used (BFS, DFS, IDDFS, Greedy, A*)");
         algorithm.setRequired(true);
         options.addOption(algorithm);
 
@@ -40,11 +40,6 @@ public class Main {
 
             System.exit(1);
         }
-
-
-
-
-        System.out.println("lalallalal");
     }
 
     public void parseHeuristic(String heuristic) {

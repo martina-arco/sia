@@ -1,6 +1,5 @@
 package ar.edu.itba.sia.gps.api;
 
-import ar.edu.itba.sia.gps.model.Box;
 import ar.edu.itba.sia.gps.model.Circle;
 import ar.edu.itba.sia.gps.model.Figure;
 import ar.edu.itba.sia.gps.model.Square;
@@ -22,18 +21,16 @@ public interface State {
 	 */
 	boolean equals(Object state);
 
-	List<Square> getSquares();
-
-	List<Circle> getCircles();
-
-	List<Point> getPositionsOccupiedBySquares();
-
-
 	/**
 	 * Provides the representation of the state so it can be printed on the solution representation.
 	 *
 	 * @return The STRING representation of the state.
 	 */
 	String getRepresentation();
+
+
+	List<Square> getSquares();
+
+	List<Circle> getCircles();
 
 }

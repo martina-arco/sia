@@ -10,17 +10,10 @@ public class StateImpl implements State {
     private List<Square> squares;
     private List<Circle> circles;
 
-//    todavia no se si lo necesito
-    private List<Point> positionsOccupiedBySquares;
-
 
     public StateImpl(List<Square> squares, List<Circle> circles) {
         this.squares = squares;
         this.circles = circles;
-    }
-
-    public List<Point> getPositionsOccupiedBySquares() {
-        return positionsOccupiedBySquares;
     }
 
     @Override
@@ -28,10 +21,12 @@ public class StateImpl implements State {
         return null;
     }
 
+    @Override
     public List<Square> getSquares() {
         return squares;
     }
 
+    @Override
     public List<Circle> getCircles() {
         return circles;
     }
