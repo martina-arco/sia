@@ -8,4 +8,8 @@ public class Circle extends Figure{
         super(color, position);
     }
 
+    @Override
+    public String toString() {
+        return getColor() + "C ";
+    }
 }

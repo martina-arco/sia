@@ -10,6 +10,7 @@ public class Figure {
 
     public Figure(String color, Point position) {
         this.color = color;
+        this.position = position;
     }
 
     public String getColor() {
@@ -22,5 +23,11 @@ public class Figure {
 
     public void setPosition(Point position) {
         this.position = position;
+    }
+
+    @Override
+    public String toString() {
+        return "color='" + color + '\'' +
+                ", position=(" + position.getX()+", " + position.getY() + " )";
     }
 }

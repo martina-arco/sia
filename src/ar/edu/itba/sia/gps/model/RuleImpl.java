@@ -24,7 +24,7 @@ public class RuleImpl implements Rule {
 
     @Override
     public String getName() {
-        return "Moviste el cuadrado de color " + squareToMove.getColor() + " en la direccion " + squareToMove.getDirection();
+        return "You moved the " + squareToMove.getColor() + " coloured square in " + squareToMove.getDirection() + " direction.";
     }
 
     @Override
@@ -51,16 +51,16 @@ public class RuleImpl implements Rule {
 
         switch (square.getDirection()) {
             case UP:
-                newPosition.move(currentX.intValue(), currentY.intValue() + 1);
-                break;
-            case DOWN:
-                newPosition.move(currentX.intValue(), currentY.intValue() - 1);
-                break;
-            case LEFT:
                 newPosition.move(currentX.intValue() - 1, currentY.intValue());
                 break;
-            case RIGHT:
+            case DOWN:
                 newPosition.move(currentX.intValue() + 1, currentY.intValue());
+                break;
+            case LEFT:
+                newPosition.move(currentX.intValue(), currentY.intValue() - 1);
+                break;
+            case RIGHT:
+                newPosition.move(currentX.intValue(), currentY.intValue() + 1);
                 break;
 
         }

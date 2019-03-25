@@ -5,6 +5,7 @@ import ar.edu.itba.sia.gps.api.Rule;
 import ar.edu.itba.sia.gps.api.State;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,9 +42,11 @@ public class ProblemImpl implements Problem {
 
     @Override
     public List<Rule> getRules() {
-//        for (Figure figure:initialState.getFigures()) {
-//
-//        }
-        return null;
+        List<Rule> rules = new ArrayList<>();
+
+        for (Square square:initialState.getSquares())
+            rules.add(new RuleImpl(square));
+
+        return rules;
     }
 }

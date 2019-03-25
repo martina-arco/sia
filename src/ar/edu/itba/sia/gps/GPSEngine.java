@@ -35,12 +35,14 @@ public class GPSEngine {
 	public void findSolution() {
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0, null);
 		open.add(rootNode);
+		System.out.println("Initial state: \n" + rootNode.getState().getRepresentation());
 		// TODO: ¿Lógica de IDDFS?
 		while (open.size() > 0) {
 			GPSNode currentNode = open.remove();
 			if (problem.isGoal(currentNode.getState())) {
 				finished = true;
 				solutionNode = currentNode;
+				System.out.println("Terminaste wi");
 				return;
 			} else {
 				explode(currentNode);
@@ -102,6 +104,8 @@ public class GPSEngine {
 		updateBest(node);
 		for (Rule rule : problem.getRules()) {
 			Optional<State> newState = rule.apply(node.getState());
+			System.out.println(rule.getName());
+			System.out.println(newState.get().getRepresentation());
 			if (newState.isPresent()) {
 				GPSNode newNode = new GPSNode(newState.get(), node.getCost() + rule.getCost(), rule);
 				newNode.setParent(node);

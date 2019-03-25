@@ -25,4 +25,8 @@ public class Square extends Figure{
         return s.getColor().equals(getColor()) && s.getDirection().equals(getDirection());
     }
 
+    @Override
+    public String toString() {
+        return getColor() + "S " ;
+    }
 }
