@@ -1,33 +1,34 @@
 package ar.edu.itba.sia.gps.model;
 
-import java.awt.*;
+import java.util.Objects;
 
 public class Figure {
 
     private String color;
 
-    private Point position;
-
-    public Figure(String color, Point position) {
+    public Figure(String color) {
         this.color = color;
-        this.position = position;
     }
 
     public String getColor() {
         return color;
     }
 
-    public Point getPosition() {
-        return position;
-    }
-
-    public void setPosition(Point position) {
-        this.position = position;
+    @Override
+    public String toString() {
+        return "color='" + color;
     }
 
     @Override
-    public String toString() {
-        return "color='" + color + '\'' +
-                ", position=(" + position.getX()+", " + position.getY() + " )";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Figure)) return false;
+        Figure figure = (Figure) o;
+        return getColor().equals(figure.getColor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getColor());
     }
 }

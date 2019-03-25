@@ -11,7 +11,7 @@ import org.json.simple.parser.JSONParser;
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import org.json.simple.parser.ParseException;
@@ -95,36 +95,38 @@ public class Main {
         JSONArray JSONCircleList = (JSONArray) state.get("circles");
         JSONArray board = (JSONArray) state.get("board");
 
-        List<Square> squareList = new ArrayList<>();
-        List<Circle> circleList = new ArrayList<>();
+        Map<Point, Square> squareList = new HashMap<>();
+        Map<Point, Circle> circleList = new HashMap<>();
 
         for (Object square : JSONSquareList) {
             JSONObject currentSquare = (JSONObject) square;
-            squareList.add(parseSquare(currentSquare, board));
+            Map.Entry<Point, Square> entry = parseSquare(currentSquare, board);
+            squareList.put(entry.getKey(), entry.getValue());
         }
 
         for (Object circle:JSONCircleList) {
             JSONObject currentCircle = (JSONObject) circle;
-            circleList.add(parseCircle(currentCircle, board));
+            Map.Entry<Point, Circle> entry = parseCircle(currentCircle, board);
+            circleList.put(entry.getKey(), entry.getValue());
         }
 
         return new StateImpl(squareList, circleList, board.size());
     }
 
-    private static Square parseSquare(JSONObject JSONSquare, JSONArray board) {
+    private static Map.Entry<Point, Square> parseSquare(JSONObject JSONSquare, JSONArray board) {
 
         String squareName = (String) JSONSquare.get("name");
         Direction direction = Direction.valueOf((String) JSONSquare.get("direction"));
         String color = (String) JSONSquare.get("color");
 
-        return new Square(color, direction, getBoardPosition(squareName, board));
+        return new AbstractMap.SimpleEntry<Point, Square>(getBoardPosition(squareName, board), new Square(color, direction));
     }
 
-    private static Circle parseCircle(JSONObject JSONCircle, JSONArray board) {
+    private static Map.Entry<Point, Circle> parseCircle(JSONObject JSONCircle, JSONArray board) {
         String circleName = (String) JSONCircle.get("name");
         String color = (String) JSONCircle.get("color");
 
-        return new Circle(color, getBoardPosition(circleName, board));
+        return new AbstractMap.SimpleEntry<Point, Circle>(getBoardPosition(circleName, board), new Circle(color));
     }
 
     private static Point getBoardPosition(String name, JSONArray board) {

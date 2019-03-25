@@ -17,6 +17,8 @@ public class GPSEngine {
 	private boolean failed;
 	private GPSNode solutionNode;
 	private Optional<Heuristic> heuristic;
+	private long startTime, endTime;
+	private int statesAnalyzed, frontierNodes;
 
 	// Use this variable in open set order.
 	protected SearchStrategy strategy;
@@ -28,21 +30,24 @@ public class GPSEngine {
 		this.strategy = strategy;
 		this.heuristic = Optional.of(heuristic);
 		explosionCounter = 0;
+		statesAnalyzed = 0;
+		frontierNodes = 0;
 		finished = false;
 		failed = false;
 	}
 
 	public void findSolution() {
+		startTime = System.currentTimeMillis();
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0, null);
 		open.add(rootNode);
-		System.out.println("Initial state: \n" + rootNode.getState().getRepresentation());
 		// TODO: ¿Lógica de IDDFS?
 		while (open.size() > 0) {
 			GPSNode currentNode = open.remove();
 			if (problem.isGoal(currentNode.getState())) {
 				finished = true;
 				solutionNode = currentNode;
-				System.out.println("Terminaste wi");
+				endTime = System.currentTimeMillis();
+				printSolution();
 				return;
 			} else {
 				explode(currentNode);
@@ -52,10 +57,40 @@ public class GPSEngine {
 		finished = true;
 	}
 
+	private void printSolution() {
+		System.out.println("Your search to solution was " + (failed ? "unsuccessful." : "successful."));
+
+		System.out.println("Nodes expanded: " + explosionCounter);
+
+		System.out.println("States analyzed: " + statesAnalyzed);
+
+		System.out.println("Frontier nodes: " + frontierNodes);
+
+		System.out.println("Solution depth and cost: " + solutionNode.getCost());
+
+		System.out.println("Your path to reach the solution was:");
+		printPathToSolution(solutionNode);
+
+		System.out.println("It took " + (endTime - startTime) + " ms.");
+	}
+
+	private void printPathToSolution(GPSNode currentNode) {
+		if(currentNode.getParent() == null){
+			System.out.println(currentNode.getState().getRepresentation());
+			return;
+		}
+
+		printPathToSolution(currentNode.getParent());
+
+		System.out.println(currentNode.getGenerationRule().getName());
+		System.out.println(currentNode.getState().getRepresentation());
+	}
+
 	private void explode(GPSNode node) {
 		Collection<GPSNode> newCandidates;
 		switch (strategy) {
 		case BFS:
+
 			if (bestCosts.containsKey(node.getState())) {
 				return;
 			}
@@ -104,9 +139,9 @@ public class GPSEngine {
 		updateBest(node);
 		for (Rule rule : problem.getRules()) {
 			Optional<State> newState = rule.apply(node.getState());
-			System.out.println(rule.getName());
-			System.out.println(newState.get().getRepresentation());
+			statesAnalyzed++;
 			if (newState.isPresent()) {
+				frontierNodes++;
 				GPSNode newNode = new GPSNode(newState.get(), node.getCost() + rule.getCost(), rule);
 				newNode.setParent(node);
 				candidates.add(newNode);

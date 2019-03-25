@@ -6,6 +6,7 @@ import ar.edu.itba.sia.gps.model.Square;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * State interface.
@@ -28,9 +29,10 @@ public interface State {
 	 */
 	String getRepresentation();
 
+	Map<Point, Square> getSquares();
 
-	List<Square> getSquares();
+	Map<Point, Circle> getCircles();
 
-	List<Circle> getCircles();
+	int getDimension();
 
 }

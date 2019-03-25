@@ -26,14 +26,12 @@ public class ProblemImpl implements Problem {
     @Override
     public boolean isGoal(State state) {
 
-        List<Square> squares = state.getSquares();
-        List<Circle> circles = state.getCircles();
+        Map<Point, Circle> circleMap = state.getCircles();
 
-        Map<String, Point> squarePositionsByColor = squares.stream().collect(Collectors.toMap(Square::getColor, Square::getPosition));
-        Map<String, Point> circlePositionsByColor = circles.stream().collect(Collectors.toMap(Circle::getColor, Circle::getPosition));
-
-        for (String color : squarePositionsByColor.keySet()) {
-            if(!circlePositionsByColor.get(color).equals(squarePositionsByColor.get(color)))
+        for (Map.Entry<Point, Square> entry: state.getSquares().entrySet()) {
+            Point position = entry.getKey();
+            Circle circle = circleMap.get(position);
+            if(circle == null || !entry.getValue().getColor().equals(circle.getColor()))
                 return false;
         }
 
@@ -44,7 +42,7 @@ public class ProblemImpl implements Problem {
     public List<Rule> getRules() {
         List<Rule> rules = new ArrayList<>();
 
-        for (Square square:initialState.getSquares())
+        for (Square square:initialState.getSquares().values())
             rules.add(new RuleImpl(square));
 
         return rules;

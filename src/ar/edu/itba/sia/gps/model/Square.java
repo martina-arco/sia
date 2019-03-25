@@ -1,13 +1,14 @@
 package ar.edu.itba.sia.gps.model;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class Square extends Figure{
 
     private Direction direction;
 
-    public Square(String color, Direction direction, Point position) {
-        super(color, position);
+    public Square(String color, Direction direction) {
+        super(color);
         this.direction = direction;
     }
 
@@ -21,9 +22,21 @@ public class Square extends Figure{
         this.direction = direction;
     }
 
-    public boolean equals(Square s) {
-        return s.getColor().equals(getColor()) && s.getDirection().equals(getDirection());
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Square)) return false;
+        Square square = (Square) o;
+        return super.equals(o) && getDirection() == square.getDirection();
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDirection(), getColor());
+    }
+
+
 
     @Override
     public String toString() {

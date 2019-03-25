@@ -4,10 +4,7 @@ import ar.edu.itba.sia.gps.api.Rule;
 import ar.edu.itba.sia.gps.api.State;
 
 import java.awt.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class RuleImpl implements Rule {
 
@@ -24,32 +21,38 @@ public class RuleImpl implements Rule {
 
     @Override
     public String getName() {
-        return "You moved the " + squareToMove.getColor() + " coloured square in " + squareToMove.getDirection() + " direction.";
+        return "You moved the " + squareToMove.getColor() + " square " + squareToMove.getDirection() + ".";
     }
 
     @Override
     public Optional<State> apply(State state) {
+        Map<Point, Square> currentSquares = state.getSquares();
+        Map<Point, Square> newSquareMap = new HashMap<>(currentSquares);
 
-        Optional<State> stateResult = Optional.ofNullable(state);
-        List<Square> squares = stateResult.get().getSquares();
-        Map<Point, Square> squarePositionMap = squares.stream().collect(Collectors.toMap(Square::getPosition, square->square));
+        Point newPosition = moveSquare(squareToMove, currentSquares, newSquareMap, state.getDimension());
 
-        Point newPosition = moveSquare(squareToMove);
+        if(newPosition == null)
+            return Optional.empty();
 
-        pushAdjacentSquare(newPosition, squarePositionMap);
+        pushAdjacentSquare(newPosition, currentSquares, newSquareMap, state.getDimension());
 
-        return stateResult;
+        return Optional.of(new StateImpl(newSquareMap, state.getCircles(), state.getDimension()));
 
     }
 
-    private Point moveSquare(Square square) {
+    private Point moveSquare(Square square, Map<Point, Square> currentMap, Map<Point, Square> newSquareMap, int dimension) {
 
         Point newPosition = new Point();
 
-        Double currentX = square.getPosition().getX();
-        Double currentY = square.getPosition().getY();
+        Point currentPosition = currentMap.entrySet()
+                .stream()
+                .filter(entry -> square.equals(entry.getValue()))
+                .map(Map.Entry::getKey).findFirst().get();
 
-        switch (square.getDirection()) {
+        Double currentX = currentPosition.getX();
+        Double currentY = currentPosition.getY();
+
+        switch (squareToMove.getDirection()) {
             case UP:
                 newPosition.move(currentX.intValue() - 1, currentY.intValue());
                 break;
@@ -65,18 +68,28 @@ public class RuleImpl implements Rule {
 
         }
 
-        square.setPosition(newPosition);
+        if(newPosition.getX() >= 0 && newPosition.getY() >= 0 && newPosition.getX() < dimension && newPosition.getY() < dimension) {
 
-        return newPosition;
+            Square square1 = new Square(square.getColor(), square.getDirection());
+
+            newSquareMap.put(newPosition, square1);
+            newSquareMap.remove(currentPosition);
+
+            return newPosition;
+        }
+
+
+        return null;
     }
 
-    private void pushAdjacentSquare(Point newPosition, Map<Point, Square> squarePositionMap) {
+    private void pushAdjacentSquare(Point newPosition, Map<Point, Square> currentMap, Map<Point, Square> newSquareMap, int dimension) {
 
-        Square squareToPush = squarePositionMap.get(newPosition);
+        Square squareToPush = currentMap.get(newPosition);
 
         if(squareToPush != null) {
-            newPosition = moveSquare(squareToPush);
-            pushAdjacentSquare(newPosition, squarePositionMap);
+            newPosition = moveSquare(squareToPush, currentMap, newSquareMap, dimension);
+            pushAdjacentSquare(newPosition, currentMap, newSquareMap, dimension);
+            currentMap.put(newPosition, squareToPush);
         }
 
     }

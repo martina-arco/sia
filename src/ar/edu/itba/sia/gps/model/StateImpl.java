@@ -1,19 +1,21 @@
 package ar.edu.itba.sia.gps.model;
 import ar.edu.itba.sia.gps.api.State;
+import com.sun.xml.internal.xsom.impl.scd.Iterators;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class StateImpl implements State {
 
-    private List<Square> squares;
-    private List<Circle> circles;
+    private Map<Point, Square> squares;
+    private Map<Point, Circle> circles;
     private int dimension;
 
-    public StateImpl(List<Square> squares, List<Circle> circles, int dimension) {
+    public StateImpl(Map<Point, Square> squares, Map<Point, Circle> circles, int dimension) {
         this.squares = squares;
         this.circles = circles;
         this.dimension = dimension;
@@ -22,9 +24,6 @@ public class StateImpl implements State {
     @Override
     public String getRepresentation() {
 
-        Map<Point, Square> squarePositions =  squares.stream().collect(Collectors.toMap(Square::getPosition, square->square));
-        Map<Point, Circle> circlePositions = circles.stream().collect(Collectors.toMap(Circle::getPosition, circle->circle));
-
         StringBuilder sbuilder = new StringBuilder();
 
         sbuilder.append("State : \n");
@@ -32,8 +31,8 @@ public class StateImpl implements State {
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
                 Point point = new Point(i, j);
-                Square square = squarePositions.get(point);
-                Circle circle = circlePositions.get(point);
+                Square square = squares.get(point);
+                Circle circle = circles.get(point);
                 if(square != null) {
                     sbuilder.append(square.toString());
                 }
@@ -51,12 +50,31 @@ public class StateImpl implements State {
     }
 
     @Override
-    public List<Square> getSquares() {
+    public Map<Point, Square> getSquares() {
         return squares;
     }
 
     @Override
-    public List<Circle> getCircles() {
+    public Map<Point, Circle> getCircles() {
         return circles;
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StateImpl)) return false;
+        StateImpl state = (StateImpl) o;
+        return dimension == state.dimension &&
+                getSquares().equals(state.getSquares()) &&
+                getCircles().equals(state.getCircles());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSquares(), getCircles(), dimension);
     }
 }
