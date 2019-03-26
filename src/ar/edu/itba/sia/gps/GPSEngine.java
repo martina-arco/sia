@@ -7,6 +7,8 @@ import ar.edu.itba.sia.gps.api.Problem;
 import ar.edu.itba.sia.gps.api.Rule;
 import ar.edu.itba.sia.gps.api.State;
 
+import static ar.edu.itba.sia.gps.SearchStrategy.IDDFS;
+
 public class GPSEngine {
 
 	private Deque<GPSNode> open;
@@ -41,16 +43,37 @@ public class GPSEngine {
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0, null);
 		open.add(rootNode);
 		// TODO: ¿Lógica de IDDFS?
-		while (open.size() > 0) {
-			GPSNode currentNode = open.remove();
-			if (problem.isGoal(currentNode.getState())) {
-				finished = true;
-				solutionNode = currentNode;
-				endTime = System.currentTimeMillis();
-				printSolution();
-				return;
-			} else {
-				explode(currentNode);
+		if(strategy == IDDFS){
+			int limitDepth = 0;
+			while(!finished) {
+				GPSNode currentNode = open.pop();
+				if (currentNode.getDepth() == limitDepth) {
+					if (problem.isGoal(currentNode.getState())){
+						finished = true;
+						solutionNode = currentNode;
+						endTime = System.currentTimeMillis();
+						printSolution();
+						return;
+					} else if (open.isEmpty()){
+						open.push(rootNode);
+						limitDepth++;
+					}
+				} else if(currentNode.getDepth() == limitDepth-1){
+					explode(currentNode);
+				}
+			}
+		} else {
+			while (open.size() > 0) {
+				GPSNode currentNode = open.remove();
+				if (problem.isGoal(currentNode.getState())) {
+					finished = true;
+					solutionNode = currentNode;
+					endTime = System.currentTimeMillis();
+					printSolution();
+					return;
+				} else {
+					explode(currentNode);
+				}
 			}
 		}
 		failed = true;
@@ -109,12 +132,11 @@ public class GPSEngine {
 			}
 			break;
 		case IDDFS:
-			if (bestCosts.containsKey(node.getState())) {
-				return;
-			}
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
-			// TODO: ¿Cómo se agregan los nodos a open en IDDFS?
+			for (GPSNode newNode:newCandidates) {
+				open.push(newNode);
+			}
 			break;
 		case GREEDY:
 			newCandidates = new PriorityQueue<>(Comparator.comparingInt(n -> heuristic.get().getValue(n.getState())));

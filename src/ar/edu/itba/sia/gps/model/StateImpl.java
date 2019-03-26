@@ -1,6 +1,5 @@
 package ar.edu.itba.sia.gps.model;
 import ar.edu.itba.sia.gps.api.State;
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
 
 import java.awt.*;
 import java.util.ArrayList;
