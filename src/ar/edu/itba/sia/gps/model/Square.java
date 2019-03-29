@@ -1,6 +1,5 @@
 package ar.edu.itba.sia.gps.model;
 
-import java.awt.*;
 import java.util.Objects;
 
 public class Square extends Figure{
@@ -21,7 +20,6 @@ public class Square extends Figure{
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -67,6 +67,8 @@ public class Main {
         GPSEngine engine = new GPSEngine(problemChosen, searchStrategyChosen, heuristicChosen);
 
         engine.findSolution();
+
+        printSolution(engine);
     }
 
     private static Heuristic parseHeuristic(String heuristic) {
@@ -119,14 +121,16 @@ public class Main {
         Direction direction = Direction.valueOf((String) JSONSquare.get("direction"));
         String color = (String) JSONSquare.get("color");
 
-        return new AbstractMap.SimpleEntry<Point, Square>(getBoardPosition(squareName, board), new Square(color, direction));
+        Point position = getBoardPosition(squareName, board);
+
+        return new AbstractMap.SimpleEntry<>(position, new Square(color, direction));
     }
 
     private static Map.Entry<Point, Circle> parseCircle(JSONObject JSONCircle, JSONArray board) {
         String circleName = (String) JSONCircle.get("name");
         String color = (String) JSONCircle.get("color");
 
-        return new AbstractMap.SimpleEntry<Point, Circle>(getBoardPosition(circleName, board), new Circle(color));
+        return new AbstractMap.SimpleEntry<>(getBoardPosition(circleName, board), new Circle(color));
     }
 
     private static Point getBoardPosition(String name, JSONArray board) {
@@ -142,5 +146,37 @@ public class Main {
         }
 
         return new Point();
+    }
+
+    private static void printSolution(GPSEngine engine) {
+        System.out.println("Your search to solution was " + (engine.isFailed() ? "unsuccessful." : "successful."));
+
+        System.out.println("Nodes expanded: " + engine.getExplosionCounter());
+
+        System.out.println("States analyzed: " + engine.getStatesAnalyzed());
+
+        System.out.println("Frontier nodes: " + engine.getFrontierNodes());
+
+        if(!engine.isFailed()) {
+
+            System.out.println("Solution depth and cost: " + engine.getSolutionNode().getCost());
+
+            System.out.println("Your path to reach the solution was:");
+            printPathToSolution(engine.getSolutionNode());
+
+            System.out.println("It took " + (engine.getEndTime() - engine.getStartTime()) + " ms.");
+        }
+    }
+
+    private static void printPathToSolution(GPSNode currentNode) {
+        if(currentNode.getParent() == null){
+            System.out.println(currentNode.getState().getRepresentation());
+            return;
+        }
+
+        printPathToSolution(currentNode.getParent());
+
+        System.out.println(currentNode.getGenerationRule().getName());
+        System.out.println(currentNode.getState().getRepresentation());
     }
 }

@@ -41,6 +41,7 @@ public class GPSEngine {
 	public void findSolution() {
 		startTime = System.currentTimeMillis();
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0, null);
+
 		open.add(rootNode);
 		// TODO: ¿Lógica de IDDFS?
 		if(strategy == IDDFS){
@@ -52,7 +53,6 @@ public class GPSEngine {
 						finished = true;
 						solutionNode = currentNode;
 						endTime = System.currentTimeMillis();
-						printSolution();
 						return;
 					} else if (open.isEmpty()){
 						open.push(rootNode);
@@ -69,7 +69,6 @@ public class GPSEngine {
 					finished = true;
 					solutionNode = currentNode;
 					endTime = System.currentTimeMillis();
-					printSolution();
 					return;
 				} else {
 					explode(currentNode);
@@ -80,34 +79,7 @@ public class GPSEngine {
 		finished = true;
 	}
 
-	private void printSolution() {
-		System.out.println("Your search to solution was " + (failed ? "unsuccessful." : "successful."));
 
-		System.out.println("Nodes expanded: " + explosionCounter);
-
-		System.out.println("States analyzed: " + statesAnalyzed);
-
-		System.out.println("Frontier nodes: " + frontierNodes);
-
-		System.out.println("Solution depth and cost: " + solutionNode.getCost());
-
-		System.out.println("Your path to reach the solution was:");
-		printPathToSolution(solutionNode);
-
-		System.out.println("It took " + (endTime - startTime) + " ms.");
-	}
-
-	private void printPathToSolution(GPSNode currentNode) {
-		if(currentNode.getParent() == null){
-			System.out.println(currentNode.getState().getRepresentation());
-			return;
-		}
-
-		printPathToSolution(currentNode.getParent());
-
-		System.out.println(currentNode.getGenerationRule().getName());
-		System.out.println(currentNode.getState().getRepresentation());
-	}
 
 	private void explode(GPSNode node) {
 		Collection<GPSNode> newCandidates;
@@ -216,4 +188,19 @@ public class GPSEngine {
 		return strategy;
 	}
 
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public long getEndTime() {
+		return endTime;
+	}
+
+	public int getStatesAnalyzed() {
+		return statesAnalyzed;
+	}
+
+	public int getFrontierNodes() {
+		return frontierNodes;
+	}
 }
