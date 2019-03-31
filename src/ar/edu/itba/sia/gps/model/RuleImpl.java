@@ -21,17 +21,12 @@ public class RuleImpl implements Rule {
 
     @Override
     public String getName() {
-        return "You moved the " + squareToMove.getColor() + " square " + squareToMove.getDirection() + ".";
+        return "You moved the " + squareToMove.getColor() + " square " + squareToMove.getDirection().toString().toLowerCase() + ".";
     }
 
     @Override
     public Optional<State> apply(State state) {
-        Map<Point, Square> newSquareMap = new HashMap<>();
-
-        for (Map.Entry<Point, Square> entry:state.getSquares().entrySet()) {
-            Square square= entry.getValue();
-            newSquareMap.put(entry.getKey(), new Square(square.getColor(), square.getDirection()));
-        }
+        Map<Point, Square> newSquareMap = new HashMap<>(state.getSquares());
 
         Point newPosition = moveSquare(squareToMove, newSquareMap, state.getDimension());
 

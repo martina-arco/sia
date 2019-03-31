@@ -30,7 +30,7 @@ public class GPSEngine {
 		bestCosts = new HashMap<>();
 		this.problem = problem;
 		this.strategy = strategy;
-		this.heuristic = Optional.of(heuristic);
+		this.heuristic = Optional.ofNullable(heuristic);
 		explosionCounter = 0;
 		statesAnalyzed = 0;
 		frontierNodes = 0;

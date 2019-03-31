@@ -1,6 +1,5 @@
 package ar.edu.itba.sia.gps.model;
 
-import java.awt.*;
 
 public class Circle extends Figure{
 
@@ -10,6 +9,6 @@ public class Circle extends Figure{
 
     @Override
     public String toString() {
-        return getColor() + "C ";
+        return getColor() + " C";
     }
 }

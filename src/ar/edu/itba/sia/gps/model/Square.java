@@ -11,14 +11,8 @@ public class Square extends Figure{
         this.direction = direction;
     }
 
-
     public Direction getDirection() {
         return direction;
-    }
-
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
     }
 
     @Override
@@ -35,9 +29,8 @@ public class Square extends Figure{
     }
 
 
-
     @Override
     public String toString() {
-        return getColor() + "S " ;
+        return getColor() + " S " + getDirection().toStringCustom();
     }
 }

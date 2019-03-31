@@ -1,12 +1,12 @@
 package ar.edu.itba.sia.gps.model;
 import ar.edu.itba.sia.gps.api.State;
 
+import org.apache.commons.lang.StringUtils;
+
+
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class StateImpl implements State {
 
@@ -24,28 +24,53 @@ public class StateImpl implements State {
     public String getRepresentation() {
 
         StringBuilder sbuilder = new StringBuilder();
-
         sbuilder.append("State : \n");
+        addNewLine(sbuilder);
 
         for (int i = 0; i < dimension; i++) {
+
+            sbuilder.append("|");
+
             for (int j = 0; j < dimension; j++) {
                 Point point = new Point(i, j);
                 Square square = squares.get(point);
                 Circle circle = circles.get(point);
-                if(square != null) {
-                    sbuilder.append(square.toString());
-                }
-                if(circle != null) {
-                    sbuilder.append(circle.toString());
-                }
-                if(circle == null && square == null)
-                    sbuilder.append("0");
 
-                sbuilder.append(", ");
+
+                if(square != null && circle != null) {
+
+                    sbuilder.append(String.format("%20s|\n", StringUtils.center(square.toString(), 20)));
+                    sbuilder.append(String.format("|%20s", StringUtils.center(circle.toString(), 20)));
+
+                } else if(circle == null && square == null) {
+
+                    addElement(sbuilder, "0");
+
+                } else {
+                        if (square != null)
+                            addElement(sbuilder, square.toString());
+
+                        if (circle != null)
+                            addElement(sbuilder, circle.toString());
+                }
+
+                sbuilder.append("|");
             }
-            sbuilder.append("\n");
+
+            addNewLine(sbuilder);
+
         }
         return sbuilder.toString();
+    }
+
+    private void addElement(StringBuilder sbuilder, String element) {
+        sbuilder.append(String.format("%20s", StringUtils.center(element, 20)));
+    }
+
+    private void addNewLine(StringBuilder sbuilder) {
+        sbuilder.append("\n");
+        sbuilder.append(new String(new char[dimension*21]).replace("\0", "-"));
+        sbuilder.append("\n");
     }
 
     @Override

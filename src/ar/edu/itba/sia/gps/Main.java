@@ -3,6 +3,7 @@ import ar.edu.itba.sia.gps.api.Heuristic;
 import ar.edu.itba.sia.gps.api.Problem;
 import ar.edu.itba.sia.gps.api.State;
 import ar.edu.itba.sia.gps.model.*;
+import com.sun.jdi.connect.Connector;
 import org.apache.commons.cli.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,9 +22,11 @@ public class Main {
     public static void main(String[] args) {
         Options options = new Options();
 
-        Option heuristic = new Option("h", "heuristic", true, "Heuristic function used (h1, h2)");
-//        heuristic.setRequired(true);
-        options.addOption(heuristic);
+        Option heuristic1 = new Option("h1", "heuristic1", false, "Heuristic function used h1");
+        options.addOption(heuristic1);
+
+        Option heuristic2 = new Option("h2", "heuristic2", false, "Heuristic function used h2");
+        options.addOption(heuristic2);
 
         Option board = new Option("b", "board", true, "Path to json file with initial board state");
         board.setRequired(true);
@@ -37,7 +40,8 @@ public class Main {
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
 
-        String heuristicChosenString = "h1";
+        String heuristicChosenString1 = "";
+        String heuristicChosenString2 = "";
         String initialBoardPath = "";
         String searchStrategyChosenString = "BFS";
 
@@ -45,7 +49,8 @@ public class Main {
 
             CommandLine cmd;
             cmd = parser.parse(options, args);
-            heuristicChosenString = cmd.getOptionValue("heuristic");
+            heuristicChosenString1 = cmd.getOptionValue("heuristic1");
+            heuristicChosenString2 = cmd.getOptionValue("heuristic2");
             initialBoardPath = cmd.getOptionValue("board");
             searchStrategyChosenString = cmd.getOptionValue("algorithm");
 
@@ -56,12 +61,8 @@ public class Main {
             System.exit(1);
         }
 
-        Heuristic heuristicChosen = new LinearDistanceHeuristic();
-
-        if(heuristicChosenString != null)
-            heuristicChosen = parseHeuristic(heuristicChosenString);
-
         SearchStrategy searchStrategyChosen = SearchStrategy.valueOf(searchStrategyChosenString);
+        Heuristic heuristicChosen = parseHeuristic(heuristicChosenString1, heuristicChosenString2, searchStrategyChosen);
         Problem problemChosen = new ProblemImpl(parseBoard(initialBoardPath));
 
         GPSEngine engine = new GPSEngine(problemChosen, searchStrategyChosen, heuristicChosen);
@@ -71,11 +72,17 @@ public class Main {
         printSolution(engine);
     }
 
-    private static Heuristic parseHeuristic(String heuristic) {
-        switch (heuristic) {
-            case "h1":
-                return new LinearDistanceHeuristic();
+    private static Heuristic parseHeuristic(String heuristic1, String heuristic2, SearchStrategy searchStrategy) {
+        if(heuristic1 != null) {
+            if(heuristic2 != null)
+                throw new IllegalArgumentException("Only one heuristic allowed");
+
+            return new LinearDistanceHeuristic();
         }
+        if(heuristic2 == null && (searchStrategy == SearchStrategy.GREEDY || searchStrategy == SearchStrategy.ASTAR))
+            throw new IllegalArgumentException("Need heuristic for this search strategy");
+
+//        return la otra heuristica
         return null;
     }
 
