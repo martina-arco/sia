@@ -67,12 +67,23 @@ public class GPSEngine {
 				}else{
 					explode(currentNode);
 				}
+			} else if(strategy == ASTAR){
+				if(openList.isEmpty()) {
+					open.remove();
+					break;
+				}
+				GPSNode currentNode = openList.remove();
+				closedList.add(currentNode);
+				if (problem.isGoal(currentNode.getState())) {
+					finished = true;
+					solutionNode = currentNode;
+					endTime = System.currentTimeMillis();
+					return;
+				} else {
+					explode(currentNode);
+				}
 			} else {
 				GPSNode currentNode = open.remove();
-				if(strategy == ASTAR) {
-					openList.remove();
-					closedList.add(currentNode);
-				}
 				if (problem.isGoal(currentNode.getState())) {
 					finished = true;
 					solutionNode = currentNode;
@@ -128,21 +139,15 @@ public class GPSEngine {
 			open.addAll(newCandidates);
 			break;
 		case ASTAR:
-			if(!isBest(node.getState(), node.getCost()))
+			if(!isBest(node.getState(), node.getCost() + heuristic.get().getValue(node.getState())))
 				return;
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
 			for (GPSNode newNode:newCandidates) {
 				if(!closedList.contains(newNode)){
-//					if(isBest(newNode.getState(), newNode.getCost()))
-//						updateBest(newNode);
-					if(openList.contains(newNode))
-						openList.remove(newNode);
 					openList.add(newNode);
 				}
 			}
-			open.clear();
-			open.addAll(openList);
 			break;
 		}
 	}

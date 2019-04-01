@@ -3,6 +3,8 @@ package ar.edu.itba.sia.gps;
 import ar.edu.itba.sia.gps.api.Rule;
 import ar.edu.itba.sia.gps.api.State;
 
+import java.util.Objects;
+
 public class GPSNode {
 
 	private State state;
@@ -65,6 +67,11 @@ public class GPSNode {
 		} else if (!state.equals(other.state))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(state);
 	}
 
 	public Rule getGenerationRule() {
