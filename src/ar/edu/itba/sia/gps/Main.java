@@ -38,8 +38,8 @@ public class Main {
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
 
-        String heuristicChosenString1 = "";
-        String heuristicChosenString2 = "";
+        boolean hasHeuristic1 = false;
+        boolean hasHeuristic2 = false;
         String initialBoardPath = "";
         String searchStrategyChosenString = "BFS";
 
@@ -47,8 +47,8 @@ public class Main {
 
             CommandLine cmd;
             cmd = parser.parse(options, args);
-            heuristicChosenString1 = cmd.getOptionValue("heuristic1");
-            heuristicChosenString2 = cmd.getOptionValue("heuristic2");
+            hasHeuristic1 = cmd.hasOption("h1");
+            hasHeuristic2 = cmd.hasOption("h2");
             initialBoardPath = cmd.getOptionValue("board");
             searchStrategyChosenString = cmd.getOptionValue("algorithm");
 
@@ -60,7 +60,7 @@ public class Main {
         }
 
         SearchStrategy searchStrategyChosen = SearchStrategy.valueOf(searchStrategyChosenString.toUpperCase());
-        Heuristic heuristicChosen = parseHeuristic(heuristicChosenString1, heuristicChosenString2, searchStrategyChosen);
+        Heuristic heuristicChosen = parseHeuristic(hasHeuristic1, hasHeuristic2, searchStrategyChosen);
         Problem problemChosen = new ProblemImpl(parseBoard(initialBoardPath));
 
         GPSEngine engine = new GPSEngine(problemChosen, searchStrategyChosen, heuristicChosen);
@@ -70,14 +70,15 @@ public class Main {
         printSolution(engine);
     }
 
-    private static Heuristic parseHeuristic(String heuristic1, String heuristic2, SearchStrategy searchStrategy) {
-        if(heuristic1 != null) {
-            if(heuristic2 != null)
+    private static Heuristic parseHeuristic(boolean hasHeuristic1, boolean hasHeuristic2, SearchStrategy searchStrategy) {
+        if(hasHeuristic1) {
+            if(hasHeuristic2)
                 throw new IllegalArgumentException("Only one heuristic allowed");
 
             return new LinearDistanceHeuristic();
         }
-        if(heuristic2 == null && (searchStrategy == SearchStrategy.GREEDY || searchStrategy == SearchStrategy.ASTAR))
+
+        if(!hasHeuristic2 && (searchStrategy == SearchStrategy.GREEDY || searchStrategy == SearchStrategy.ASTAR))
             throw new IllegalArgumentException("Need heuristic for this search strategy");
 
 //        return la otra heuristica

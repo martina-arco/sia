@@ -118,7 +118,7 @@ public class GPSEngine {
 			}
 			break;
 		case GREEDY:
-			newCandidates = new PriorityQueue<>(Comparator.comparingInt(n -> heuristic.get().getValue(n.getState())));
+			newCandidates = new PriorityQueue<>(Comparator.comparingInt(nodeToAnalyze -> heuristic.get().getValue(nodeToAnalyze.getState())));
 			addCandidates(node, newCandidates);
 			open.addAll(newCandidates);
 			break;
