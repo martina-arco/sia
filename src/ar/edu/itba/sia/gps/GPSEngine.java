@@ -7,11 +7,14 @@ import ar.edu.itba.sia.gps.api.Problem;
 import ar.edu.itba.sia.gps.api.Rule;
 import ar.edu.itba.sia.gps.api.State;
 
+import static ar.edu.itba.sia.gps.SearchStrategy.ASTAR;
 import static ar.edu.itba.sia.gps.SearchStrategy.IDDFS;
 
 public class GPSEngine {
 
 	private Deque<GPSNode> open;
+	private PriorityQueue<GPSNode> openList;
+	private HashSet<GPSNode> closedList;
 	private Map<State, Integer> bestCosts;
 	private Problem problem;
 	private long explosionCounter;
@@ -27,6 +30,8 @@ public class GPSEngine {
 
 	public GPSEngine(Problem problem, SearchStrategy strategy, Heuristic heuristic) {
 		open = new ArrayDeque<>();
+		openList = new PriorityQueue<>(Comparator.comparingInt(nodeToAnalyze -> bestCosts.get(nodeToAnalyze.getState())));
+		closedList = new HashSet<>();
 		bestCosts = new HashMap<>();
 		this.problem = problem;
 		this.strategy = strategy;
@@ -43,6 +48,8 @@ public class GPSEngine {
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0, null);
 
 		open.add(rootNode);
+		if (strategy == ASTAR)
+			openList.add(rootNode);
 		// TODO: ¿Lógica de IDDFS?
 		if(strategy == IDDFS){
 			int limitDepth = 0;
@@ -65,6 +72,10 @@ public class GPSEngine {
 		} else {
 			while (open.size() > 0) {
 				GPSNode currentNode = open.remove();
+				if(strategy == ASTAR) {
+					openList.remove();
+					closedList.add(currentNode);
+				}
 				if (problem.isGoal(currentNode.getState())) {
 					finished = true;
 					solutionNode = currentNode;
@@ -116,14 +127,19 @@ public class GPSEngine {
 			open.addAll(newCandidates);
 			break;
 		case ASTAR:
-			if (!isBest(node.getState(), node.getCost())) {
-				return;
-			}
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
-//			for (GPSNode newNode:newCandidates) {
-//				open.push(newNode);
-//			}
+			for (GPSNode newNode:newCandidates) {
+				if(!closedList.contains(newNode)){
+					if(isBest(newNode.getState(), newNode.getCost()))
+						updateBest(newNode);
+					if(openList.contains(newNode))
+						openList.remove(newNode);
+					openList.add(newNode);
+				}
+			}
+			open.clear();
+			open.addAll(openList);
 			break;
 		}
 	}
