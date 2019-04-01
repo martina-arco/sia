@@ -23,7 +23,7 @@ public class GPSEngine {
 	private GPSNode solutionNode;
 	private Optional<Heuristic> heuristic;
 	private long startTime, endTime;
-	private int statesAnalyzed, frontierNodes;
+	private int statesAnalyzed, frontierNodes, limitDepth;
 
 	// Use this variable in open set order.
 	protected SearchStrategy strategy;
@@ -39,6 +39,7 @@ public class GPSEngine {
 		explosionCounter = 0;
 		statesAnalyzed = 0;
 		frontierNodes = 0;
+		limitDepth = 0;
 		finished = false;
 		failed = false;
 	}
@@ -46,7 +47,6 @@ public class GPSEngine {
 	public void findSolution() {
 		startTime = System.currentTimeMillis();
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0, null, 0);
-		int limitDepth = 0;
 		open.add(rootNode);
 		if (strategy == ASTAR)
 			openList.add(rootNode);
@@ -63,7 +63,8 @@ public class GPSEngine {
 						open.push(rootNode);
 						limitDepth++;
 					}
-				} else if(currentNode.getDepth() != limitDepth-1 || !bestCosts.containsKey(currentNode.getState())){
+					//} else if(currentNode.getDepth() != limitDepth-1 || !bestCosts.containsKey(currentNode.getState())){
+				}else{
 					explode(currentNode);
 				}
 			} else {
@@ -113,7 +114,9 @@ public class GPSEngine {
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
 			for (GPSNode newNode:newCandidates) {
-				open.push(newNode);
+				if(isBest(newNode.getState(),newNode.getCost()) || newNode.getDepth() < limitDepth){
+					open.push(newNode);
+				}
 			}
 			break;
 		case GREEDY:
@@ -161,6 +164,10 @@ public class GPSEngine {
 
 	private boolean isBest(State state, Integer cost) {
 		return !bestCosts.containsKey(state) || cost < bestCosts.get(state);
+	}
+
+	private boolean isBestOrSame(State state, Integer cost) {
+		return !bestCosts.containsKey(state) || cost <= bestCosts.get(state);
 	}
 
 	private void updateBest(GPSNode node) {
