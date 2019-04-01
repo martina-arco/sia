@@ -17,7 +17,6 @@ public class GPSEngine {
 	private long explosionCounter;
 	private boolean finished;
 	private boolean failed;
-	private boolean exploded = true;
 	private GPSNode solutionNode;
 	private Optional<Heuristic> heuristic;
 	private long startTime, endTime;
@@ -47,7 +46,7 @@ public class GPSEngine {
 		// TODO: ¿Lógica de IDDFS?
 		if(strategy == IDDFS){
 			int limitDepth = 0;
-			while(!finished) {
+			while(!open.isEmpty()) {
 				GPSNode currentNode = open.pop();
 				if (currentNode.getDepth() == limitDepth) {
 					if (problem.isGoal(currentNode.getState())){
@@ -56,12 +55,8 @@ public class GPSEngine {
 						endTime = System.currentTimeMillis();
 						return;
 					} else if (open.isEmpty()){
-						if(exploded) {
-							open.push(rootNode);
-							limitDepth++;
-						} else {
-							finished = true;
-						}
+						open.push(rootNode);
+						limitDepth++;
 					}
 				} else {
 					explode(currentNode);
@@ -109,11 +104,9 @@ public class GPSEngine {
 			}
 			break;
 		case IDDFS:
-			exploded = false;
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
 			for (GPSNode newNode:newCandidates) {
-				exploded = true;
 				open.push(newNode);
 			}
 			break;
