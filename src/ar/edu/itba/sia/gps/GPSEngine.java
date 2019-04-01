@@ -60,8 +60,8 @@ public class GPSEngine {
 						endTime = System.currentTimeMillis();
 						return;
 					} else if (open.isEmpty()) {
-							open.push(rootNode);
-							limitDepth++;
+						open.push(rootNode);
+						limitDepth++;
 					}
 				} else if(currentNode.getDepth() != limitDepth-1 || !bestCosts.containsKey(currentNode.getState())){
 					explode(currentNode);
