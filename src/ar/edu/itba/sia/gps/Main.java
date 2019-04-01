@@ -3,7 +3,6 @@ import ar.edu.itba.sia.gps.api.Heuristic;
 import ar.edu.itba.sia.gps.api.Problem;
 import ar.edu.itba.sia.gps.api.State;
 import ar.edu.itba.sia.gps.model.*;
-import com.sun.jdi.connect.Connector;
 import org.apache.commons.cli.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

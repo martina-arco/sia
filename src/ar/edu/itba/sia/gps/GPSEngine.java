@@ -58,7 +58,7 @@ public class GPSEngine {
 						open.push(rootNode);
 						limitDepth++;
 					}
-				} else if(currentNode.getDepth() == limitDepth-1){
+				} else {
 					explode(currentNode);
 				}
 			}
