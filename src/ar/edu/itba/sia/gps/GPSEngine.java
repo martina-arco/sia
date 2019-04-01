@@ -17,6 +17,7 @@ public class GPSEngine {
 	private long explosionCounter;
 	private boolean finished;
 	private boolean failed;
+	private boolean exploded = true;
 	private GPSNode solutionNode;
 	private Optional<Heuristic> heuristic;
 	private long startTime, endTime;
@@ -55,8 +56,12 @@ public class GPSEngine {
 						endTime = System.currentTimeMillis();
 						return;
 					} else if (open.isEmpty()){
-						open.push(rootNode);
-						limitDepth++;
+						if(exploded) {
+							open.push(rootNode);
+							limitDepth++;
+						} else {
+							finished = true;
+						}
 					}
 				} else {
 					explode(currentNode);
@@ -104,9 +109,11 @@ public class GPSEngine {
 			}
 			break;
 		case IDDFS:
+			exploded = false;
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
 			for (GPSNode newNode:newCandidates) {
+				exploded = true;
 				open.push(newNode);
 			}
 			break;
