@@ -1,13 +1,5 @@
 package ar.edu.itba.sia.gps.api;
 
-import ar.edu.itba.sia.gps.model.Circle;
-import ar.edu.itba.sia.gps.model.Figure;
-import ar.edu.itba.sia.gps.model.Square;
-
-import java.awt.*;
-import java.util.List;
-import java.util.Map;
-
 /**
  * State interface.
  */
@@ -28,11 +20,5 @@ public interface State {
 	 * @return The STRING representation of the state.
 	 */
 	String getRepresentation();
-
-	Map<Point, Square> getSquares();
-
-	Map<Point, Circle> getCircles();
-
-	int getDimension();
 
 }

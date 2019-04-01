@@ -26,14 +26,15 @@ public class RuleImpl implements Rule {
 
     @Override
     public Optional<State> apply(State state) {
-        Map<Point, Square> newSquareMap = new HashMap<>(state.getSquares());
+        StateImpl stateImplementation = (StateImpl) state;
+        Map<Point, Square> newSquareMap = new HashMap<>(stateImplementation.getSquares());
 
-        Point newPosition = moveSquare(squareToMove, newSquareMap, state.getDimension());
+        Point newPosition = moveSquare(squareToMove, newSquareMap, stateImplementation.getDimension());
 
         if(newPosition == null)
             return Optional.empty();
 
-        return Optional.of(new StateImpl(newSquareMap, state.getCircles(), state.getDimension()));
+        return Optional.of(new StateImpl(newSquareMap, stateImplementation.getCircles(), stateImplementation.getDimension()));
 
     }
 

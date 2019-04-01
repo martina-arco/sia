@@ -26,9 +26,11 @@ public class ProblemImpl implements Problem {
     @Override
     public boolean isGoal(State state) {
 
-        Map<Point, Circle> circleMap = state.getCircles();
+        StateImpl stateImplementation = (StateImpl) state;
 
-        for (Map.Entry<Point, Square> entry: state.getSquares().entrySet()) {
+        Map<Point, Circle> circleMap = stateImplementation.getCircles();
+
+        for (Map.Entry<Point, Square> entry: stateImplementation.getSquares().entrySet()) {
             Point position = entry.getKey();
             Circle circle = circleMap.get(position);
             if(circle == null || !entry.getValue().getColor().equals(circle.getColor()))
@@ -42,7 +44,7 @@ public class ProblemImpl implements Problem {
     public List<Rule> getRules() {
         List<Rule> rules = new ArrayList<>();
 
-        for (Square square:initialState.getSquares().values())
+        for (Square square : ((StateImpl)initialState).getSquares().values())
             rules.add(new RuleImpl(square));
 
         return rules;

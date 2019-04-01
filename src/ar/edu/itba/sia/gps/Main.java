@@ -12,7 +12,6 @@ import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
 import org.json.simple.parser.ParseException;
 
@@ -60,7 +59,7 @@ public class Main {
             System.exit(1);
         }
 
-        SearchStrategy searchStrategyChosen = SearchStrategy.valueOf(searchStrategyChosenString);
+        SearchStrategy searchStrategyChosen = SearchStrategy.valueOf(searchStrategyChosenString.toUpperCase());
         Heuristic heuristicChosen = parseHeuristic(heuristicChosenString1, heuristicChosenString2, searchStrategyChosen);
         Problem problemChosen = new ProblemImpl(parseBoard(initialBoardPath));
 
@@ -124,7 +123,7 @@ public class Main {
     private static Map.Entry<Point, Square> parseSquare(JSONObject JSONSquare, JSONArray board) {
 
         String squareName = (String) JSONSquare.get("name");
-        Direction direction = Direction.valueOf((String) JSONSquare.get("direction"));
+        Direction direction = Direction.valueOf(((String) JSONSquare.get("direction")).toUpperCase());
         String color = (String) JSONSquare.get("color");
 
         Point position = getBoardPosition(squareName, board);

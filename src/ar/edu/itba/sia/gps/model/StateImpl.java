@@ -73,12 +73,10 @@ public class StateImpl implements State {
         sbuilder.append("\n");
     }
 
-    @Override
     public Map<Point, Square> getSquares() {
         return squares;
     }
 
-    @Override
     public Map<Point, Circle> getCircles() {
         return circles;
     }
@@ -87,7 +85,6 @@ public class StateImpl implements State {
         return dimension;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof StateImpl)) return false;
