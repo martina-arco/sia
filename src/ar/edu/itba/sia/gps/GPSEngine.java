@@ -45,32 +45,28 @@ public class GPSEngine {
 
 	public void findSolution() {
 		startTime = System.currentTimeMillis();
-		GPSNode rootNode = new GPSNode(problem.getInitState(), 0, null);
-
+		GPSNode rootNode = new GPSNode(problem.getInitState(), 0, null, 0);
+		int limitDepth = 0;
 		open.add(rootNode);
 		if (strategy == ASTAR)
 			openList.add(rootNode);
-		// TODO: ¿Lógica de IDDFS?
-		if(strategy == IDDFS){
-			int limitDepth = 0;
-			while(!open.isEmpty()) {
+		while (open.size() > 0) {
+			if (strategy == IDDFS) {
 				GPSNode currentNode = open.pop();
 				if (currentNode.getDepth() == limitDepth) {
-					if (problem.isGoal(currentNode.getState())){
+					if (problem.isGoal(currentNode.getState())) {
 						finished = true;
 						solutionNode = currentNode;
 						endTime = System.currentTimeMillis();
 						return;
-					} else if (open.isEmpty()){
-						open.push(rootNode);
-						limitDepth++;
+					} else if (open.isEmpty()) {
+							open.push(rootNode);
+							limitDepth++;
 					}
-				} else {
+				} else if(currentNode.getDepth() != limitDepth-1 || !bestCosts.containsKey(currentNode.getState())){
 					explode(currentNode);
 				}
-			}
-		} else {
-			while (open.size() > 0) {
+			} else {
 				GPSNode currentNode = open.remove();
 				if(strategy == ASTAR) {
 					openList.remove();
@@ -96,7 +92,6 @@ public class GPSEngine {
 		Collection<GPSNode> newCandidates;
 		switch (strategy) {
 		case BFS:
-
 			if (bestCosts.containsKey(node.getState())) {
 				return;
 			}
@@ -152,7 +147,7 @@ public class GPSEngine {
 			statesAnalyzed++;
 			if (newState.isPresent()) {
 				frontierNodes++;
-				GPSNode newNode = new GPSNode(newState.get(), node.getCost() + rule.getCost(), rule);
+				GPSNode newNode = new GPSNode(newState.get(), node.getCost() + rule.getCost(), rule, node.getDepth()+1);
 				newNode.setParent(node);
 				candidates.add(newNode);
 			}
