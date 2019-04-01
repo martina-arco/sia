@@ -30,12 +30,12 @@ public class GPSEngine {
 
 	public GPSEngine(Problem problem, SearchStrategy strategy, Heuristic heuristic) {
 		open = new ArrayDeque<>();
-		openList = new PriorityQueue<>(Comparator.comparingInt(nodeToAnalyze -> bestCosts.get(nodeToAnalyze.getState())));
 		closedList = new HashSet<>();
 		bestCosts = new HashMap<>();
 		this.problem = problem;
 		this.strategy = strategy;
 		this.heuristic = Optional.ofNullable(heuristic);
+		openList = new PriorityQueue<>(Comparator.comparingInt(nodeToAnalyze -> nodeToAnalyze.getCost() + this.heuristic.get().getValue(nodeToAnalyze.getState())));
 		explosionCounter = 0;
 		statesAnalyzed = 0;
 		frontierNodes = 0;
@@ -125,12 +125,14 @@ public class GPSEngine {
 			open.addAll(newCandidates);
 			break;
 		case ASTAR:
+			if(!isBest(node.getState(), node.getCost()))
+				return;
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
 			for (GPSNode newNode:newCandidates) {
 				if(!closedList.contains(newNode)){
-					if(isBest(newNode.getState(), newNode.getCost()))
-						updateBest(newNode);
+//					if(isBest(newNode.getState(), newNode.getCost()))
+//						updateBest(newNode);
 					if(openList.contains(newNode))
 						openList.remove(newNode);
 					openList.add(newNode);
