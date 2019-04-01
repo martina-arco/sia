@@ -39,8 +39,7 @@ public class StateImpl implements State {
 
                 if(square != null && circle != null) {
 
-                    sbuilder.append(String.format("%20s|\n", StringUtils.center(square.toString(), 20)));
-                    sbuilder.append(String.format("|%20s", StringUtils.center(circle.toString(), 20)));
+                    addElement(sbuilder, circle.toString() + " " + square.toString());
 
                 } else if(circle == null && square == null) {
 
