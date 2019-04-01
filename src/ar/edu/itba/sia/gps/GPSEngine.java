@@ -111,6 +111,9 @@ public class GPSEngine {
 			}
 			break;
 		case GREEDY:
+			if (bestCosts.containsKey(node.getState())) {
+				return;
+			}
 			newCandidates = new PriorityQueue<>(Comparator.comparingInt(nodeToAnalyze -> heuristic.get().getValue(nodeToAnalyze.getState())));
 			addCandidates(node, newCandidates);
 			open.addAll(newCandidates);
