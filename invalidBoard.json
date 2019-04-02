@@ -1,6 +1,5 @@
 {
   "squares": [
-    {"name":"s1", "color": "black", "direction": "down"},
     {"name":"s2", "color": "blue", "direction":"LEFT"}
   ],
 

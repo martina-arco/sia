@@ -12,11 +12,12 @@ import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 import org.json.simple.parser.ParseException;
 
 public class Main {
-//    arguments: json board, heuristic, algorithm used
+
     public static void main(String[] args) {
         Options options = new Options();
 
@@ -63,11 +64,23 @@ public class Main {
         Heuristic heuristicChosen = parseHeuristic(hasHeuristic1, hasHeuristic2, searchStrategyChosen);
         Problem problemChosen = new ProblemImpl(parseBoard(initialBoardPath));
 
+        printArguments(searchStrategyChosenString, heuristicChosen);
+
         GPSEngine engine = new GPSEngine(problemChosen, searchStrategyChosen, heuristicChosen);
 
         engine.findSolution();
 
         printSolution(engine);
+    }
+
+    private static void printArguments(String searchStrategy, Heuristic heuristic) {
+        System.out.println("Search strategy chosen: " + searchStrategy);
+        System.out.print("Heuristic chosen: ");
+
+        if(heuristic == null)
+            System.out.println("none");
+        else if(heuristic.getClass().equals(LinearDistanceHeuristic.class))
+            System.out.println("Linear distance heuristic");
     }
 
     private static Heuristic parseHeuristic(boolean hasHeuristic1, boolean hasHeuristic2, SearchStrategy searchStrategy) {
@@ -109,23 +122,23 @@ public class Main {
         for (Object square : JSONSquareList) {
             JSONObject currentSquare = (JSONObject) square;
             Map.Entry<Point, Square> entry = parseSquare(currentSquare, board);
-            squareList.put(entry.getKey(), entry.getValue());
+
+            if(entry != null)
+                squareList.put(entry.getKey(), entry.getValue());
         }
 
         for (Object circle:JSONCircleList) {
             JSONObject currentCircle = (JSONObject) circle;
             Map.Entry<Point, Circle> entry = parseCircle(currentCircle, board);
-            circleList.put(entry.getKey(), entry.getValue());
+
+            if(entry != null)
+                circleList.put(entry.getKey(), entry.getValue());
         }
 
-//        checkValidBoard(squareList, circleList);
+        checkValidBoard(squareList, circleList);
 
         return new StateImpl(squareList, circleList, board.size());
     }
-
-//    private static boolean checkValidBoard(Map<Point, Square> squares, Map<Point, Circle> circles) {
-//
-//    }
 
     private static Map.Entry<Point, Square> parseSquare(JSONObject JSONSquare, JSONArray board) {
 
@@ -135,6 +148,9 @@ public class Main {
 
         Point position = getBoardPosition(squareName, board);
 
+        if(position == null)
+            return null;
+
         return new AbstractMap.SimpleEntry<>(position, new Square(color, direction));
     }
 
@@ -142,7 +158,12 @@ public class Main {
         String circleName = (String) JSONCircle.get("name");
         String color = (String) JSONCircle.get("color");
 
-        return new AbstractMap.SimpleEntry<>(getBoardPosition(circleName, board), new Circle(color));
+        Point position = getBoardPosition(circleName, board);
+
+        if(position == null)
+            return null;
+
+        return new AbstractMap.SimpleEntry<>(position, new Circle(color));
     }
 
     private static Point getBoardPosition(String name, JSONArray board) {
@@ -157,11 +178,58 @@ public class Main {
             }
         }
 
-        return new Point();
+        return null;
+    }
+
+    private static void checkValidBoard(Map<Point, Square> squares, Map<Point, Circle> circles) {
+        Map<String, Point> squareColors = new HashMap<>();
+        Map<String, Point> circleColors = new HashMap<>();
+
+        List<String> squareColorsList = new ArrayList<>();
+        List<String> circleColorsList = new ArrayList<>();
+
+
+        for (Map.Entry<Point, Square> entry: squares.entrySet()){
+            squareColors.put(entry.getValue().getColor(), entry.getKey());
+            squareColorsList.add(entry.getValue().getColor());
+        }
+
+        for (Map.Entry<Point, Circle> entry: circles.entrySet()){
+            circleColors.put(entry.getValue().getColor(), entry.getKey());
+            circleColorsList.add(entry.getValue().getColor());
+        }
+
+        Set<String> appeared = new HashSet<>();
+
+        for (String color: squareColorsList) {
+            if (!appeared.add(color)) {
+                throw new IllegalArgumentException("Board is invalid, can't have two squares with the same color.");
+            }
+        }
+
+        appeared.clear();
+
+        for (String color: circleColorsList) {
+            if (!appeared.add(color)) {
+                throw new IllegalArgumentException("Board is invalid, can't have two circles with the same color.");
+            }
+        }
+
+        for (Map.Entry<String, Point> entry : squareColors.entrySet()){
+            if(circleColors.get(entry.getKey()) == null)
+                throw new IllegalArgumentException("Board is invalid, should have one square and one circle of each color and don't repeat names.");
+        }
+
+        for (Map.Entry<String, Point> entry : circleColors.entrySet()){
+            if(squareColors.get(entry.getKey()) == null)
+                throw new IllegalArgumentException("Board is invalid, should have one square and one circle of each color and don't repeat names.");
+        }
+
+
     }
 
     private static void printSolution(GPSEngine engine) {
-        System.out.println("Your search to solution was " + (engine.isFailed() ? "unsuccessful." : "successful."));
+        System.out.println("Your search to solution was " + (engine.isFailed() ? "unsuccessful" : "successful"));
 
         System.out.println("Nodes expanded: " + engine.getExplosionCounter());
 
