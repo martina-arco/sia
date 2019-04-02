@@ -10,15 +10,13 @@ import org.json.simple.parser.JSONParser;
 
 import java.awt.*;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
-
-import org.json.simple.parser.ParseException;
 
 public class Main {
 
     public static void main(String[] args) {
+        System.out.println(System.getProperty("java.class.path"));
         Options options = new Options();
 
         Option heuristic1 = new Option("h1", "heuristic1", false, "Heuristic function used h1");
@@ -53,7 +51,7 @@ public class Main {
             initialBoardPath = cmd.getOptionValue("board");
             searchStrategyChosenString = cmd.getOptionValue("algorithm");
 
-        } catch (org.apache.commons.cli.ParseException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             formatter.printHelp("utility-name", options);
 
@@ -108,7 +106,7 @@ public class Main {
             Object obj = jsonParser.parse(reader);
             state = (JSONObject) obj;
 
-        } catch (IOException | ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
