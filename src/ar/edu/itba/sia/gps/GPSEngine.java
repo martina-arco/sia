@@ -1,11 +1,11 @@
 package ar.edu.itba.sia.gps;
 
-import java.util.*;
-
 import ar.edu.itba.sia.gps.api.Heuristic;
 import ar.edu.itba.sia.gps.api.Problem;
 import ar.edu.itba.sia.gps.api.Rule;
 import ar.edu.itba.sia.gps.api.State;
+
+import java.util.*;
 
 import static ar.edu.itba.sia.gps.SearchStrategy.ASTAR;
 import static ar.edu.itba.sia.gps.SearchStrategy.IDDFS;
@@ -20,6 +20,7 @@ public class GPSEngine {
 	private long explosionCounter;
 	private boolean finished;
 	private boolean failed;
+	private HashSet<State> depthLimited;
 	private GPSNode solutionNode;
 	private Optional<Heuristic> heuristic;
 	private long startTime, endTime;
@@ -42,6 +43,7 @@ public class GPSEngine {
 		limitDepth = 0;
 		finished = false;
 		failed = false;
+		depthLimited = new HashSet<>();
 	}
 
 	public void findSolution() {
@@ -54,18 +56,26 @@ public class GPSEngine {
 			if (strategy == IDDFS) {
 				GPSNode currentNode = open.pop();
 				if (currentNode.getDepth() == limitDepth) {
-					if (problem.isGoal(currentNode.getState())) {
-						finished = true;
-						solutionNode = currentNode;
-						endTime = System.currentTimeMillis();
-						return;
-					} else if (open.isEmpty()) {
-						open.push(rootNode);
-						limitDepth++;
+					statesAnalyzed++;
+					if (isBest(currentNode.getState(), currentNode.getCost())) {
+						depthLimited.add(currentNode.getState());
+
+						if (problem.isGoal(currentNode.getState())) {
+							finished = true;
+							solutionNode = currentNode;
+							endTime = System.currentTimeMillis();
+							return;
+						}
 					}
-					//} else if(currentNode.getDepth() != limitDepth-1 || !bestCosts.containsKey(currentNode.getState())){
-				}else{
+				} else {
 					explode(currentNode);
+				}
+
+				if (open.isEmpty() && !depthLimited.isEmpty()) {
+					open.push(rootNode);
+					limitDepth++;
+					depthLimited.clear();
+					bestCosts.clear();
 				}
 			} else if(strategy == ASTAR){
 				if(openList.isEmpty()) {
@@ -74,6 +84,7 @@ public class GPSEngine {
 				}
 				GPSNode currentNode = openList.remove();
 				closedList.add(currentNode);
+				statesAnalyzed++;
 				if (problem.isGoal(currentNode.getState())) {
 					finished = true;
 					solutionNode = currentNode;
@@ -84,6 +95,7 @@ public class GPSEngine {
 				}
 			} else {
 				GPSNode currentNode = open.remove();
+				statesAnalyzed++;
 				if (problem.isGoal(currentNode.getState())) {
 					finished = true;
 					solutionNode = currentNode;
@@ -97,8 +109,6 @@ public class GPSEngine {
 		failed = true;
 		finished = true;
 	}
-
-
 
 	private void explode(GPSNode node) {
 		Collection<GPSNode> newCandidates;
@@ -122,21 +132,24 @@ public class GPSEngine {
 			}
 			break;
 		case IDDFS:
+			if (!isBest(node.getState(), node.getCost()))
+				return;
+			depthLimited.remove(node.getState());
 			newCandidates = new ArrayList<>();
 			addCandidates(node, newCandidates);
 			for (GPSNode newNode:newCandidates) {
-				if(isBest(newNode.getState(),newNode.getCost()) || newNode.getDepth() < limitDepth){
-					open.push(newNode);
-				}
+				open.push(newNode);
 			}
 			break;
 		case GREEDY:
 			if (bestCosts.containsKey(node.getState())) {
 				return;
 			}
-			newCandidates = new PriorityQueue<>(Comparator.comparingInt(nodeToAnalyze -> heuristic.get().getValue(nodeToAnalyze.getState())));
+			newCandidates = new PriorityQueue<>(Comparator.comparingInt(nodeToAnalyze -> -heuristic.get().getValue(nodeToAnalyze.getState())));
 			addCandidates(node, newCandidates);
-			open.addAll(newCandidates);
+			while(!newCandidates.isEmpty()) {
+				open.addFirst(((PriorityQueue<GPSNode>) newCandidates).poll());
+			}
 			break;
 		case ASTAR:
 			if(!isBest(node.getState(), node.getCost() + heuristic.get().getValue(node.getState())))
@@ -157,7 +170,6 @@ public class GPSEngine {
 		updateBest(node);
 		for (Rule rule : problem.getRules()) {
 			Optional<State> newState = rule.apply(node.getState());
-			statesAnalyzed++;
 			if (newState.isPresent()) {
 				frontierNodes++;
 				GPSNode newNode = new GPSNode(newState.get(), node.getCost() + rule.getCost(), rule, node.getDepth()+1);

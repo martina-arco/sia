@@ -118,8 +118,14 @@ public class Main {
             circleList.put(entry.getKey(), entry.getValue());
         }
 
+//        checkValidBoard(squareList, circleList);
+
         return new StateImpl(squareList, circleList, board.size());
     }
+
+//    private static boolean checkValidBoard(Map<Point, Square> squares, Map<Point, Circle> circles) {
+//
+//    }
 
     private static Map.Entry<Point, Square> parseSquare(JSONObject JSONSquare, JSONArray board) {
 
