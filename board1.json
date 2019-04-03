@@ -1,14 +1,12 @@
 {
   "squares": [
     {"name":"s1", "color": "black", "direction": "down"},
-    {"name":"s2", "color": "blue", "direction":"LEFT"},
-    {"name":"s3", "color": "yellow", "direction": "down"}
+    {"name":"s2", "color": "blue", "direction":"LEFT"}
   ],
 
   "circles": [
     {"name":"c1", "color":"black"},
-    {"name":"c2", "color":"blue"},
-    {"name":"c3", "color":"yellow"}
+    {"name":"c2", "color":"blue"}
   ],
 
   "board": [

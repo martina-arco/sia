@@ -1,0 +1,21 @@
+{
+  "squares": [
+    {"name":"s1", "color": "red", "direction": "down"},
+    {"name":"s2", "color": "green", "direction":"up"},
+    {"name":"s3", "color": "orange", "direction":"left"}
+  ],
+
+  "circles": [
+    {"name":"c1", "color":"red"},
+    {"name":"c2", "color":"green"},
+    {"name":"c3", "color":"orange"}
+  ],
+
+  "board": [
+    ["c2", "0","0","s1","0"],
+    ["0", "c3","s3","0","0"],
+    ["0", "0", "c1","0","0"],
+    ["0","0","s2","0","0" ],
+    ["0","0","0","0","0" ]
+  ]
+}

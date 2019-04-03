@@ -7,10 +7,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class LinearDistanceHeuristic implements Heuristic {
-
-    public LinearDistanceHeuristic() {
-    }
+public class ManhattanDistanceHeuristic implements Heuristic {
 
     @Override
     public Integer getValue(State state) {
@@ -29,8 +26,7 @@ public class LinearDistanceHeuristic implements Heuristic {
 
             Point circlePosition = circlePointMap.get(squareEntry.getValue().getColor());
 
-            Double value = Math.sqrt(Math.pow(circlePosition.getX() - squarePosition.getX(), 2) +
-                    Math.pow(circlePosition.getY() - squarePosition.getY(),2));
+            Double value = Math.abs(circlePosition.getX() - squarePosition.getX()) + Math.abs(circlePosition.getY() - squarePosition.getY());
 
             values.add(value);
         }

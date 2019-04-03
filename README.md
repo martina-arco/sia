@@ -7,7 +7,7 @@
 * -b : path para el archivo json que va a describir el tablero inicial partiendo como root sia-2019-1c-04
 
 ###Para armar un tablero
-
+Los tableros ingresados deben ser cuadrados (nxn).
 Se debe crear el array "squares" con los cuadrados a utilizar. Cada elemento va a tener:
 * "name": que se utilizará para ubicarlo en el board
 * "color" : color del cuadrado
@@ -30,7 +30,7 @@ Se debe crear el array "circles" con los circulos a utilizar. Su composicion es 
   ],
 ```
 
-Se debe crear la matriz "board" para posicionar cada elemento como se desee.
+Se debe crear la matriz "board" para posicionar cada elemento como se desee. Para una celda vacía se pone "0".
 
 ```
 "board": [
@@ -93,4 +93,5 @@ mvn package | tee ../sia-2019-1c-04/output/test_result.txt
 ```
 
 Se cuenta con un archivo *how_will_test.sh* en el repositorio para correrlo directamente.
+Los resultados quedarán en sia-2019-1c-04/output
 

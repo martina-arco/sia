@@ -16,7 +16,6 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println(System.getProperty("java.class.path"));
         Options options = new Options();
 
         Option heuristic1 = new Option("h1", "heuristic1", false, "Heuristic function used h1");
@@ -86,14 +85,13 @@ public class Main {
             if(hasHeuristic2)
                 throw new IllegalArgumentException("Only one heuristic allowed");
 
-            return new LinearDistanceHeuristic();
+            return new MaxDirectionDistanceHeuristic();
         }
 
         if(!hasHeuristic2 && (searchStrategy == SearchStrategy.GREEDY || searchStrategy == SearchStrategy.ASTAR))
             throw new IllegalArgumentException("Need heuristic for this search strategy");
 
-//        return la otra heuristica
-        return null;
+        return new ManhattanDistanceHeuristic();
     }
 
     private static State parseBoard(String path) {
@@ -242,8 +240,8 @@ public class Main {
             System.out.println("Your path to reach the solution was:");
             printPathToSolution(engine.getSolutionNode());
 
-            System.out.println("It took " + (engine.getEndTime() - engine.getStartTime()) + " ms.");
         }
+        System.out.println("It took " + (engine.getEndTime() - engine.getStartTime()) + " ms.");
     }
 
     private static void printPathToSolution(GPSNode currentNode) {
