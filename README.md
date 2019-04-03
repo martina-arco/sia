@@ -94,6 +94,5 @@ cd itba_sia_test
 mvn package | tee ../sia-2019-1c-04/output/test_result.txt
 ```
 
-Se cuenta con un archivo *how_will_test.sh* en el repositorio para correrlo directamente.
+Se cuenta con un archivo *how_will_test.sh* en el repositorio para correrlo directamente. Se debe poner la carpeta del repositorio y la de itba_sia_test en la misma carpeta.
 Los resultados quedarán en sia-2019-1c-04/output
-
