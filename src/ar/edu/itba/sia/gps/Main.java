@@ -18,11 +18,14 @@ public class Main {
     public static void main(String[] args) {
         Options options = new Options();
 
-        Option heuristic1 = new Option("h1", "heuristic1", false, "Heuristic function used h1");
+        Option heuristic1 = new Option("h1", "heuristic1", false, "Max direction distance heuristic");
         options.addOption(heuristic1);
 
-        Option heuristic2 = new Option("h2", "heuristic2", false, "Heuristic function used h2");
+        Option heuristic2 = new Option("h2", "heuristic2", false, "Max manhattan distance heuristic");
         options.addOption(heuristic2);
+
+        Option heuristic3 = new Option("h3", "heuristic3", false, "Max linear distance heuristic");
+        options.addOption(heuristic3);
 
         Option board = new Option("b", "board", true, "Path to json file with initial board state");
         board.setRequired(true);
@@ -38,6 +41,7 @@ public class Main {
 
         boolean hasHeuristic1 = false;
         boolean hasHeuristic2 = false;
+        boolean hasHeuristic3 = false;
         String initialBoardPath = "";
         String searchStrategyChosenString = "BFS";
 
@@ -47,6 +51,7 @@ public class Main {
             cmd = parser.parse(options, args);
             hasHeuristic1 = cmd.hasOption("h1");
             hasHeuristic2 = cmd.hasOption("h2");
+            hasHeuristic3 = cmd.hasOption("h3");
             initialBoardPath = cmd.getOptionValue("board");
             searchStrategyChosenString = cmd.getOptionValue("algorithm");
 
@@ -58,7 +63,7 @@ public class Main {
         }
 
         SearchStrategy searchStrategyChosen = SearchStrategy.valueOf(searchStrategyChosenString.toUpperCase());
-        Heuristic heuristicChosen = parseHeuristic(hasHeuristic1, hasHeuristic2, searchStrategyChosen);
+        Heuristic heuristicChosen = parseHeuristic(hasHeuristic1, hasHeuristic2, hasHeuristic3, searchStrategyChosen);
         Problem problemChosen = new ProblemImpl(parseBoard(initialBoardPath));
 
         printArguments(searchStrategyChosenString, heuristicChosen);
@@ -78,20 +83,27 @@ public class Main {
             System.out.println("none");
         else if(heuristic.getClass().equals(LinearDistanceHeuristic.class))
             System.out.println("Linear distance heuristic");
+        else if(heuristic.getClass().equals(MaxDirectionDistanceHeuristic.class))
+            System.out.println("Max direction distance heuristic");
+        else if(heuristic.getClass().equals(ManhattanDistanceHeuristic.class))
+            System.out.println("Manhattan distance heuristic");
     }
 
-    private static Heuristic parseHeuristic(boolean hasHeuristic1, boolean hasHeuristic2, SearchStrategy searchStrategy) {
+    private static Heuristic parseHeuristic(boolean hasHeuristic1, boolean hasHeuristic2, boolean hasHeuristic3, SearchStrategy searchStrategy) {
         if(hasHeuristic1) {
-            if(hasHeuristic2)
+            if(hasHeuristic2 || hasHeuristic3)
                 throw new IllegalArgumentException("Only one heuristic allowed");
 
             return new MaxDirectionDistanceHeuristic();
         }
 
-        if(!hasHeuristic2 && (searchStrategy == SearchStrategy.GREEDY || searchStrategy == SearchStrategy.ASTAR))
+        if((!hasHeuristic2 && !hasHeuristic3) && (searchStrategy == SearchStrategy.GREEDY || searchStrategy == SearchStrategy.ASTAR))
             throw new IllegalArgumentException("Need heuristic for this search strategy");
 
-        return new ManhattanDistanceHeuristic();
+        if(!hasHeuristic1 && !hasHeuristic2 && !hasHeuristic3)
+            return null;
+
+        return hasHeuristic2 ? new ManhattanDistanceHeuristic() : new LinearDistanceHeuristic();
     }
 
     private static State parseBoard(String path) {

@@ -2,8 +2,9 @@
 
 ##Argumentos para correr el ejecutable
 * -a : algoritmo de busqueda a utilizar (BFS, DFS, IDDFS, ASTAR, GREEDY)
-* -h1 : uso de heuristica de distancia lineal
-* -h2 : uso de heuristica
+* -h1 : uso de heuristica de suma de máxima distancia en una dirección
+* -h2 : uso de heuristica de máxima distancia manhattan
+* -h3 : uso de heurística de máxima distancia lineal
 * -b : path para el archivo json que va a describir el tablero inicial partiendo como root sia-2019-1c-04
 
 ###Para armar un tablero
@@ -69,16 +70,17 @@ java -jar target/gps-1.0.jar -a ASTAR -h1 -b board5.json
 ```
 java -jar target/gps-1.0.jar -a ASTAR -h1 -b board5.json
 java -jar target/gps-1.0.jar -a ASTAR -h2 -b board5.json
+java -jar target/gps-1.0.jar -a ASTAR -h3 -b board5.json
 ```
 
 ###Ejemplo sin solución
 
 ```
-java -jar target/gps-1.0.jar -a BFS -b noSolutionBoard.json
-java -jar target/gps-1.0.jar -a DFS -b noSolutionBoard.json
-java -jar target/gps-1.0.jar -a IDDFS -b noSolutionBoard.json
-java -jar target/gps-1.0.jar -a GREEDY -h1 -b noSolutionBoard.json
-java -jar target/gps-1.0.jar -a ASTAR -h1 -b noSolutionBoard.json
+java -jar target/gps-1.0.jar -a BFS -b noSolutionProblem2.json
+java -jar target/gps-1.0.jar -a DFS -b noSolutionProblem2.json
+java -jar target/gps-1.0.jar -a IDDFS -b noSolutionProblem.json
+java -jar target/gps-1.0.jar -a GREEDY -h1 -b noSolutionProblem2.json
+java -jar target/gps-1.0.jar -a ASTAR -h1 -b noSolutionProblem2.json
 ```
 
 ##Cómo correr los tests

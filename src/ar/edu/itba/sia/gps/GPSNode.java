@@ -24,6 +24,9 @@ public class GPSNode {
 		this.depth = depth;
 	}
 
+	public GPSNode() {
+	}
+
 	public GPSNode getParent() {
 		return parent;
 	}
