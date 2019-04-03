@@ -108,6 +108,7 @@ public class GPSEngine {
 		}
 		failed = true;
 		finished = true;
+		endTime = System.currentTimeMillis();
 	}
 
 	private void explode(GPSNode node) {
