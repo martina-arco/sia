@@ -1,0 +1,14 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< org.apache.maven:standalone-pom >-------------------
+[INFO] Building Maven Stub Project (No POM) 1
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (default-cli) @ standalone-pom ---
+[INFO] Installing /Users/china/Documents/SIA/sia-2019-1c-04/target/gps-1.0.jar to /Users/china/.m2/repository/ar/edu/itba/sia/gps/1.0/gps-1.0.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.382 s
+[INFO] Finished at: 2019-04-08T10:45:44-03:00
+[INFO] ------------------------------------------------------------------------

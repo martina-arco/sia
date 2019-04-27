@@ -1,0 +1,38 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< ar.edu.itba.sia:gps >-------------------------
+[INFO] Building ar.edu.itba.sia.gps 1.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ gps ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/china/Documents/SIA/sia-2019-1c-04/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:compile (default-compile) @ gps ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ gps ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/china/Documents/SIA/sia-2019-1c-04/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:testCompile (default-testCompile) @ gps ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.1:test (default-test) @ gps ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:copy-dependencies (copy-dependencies) @ gps ---
+[INFO] junit-4.11.jar already exists in destination.
+[INFO] commons-lang-2.6.jar already exists in destination.
+[INFO] commons-cli-1.3.jar already exists in destination.
+[INFO] hamcrest-core-1.3.jar already exists in destination.
+[INFO] json-simple-1.1.1.jar already exists in destination.
+[INFO] 
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ gps ---
+[INFO] Building jar: /Users/china/Documents/SIA/sia-2019-1c-04/target/gps-1.0.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.238 s
+[INFO] Finished at: 2019-04-08T10:45:43-03:00
+[INFO] ------------------------------------------------------------------------
