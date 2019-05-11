@@ -1,0 +1,1 @@
+epochNumber = 1000batchSize = 32learnPercentage = 0.9learningRate = 0.001maxError = 0.01backpropagation(XE, S, epochNumber, batchSize, learnPercentage, learningRate, maxError)
