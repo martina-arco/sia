@@ -1,5 +1,5 @@
 %Algoritmo de Entrenamiento de BACKPROPAGATION para Redes Neuronales
-function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, structure)
+function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, structure, optimizer, gamma)
 
   mse = Inf;                  %Asumiendo Pesos Iniciales Malos
   epoch = 0; 
@@ -17,7 +17,8 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   S_mean = mean(S_train);
   S_std = std(S_train);
 
-  %X_train = (X_train - X_mean) ./ X_std;
+  %X_train = (X_train - X_mean);% ./ X_std;
+  %X_train = X_train ./ X_std
   %S_train = (S_train - S_mean) ./ S_std;
 
   [aux, depth] = size(structure);                  %Profundidad de la red (nro capas)
@@ -32,8 +33,20 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   end
 
   %Inicializar Matrices de los delta-pesos de ajuste
-  dW = cell(depth-1, 1);               %Pre-alocacion de los delta pesos
+  dW = cell(depth-1, 1);
   dB = cell(depth-1, 1);
+
+  %Inicializar matrices auiliares para los optimizadores
+  W_update = cell(depth-1, 1);
+  B_update = cell(depth-1, 1);
+  W_rate = cell(depth-1, 1);
+  B_rate = cell(depth-1, 1);
+  dW_aux = cell(depth-1, 1);
+  dB_aux = cell(depth-1, 1);
+  for m = 1:depth-1
+    dW_aux{m} = zeros(size(W{m}));
+    dB_aux{m} = zeros(size(B{m}));
+  end
 
   %Inicializar los campos locales inducidos 'V'
   V = cell(depth, 1);
@@ -75,24 +88,56 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
         
         %Calculo de derivadas
         for i = depth-1 : -1 : 1
-          dW{i} = dW{i} + rate * delta * V{i}.';
-          dB{i} = dB{i} + rate * delta;
+          dW{i} = dW{i} + delta * V{i}.';
+          dB{i} = dB{i} + delta;
           delta = derivateTanH(V{i}) .* (W{i}.' * delta);
         end
         
       end
 
       %Ajuste de pesos
+      switch optimizer
+        case 'momentum'
+            for i = depth-1 : -1 : 1
+                W_update{i} = gamma * dW_aux{i} + rate * dW{i};
+                B_update{i} = gamma * dB_aux{i} + rate * dB{i};
+                dW_aux{i} = W_update{i};
+                dB_aux{i} = B_update{i};
+            end
+        case 'adagrad'
+            for i = depth-1 : -1 : 1
+                dW_aux{i} = dW_aux{i} + dW{i} .* dW{i};
+                dB_aux{i} = dB_aux{i} + dB{i} .* dB{i};
+
+                W_update{i} = rate * dW{i} ./ sqrt(dW_aux{i} + 1e-8);
+                B_update{i} = rate * dB{i} ./ sqrt(dB_aux{i} + 1e-8);
+            end
+        otherwise
+            for i = depth-1 : -1 : 1
+                W_update{i} = rate * dW{i};
+                B_update{i} = rate * dB{i};
+            end
+      endswitch
+
+      rate_sum = 0;
+      rate_count = 0;
       for i = depth-1 : -1 : 1
-        W{i} = W{i} + dW{i};
-        B{i} = B{i} + dB{i};
+          W{i} = W{i} + W_update{i};
+          B{i} = B{i} + B_update{i};
+
+          rate_mtx = W_update{i} ./ (dW{i} + 1e-16);
+          rate_sum = rate_sum + abs(sum(rate_mtx(:)));
+          rate_count = rate_count + length(rate_mtx(:));
       end
+      avg_rate = rate_sum / rate_count;
       
       %Calculo del mean square error
       mse = sum(e) / batch_size;
       epoch = epoch + 1;
-      plot_error(epoch, mse, error_color);
-      %plot_rate(epoch, rate, rate_color);
+      if mod(epoch, 10) == 0
+        plot_error(epoch, mse, error_color);
+        plot_rate(epoch, avg_rate, rate_color);
+      end
   endwhile
 
   result.weights = W;
@@ -116,7 +161,7 @@ endfunction
 function plot_rate(epoch, rate, rate_color)
   hold on
   figure(2);
-  plot(epoch, rate, 'ro', 'Color', rate_color);
+  semilogy(epoch, rate, 'ro', 'Color', rate_color);
   title('Learning rate', 'fontsize', 20);
   xlabel('Epochs');
   ylabel('Rate');
