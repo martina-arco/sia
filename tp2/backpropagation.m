@@ -2,7 +2,7 @@
 function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, structure)
 
   mse = Inf;                  %Asumiendo Pesos Iniciales Malos
-  epoch = 0;                  %Rango de valores iniciales [-1 1]
+  epoch = 0; 
 
   %Numero de Patrones P y Entradas N
   [P, N] = size(X);
