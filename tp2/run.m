@@ -1,9 +1,9 @@
-max_epochs = 100
-max_error = 0.001
-batch_size = 32
-learn_percentage = 0.9
-learning_rate = 0.01
-error_color = 'r';
+max_epochs = 1500
+max_error = 0.0000001
+batch_size = 4
+learn_percentage = 1
+learning_rate = 0.03
+error_color = 'm';
 rate_color = 'g';
 
 backpropagation(XE, S, max_epochs, batch_size, learn_percentage, learning_rate, max_error, error_color, rate_color)
