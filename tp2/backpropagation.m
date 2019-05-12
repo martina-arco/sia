@@ -8,7 +8,18 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   [P, N] = size(X);
   
   P = floor(P * learn_percentage);
-      
+
+  X_train = X(1:P, :);
+  S_train = S(1:P, :);
+
+  X_mean = mean(X_train);
+  X_std = std(X_train);
+  S_mean = mean(S_train);
+  S_std = std(S_train);
+
+  %X_train = (X_train - X_mean) ./ X_std;
+  %S_train = (S_train - S_mean) ./ S_std;
+
   depth = 3;                  %Profundidad de la red (nro capas)
   
   %Inicializar Matriz de Pesos para cada capa en el rango [-1,1]
@@ -49,7 +60,7 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
       
       for p = p : batch_size + p
         
-        V{1} = X(p, :);
+        V{1} = X_train(p, :);
         V{1} = V{1}.';
         count++;
         
@@ -59,10 +70,10 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
         end
         
         %Calculo de la señal de error
-        e(count, :) = (S(p, :) - V{end}).^2;
+        e(count, :) = (S_train(p, :) - V{end}).^2;
         
         %Calculo Backward capa-por-capa para cada patron p             
-        delta = derivateTanH(V{end}) .* (S(p, 1) - V{end});
+        delta = derivateTanH(V{end}) .* (S_train(p, 1) - V{end});
         
         %Calculo de derivadas
         for i = depth-1 : -1 : 1
@@ -83,7 +94,7 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
       mse = sum(e) / batch_size;
       epoch = epoch + 1;
       plot_error(epoch, mse, error_color);
-      plot_rate(epoch, rate, rate_color);
+      %plot_rate(epoch, rate, rate_color);
   endwhile
 
   result.weights = W;
