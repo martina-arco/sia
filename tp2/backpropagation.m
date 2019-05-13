@@ -180,6 +180,7 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   result.X_std = X_std;
   result.epochs = epoch - 1;
   result.error = mse;
+  result.act_func = act_func;
 endfunction
 
 function plot_test_error(epoch, error, error_color)
