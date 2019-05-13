@@ -112,6 +112,14 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
                 W_update{i} = rate * dW{i} ./ sqrt(dW_aux{i} + 1e-8);
                 B_update{i} = rate * dB{i} ./ sqrt(dB_aux{i} + 1e-8);
             end
+        case 'rmsprop'
+            for i = depth-1 : -1 : 1
+                dW_aux{i} = gamma * dW_aux{i} + (1 - gamma) * dW{i} .* dW{i};
+                dB_aux{i} = gamma * dB_aux{i} + (1 - gamma) * dB{i} .* dB{i};
+
+                W_update{i} = rate * dW{i} ./ sqrt(dW_aux{i} + 1e-8);
+                B_update{i} = rate * dB{i} ./ sqrt(dB_aux{i} + 1e-8);
+            end
         otherwise
             for i = depth-1 : -1 : 1
                 W_update{i} = rate * dW{i};
