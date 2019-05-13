@@ -56,23 +56,23 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   y = cell(depth-1, 1);             %Pre-alocacion de las salidas locales
     
   %% 2. Calculo Forward y Backward para cada epoch
+  batch_start = 1;
   while (mse > dmse) && (epoch <= max_epochs)
       e = zeros(batch_size, 1);
       count = 0;
-      p = 1 + batch_size * epoch;
       
-      if p > P - batch_size
-        p = 1;
-        output = test(X, X_mean, X_std, S, W, B, structure, 1-learn_percentage);
+      if batch_start > P - batch_size
+        batch_start = 1;
+        output = test(X, X_mean, X_std, S, W, B, structure, act_func, 1-learn_percentage);
         plot_test_error(epoch, output.mse, error_color);
       end
 
-      for m = 1:depth-1
+      for m = 1 : depth-1
         dW{m} = zeros(size(W{m}));
         dB{m} = zeros(size(B{m}));
       end
       
-      for p = p : batch_size + p
+      for p = batch_start : batch_start + batch_size
         
         V{1} = X_train(p, :);
         V{1} = V{1}.';
@@ -89,7 +89,7 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
         
         %Calculo Backward capa-por-capa para cada patron p
         if(strcmp(act_func, "tanh") == 1)     
-          e(count, :) = (S_train(p, :) - 2 .* V{end}).^2;  
+          e(count, :) = (S_train(p, :) - 2 .* V{end}).^2;
           delta = derivateTanH(V{end}) .* (S_train(p, 1) - 2 .* V{end});
         elseif(strcmp(act_func, "exp") == 1)
           e(count, :) = (S_train(p, :) - (4 .* V{end} - 2)).^2;
@@ -166,6 +166,7 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
       
       %Calculo del mean square error
       mse = sum(e) / batch_size;
+      batch_start = batch_start + batch_size;
       epoch = epoch + 1;
       if mod(epoch, 10) == 0
         plot_error(epoch, mse, error_color);
