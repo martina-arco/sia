@@ -1,5 +1,5 @@
 %Algoritmo de Entrenamiento de BACKPROPAGATION para Redes Neuronales
-function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, structure, optimizer, gamma)
+function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, structure, optimizer, gamma, gamma2)
 
   mse = Inf;                  %Asumiendo Pesos Iniciales Malos
   epoch = 0; 
@@ -39,13 +39,15 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   %Inicializar matrices auiliares para los optimizadores
   W_update = cell(depth-1, 1);
   B_update = cell(depth-1, 1);
-  W_rate = cell(depth-1, 1);
-  B_rate = cell(depth-1, 1);
   dW_aux = cell(depth-1, 1);
   dB_aux = cell(depth-1, 1);
+  dW_aux2 = cell(depth-1, 1);
+  dB_aux2 = cell(depth-1, 1);
   for m = 1:depth-1
     dW_aux{m} = zeros(size(W{m}));
     dB_aux{m} = zeros(size(B{m}));
+    dW_aux2{m} = zeros(size(W{m}));
+    dB_aux2{m} = zeros(size(B{m}));
   end
 
   %Inicializar los campos locales inducidos 'V'
@@ -119,6 +121,17 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
 
                 W_update{i} = rate * dW{i} ./ sqrt(dW_aux{i} + 1e-8);
                 B_update{i} = rate * dB{i} ./ sqrt(dB_aux{i} + 1e-8);
+            end
+        case 'adam'
+            for i = depth-1 : -1 : 1
+                dW_aux{i} = gamma * dW_aux{i} + (1 - gamma) * dW{i};
+                dB_aux{i} = gamma * dB_aux{i} + (1 - gamma) * dB{i};
+
+                dW_aux2{i} = gamma2 * dW_aux2{i} + (1 - gamma2) * dW{i} .* dW{i};
+                dB_aux2{i} = gamma2 * dB_aux2{i} + (1 - gamma2) * dB{i} .* dB{i};
+
+                W_update{i} = rate * dW_aux{i} ./ sqrt(dW_aux2{i} + 1e-8);
+                B_update{i} = rate * dB_aux{i} ./ sqrt(dB_aux2{i} + 1e-8);
             end
         otherwise
             for i = depth-1 : -1 : 1
