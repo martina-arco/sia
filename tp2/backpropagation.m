@@ -17,8 +17,7 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   S_mean = mean(S_train);
   S_std = std(S_train);
 
-  %X_train = (X_train - X_mean);% ./ X_std;
-  %X_train = X_train ./ X_std
+  X_train = (X_train - X_mean) ./ X_std;
   %S_train = (S_train - S_mean) ./ S_std;
 
   [aux, depth] = size(structure);                  %Profundidad de la red (nro capas)
@@ -174,6 +173,8 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
 
   result.weights = W;
   result.biases = B;
+  result.X_mean = X_mean;
+  result.X_std = X_std;
   result.epochs = epoch - 1;
   result.error = mse;
 endfunction
@@ -181,7 +182,7 @@ endfunction
 function plot_error(epoch, error, error_color)
   hold on
   figure(1);
-  semilogy(epoch, error, 'Color', error_color);
+  semilogy(epoch, error, 'ok', 'Color', error_color);
   title('Error', 'fontsize', 20);
   xlabel('Epochs');
   ylabel('Error');
@@ -193,7 +194,7 @@ endfunction
 function plot_rate(epoch, rate, rate_color)
   hold on
   figure(2);
-  semilogy(epoch, rate, 'ro', 'Color', rate_color);
+  semilogy(epoch, rate, 'ok', 'Color', rate_color);
   title('Learning rate', 'fontsize', 20);
   xlabel('Epochs');
   ylabel('Rate');
