@@ -96,8 +96,8 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
         
         %Calculo de derivadas
         for i = depth-1 : -1 : 1
-          dW{i} = dW{i} + rate * delta * V{i}.';
-          dB{i} = dB{i} + rate * delta;
+          dW{i} = dW{i} + delta * V{i}.';
+          dB{i} = dB{i} + delta;
           if(strcmp(act_func, "tanh") == 1)
             delta = derivateTanH(V{i}) .* (W{i}.' * delta);
           elseif(strcmp(act_func, "exp") == 1)
