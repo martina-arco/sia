@@ -63,6 +63,8 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
       
       if p > P - batch_size
         p = 1;
+        output = test(X, X_mean, X_std, S, W, B, structure, 1-learn_percentage);
+        plot_test_error(epoch, output.mse, error_color);
       end
 
       for m = 1:depth-1
@@ -177,6 +179,18 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   result.X_std = X_std;
   result.epochs = epoch - 1;
   result.error = mse;
+endfunction
+
+function plot_test_error(epoch, error, error_color)
+  hold on
+  figure(3);
+  semilogy(epoch, error, 'ok', 'Color', error_color);
+  title('Test error', 'fontsize', 20);
+  xlabel('Epochs');
+  ylabel('Error');
+  set(gca,'FontSize',20)
+  drawnow
+  hold off
 endfunction
 
 function plot_error(epoch, error, error_color)
