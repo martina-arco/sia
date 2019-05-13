@@ -28,8 +28,21 @@ Structure = [2, 5]
 ```
 
 ### Cómo correr
-
 Ejecutar en línea de comandos
 ```
 run
+```
+
+### Cómo testear
+Para graficar
+```
+plot_terrain(patterns(:,1), patterns(:,2), S, 'Terrain')
+```
+Para testear primero debe ejecutarse run. En el ejemplo se muestra un porcentaje de 0.2 pero se puede utilizar cualquiera deseado para determinar la cantidad de muestras a utilizar.
+```
+output = test(patterns, S, result.weights, result.biases, structure, 0.2)
+```
+Si se desea graficar este plano
+```
+plot_terrain(output.evaluation(:,1), output.evaluation(:,2), output.approximate, 'Approximate terrain')
 ```
