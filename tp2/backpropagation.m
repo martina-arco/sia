@@ -1,5 +1,5 @@
 %Algoritmo de Entrenamiento de BACKPROPAGATION para Redes Neuronales
-function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, act_func, structure, optimizer, gamma, gamma2)
+function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, act_func, structure, optimizer, gamma, gamma2, epsilon)
 
   mse = Inf;                  %Asumiendo Pesos Iniciales Malos
   epoch = 0; 
@@ -54,18 +54,17 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
 
   %Inicializar las salidas 'y' de cada capa
   y = cell(depth-1, 1);             %Pre-alocacion de las salidas locales
+  
+  error_count = 0;
+  sum_error = 0;
+  hits = 0;
     
   %% 2. Calculo Forward y Backward para cada epoch
   batch_start = 1;
-  while (mse > dmse) && (epoch <= max_epochs)
+  finished = false;
+  while (!finished) && (epoch <= max_epochs)
       e = zeros(batch_size, 1);
       count = 0;
-      
-      if batch_start > P - batch_size
-        batch_start = 1;
-        output = test(X, X_mean, X_std, S, W, B, structure, act_func, 1-learn_percentage);
-        plot_test_error(epoch, output.mse, error_color);
-      end
 
       for m = 1 : depth-1
         dW{m} = zeros(size(W{m}));
@@ -166,12 +165,34 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
       
       %Calculo del mean square error
       mse = sum(e) / batch_size;
-      batch_start = batch_start + batch_size;
-      epoch = epoch + 1;
-      if mod(epoch, 10) == 0
-        plot_error(epoch, mse, error_color);
-        plot_rate(epoch, avg_rate, rate_color);
+      
+      if(mse < epsilon)
+        hits++;
       end
+      
+      sum_error += mse;
+      error_count++;
+      
+      batch_start = batch_start + batch_size;
+      
+      if batch_start > P - batch_size
+        batch_start = 1;
+        epoch = epoch + 1;
+        if (sum_error/error_count) < dmse
+          finished = true;
+        end
+        output = test(X, X_mean, X_std, S, W, B, structure, act_func, 1-learn_percentage);
+        plot_error(epoch, output.mse, error_color, 3);
+        plot_error(epoch, sum_error/error_count, error_color, 1);
+        result.error = sum_error/error_count;
+        hit_percentage = hits / error_count;
+        plot_rate(epoch, avg_rate, rate_color, 2);
+        plot_hits(epoch, hit_percentage, rate_color, 4);
+        sum_error = 0;
+        hits = 0;
+        error_count = 0;
+      end
+      
   endwhile
 
   result.weights = W;
@@ -179,41 +200,40 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   result.X_mean = X_mean;
   result.X_std = X_std;
   result.epochs = epoch - 1;
-  result.error = mse;
   result.act_func = act_func;
 endfunction
 
-function plot_test_error(epoch, error, error_color)
+function plot_error(epoch, error, error_color, figure_number)
   hold on
-  figure(3);
-  semilogy(epoch, error, 'ok', 'Color', error_color);
-  title('Test error', 'fontsize', 20);
-  xlabel('Epochs');
-  ylabel('Error');
-  set(gca,'FontSize',20)
-  drawnow
-  hold off
-endfunction
-
-function plot_error(epoch, error, error_color)
-  hold on
-  figure(1);
+  figure(figure_number);
   semilogy(epoch, error, 'ok', 'Color', error_color);
   title('Error', 'fontsize', 20);
-  xlabel('Epochs');
+  xlabel('Epoch');
   ylabel('Error');
   set(gca,'FontSize',20)
   drawnow
   hold off
 endfunction
 
-function plot_rate(epoch, rate, rate_color)
+function plot_rate(epoch, rate, rate_color, figure_number)
   hold on
-  figure(2);
+  figure(figure_number);
   semilogy(epoch, rate, 'ok', 'Color', rate_color);
   title('Learning rate', 'fontsize', 20);
-  xlabel('Epochs');
+  xlabel('Epoch');
   ylabel('Rate');
+  set(gca,'FontSize',20)
+  drawnow
+  hold off
+endfunction
+
+function plot_hits(epoch, error, error_color, figure_number)
+  hold on
+  figure(figure_number);
+  plot(epoch, error, 'ok', 'Color', error_color);
+  title('Hit Percentage', 'fontsize', 20);
+  xlabel('Epoch');
+  ylabel('Percentage');
   set(gca,'FontSize',20)
   drawnow
   hold off
