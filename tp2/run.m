@@ -7,7 +7,8 @@ optimizer = 'adam'
 gamma = 0.9
 gamma2 = 0.999
 structure = [2, 50, 1]
+act_func = "tanh";
 error_color = 'b';
 rate_color = error_color;
 
-result = backpropagation(patterns, S, max_epochs, batch_size, learn_percentage, learning_rate, max_error, error_color, rate_color, structure, optimizer, gamma, gamma2)
+result = backpropagation(patterns, S, max_epochs, batch_size, learn_percentage, learning_rate, max_error, error_color, rate_color, act_func, structure, optimizer, gamma, gamma2)

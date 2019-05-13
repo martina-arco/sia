@@ -1,4 +1,4 @@
-### Inicialización
+﻿### Inicialización
 
 Para poder correr el programa uno debe poner su current folder en tp2 e instalar la librería statistics.
 
@@ -21,7 +21,7 @@ En el archivo *run.m* se pueden setear los diferentes parámetros para poder con
 * **epochNumber:** Cantidad máxima de épocas a utilizar.
 * **maxError:** Error máximo a alcanzar.
 * **learningRate:** Factor de aprendizaje.
-* Qué función de activación se va  utilizar
+* **actFunc** Qué función de activación se va  utilizar (tanh, exp)
 * **structure:** Vector con la arquitectura de la red, donde cada elemento es el número de neuronas en esa capa. En el ejemplo se muestra una red con dos capas ocultas, la primera de 2 neuronas y la segunda de 5.
 ```
 Structure = [2, 5]

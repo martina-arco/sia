@@ -1,5 +1,5 @@
 %Algoritmo de Entrenamiento de BACKPROPAGATION para Redes Neuronales
-function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, structure, optimizer, gamma, gamma2)
+function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, act_func, structure, optimizer, gamma, gamma2)
 
   mse = Inf;                  %Asumiendo Pesos Iniciales Malos
   epoch = 0; 
@@ -79,20 +79,31 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
         
         for i = 1 : depth - 1
             y{i} = W{i} * V{i} + B{i};
-            V{i+1} = tanh(y{i}); %Calculo de la salida con tangente hiperbolica
+            if(strcmp(act_func, "tanh") == 1)
+              V{i+1} = tanh(y{i}); %Calculo de la salida con tangente hiperbolica
+            elseif(strcmp(act_func, "exp") == 1)
+              V{i+1} = sigmoid(y{i});
+            endif  
         end
         
-        %Calculo de la señal de error
-        e(count, :) = (S_train(p, :) - V{end}).^2;
-        
-        %Calculo Backward capa-por-capa para cada patron p             
-        delta = derivateTanH(V{end}) .* (S_train(p, 1) - V{end});
+        %Calculo Backward capa-por-capa para cada patron p
+        if(strcmp(act_func, "tanh") == 1)     
+          e(count, :) = (S_train(p, :) - V{end}).^2;  
+          delta = derivateTanH(V{end}) .* (S_train(p, 1) - V{end});
+        elseif(strcmp(act_func, "exp") == 1)
+          e(count, :) = (S_train(p, :) - (4 .* V{end} - 2)).^2;
+          delta = derivateSigmoid(V{end}) .* (S_train(p, 1) - (4 .* V{end} - 2));
+        endif  
         
         %Calculo de derivadas
         for i = depth-1 : -1 : 1
-          dW{i} = dW{i} + delta * V{i}.';
-          dB{i} = dB{i} + delta;
-          delta = derivateTanH(V{i}) .* (W{i}.' * delta);
+          dW{i} = dW{i} + rate * delta * V{i}.';
+          dB{i} = dB{i} + rate * delta;
+          if(strcmp(act_func, "tanh") == 1)
+            delta = derivateTanH(V{i}) .* (W{i}.' * delta);
+          elseif(strcmp(act_func, "exp") == 1)
+            delta = derivateSigmoid(V{i}) .* (W{i}.' * delta);
+          endif
         end
         
       end
@@ -191,6 +202,14 @@ function plot_rate(epoch, rate, rate_color)
   hold off
 endfunction
 
+function y = sigmoid(x)
+  y = 1 ./ (1 + e.^-x);
+endfunction
+
 function y = derivateTanH(x)
   y = 1 - x.^2;
+endfunction
+
+function y = derivateSigmoid(x)
+  y = x .* (1 - x);
 endfunction
