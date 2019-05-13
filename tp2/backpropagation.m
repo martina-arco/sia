@@ -87,8 +87,8 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
         
         %Calculo Backward capa-por-capa para cada patron p
         if(strcmp(act_func, "tanh") == 1)     
-          e(count, :) = (S_train(p, :) - V{end}).^2;  
-          delta = derivateTanH(V{end}) .* (S_train(p, 1) - V{end});
+          e(count, :) = (S_train(p, :) - 2 .* V{end}).^2;  
+          delta = derivateTanH(V{end}) .* (S_train(p, 1) - 2 .* V{end});
         elseif(strcmp(act_func, "exp") == 1)
           e(count, :) = (S_train(p, :) - (4 .* V{end} - 2)).^2;
           delta = derivateSigmoid(V{end}) .* (S_train(p, 1) - (4 .* V{end} - 2));
