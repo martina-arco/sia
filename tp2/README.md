@@ -21,28 +21,18 @@ En el archivo *run.m* se pueden setear los diferentes parámetros para poder con
 * **epochNumber:** Cantidad máxima de épocas a utilizar.
 * **maxError:** Error máximo a alcanzar.
 * **learningRate:** Factor de aprendizaje.
-* **actFunc** Qué función de activación se va  utilizar (tanh, exp)
+* **actFunc:** Qué función de activación se va  utilizar (tanh, exp)
 * **structure:** Vector con la arquitectura de la red, donde cada elemento es el número de neuronas en esa capa. En el ejemplo se muestra una red con dos capas ocultas, la primera de 2 neuronas y la segunda de 5.
+* **optimizer:** Optimizador (momentum, adagrad, rmsprop, adam)
+* **gamma:** Parametros para EMA. Se usa en momentum, rmsprop y adam
+* **gamma2:** Parametros para EMA. Se usa en adam
 ```
 Structure = [2, 5]
 ```
 
 ### Cómo correr
+
 Ejecutar en línea de comandos
 ```
 run
-```
-
-### Cómo testear
-Para graficar
-```
-plot_terrain(patterns(:,1), patterns(:,2), S, 'Terrain')
-```
-Para testear primero debe ejecutarse run. En el ejemplo se muestra un porcentaje de 0.2 pero se puede utilizar cualquiera deseado para determinar la cantidad de muestras a utilizar.
-```
-output = test(patterns, S, result.weights, result.biases, structure, 0.2)
-```
-Si se desea graficar este plano
-```
-plot_terrain(output.evaluation(:,1), output.evaluation(:,2), output.approximate, 'Approximate terrain')
 ```
