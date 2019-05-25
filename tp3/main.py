@@ -1,4 +1,6 @@
 from GeneticAlgorithm import GeneticAlgorithm
+from CrossoverAlgorithm import CrossoverAlgorithm
+from Chromosome import Chromosome
 from GeneticFunctionsImplementation import GeneticFunctionsImplementation
 import argparse
 import csv
@@ -36,6 +38,8 @@ class Parameters:
         self.helmets = []
         self.gloves = []
         self.shirts = []
+
+        self.population_size = 1000
         
     def set_stop_condition(self, stop_condition):
         self.stop_condition = stop_condition
@@ -84,6 +88,9 @@ class Parameters:
         
     def set_shirts(self, shirts):
         self.shirts = shirts
+
+    def set_population_size(self, population_size):
+        self.population_size = population_size
 
 
 if __name__ == "__main__":
@@ -154,6 +161,5 @@ if __name__ == "__main__":
     parameters.set_shirts(shirts)
 
     functionsImplementations = GeneticFunctionsImplementation(parameters)
-    print(parameters.weapons)
 
     # GeneticAlgorithm(functionsImplementations).run()
