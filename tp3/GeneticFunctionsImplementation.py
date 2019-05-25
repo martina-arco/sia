@@ -1,4 +1,5 @@
 from GeneticFunctions import GeneticFunctions
+from SelectionAlgorithm import SelectionAlgorithm
 from CrossoverAlgorithm import CrossoverAlgorithm
 from Chromosome import Chromosome
 import random
@@ -34,6 +35,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         # self.limit = parameters.limit
         self.population_size = parameters.population_size
 
+        self.tournament_probabilistic = False;
         # self.prob_crossover = prob_crossover
         # self.prob_mutation = prob_mutation
 
@@ -76,10 +78,18 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         # return self.counter >= self.limit
 
     def selection(self, fits_populations):
-        while True:
-            father = self.tournament(fits_populations)
-            mother = self.tournament(fits_populations)
-            yield (father, mother)
+        if self.selection_algorithm == 'elite':
+            SelectionAlgorithm.elite()
+        elif self.selection_algorithm == 'ruleta':
+            SelectionAlgorithm.ruleta(fits_populations)
+        elif self.selection_algorithm == 'universal':
+            SelectionAlgorithm.universal(fits_populations)
+        elif self.selection_algorithm == 'boltzman':
+            SelectionAlgorithm.boltzman(fits_populations)
+        elif self.selection_algorithm == 'torneos':
+            SelectionAlgorithm.torneos(fits_populations)
+        elif self.selection_algorithm == 'ranking':
+            SelectionAlgorithm.ranking(fits_populations)
 
     def crossover(self, parents):
         # if self.crossover_algorithm == 'anular':
