@@ -10,11 +10,11 @@ class GeneticAlgorithm(object):
             population_fitness = [(self.genetics.fitness(ch), ch) for ch in population]
             finished = self.genetics.check_stop(population_fitness)
             if not finished:
-                population = self.next(population_fitness)
+                population = self.next_generation(population_fitness)
 
         return population
 
-    def next(self, population_fitness):
+    def next_generation(self, population_fitness):
         parents_generator = self.genetics.selection(population_fitness)
         size = len(population_fitness)
         nexts = []
