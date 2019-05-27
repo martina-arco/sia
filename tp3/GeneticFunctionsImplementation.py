@@ -13,9 +13,11 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         # prob_crossover=0.9, prob_mutation=0.2):
         self.counter = 0
 
+        self.selection_algorithm = parameters.selection_algorithm
         self.crossover_algorithm = parameters.crossover_algorithm
+        self.mutation_algorithm = parameters.mutation_algorithm
 
-        self.generation_max = 10
+        self.generation_max = parameters.max_generation
 
         self.attack_multiplier = parameters.attack_multiplier
         self.defense_multiplier = parameters.defense_multiplier
@@ -35,7 +37,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         # self.limit = parameters.limit
         self.population_size = parameters.population_size
 
-        self.tournament_probabilistic = False;
+        self.is_tournament_probabilistic = False
         # self.prob_crossover = prob_crossover
         # self.prob_mutation = prob_mutation
 
@@ -81,25 +83,31 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         if self.selection_algorithm == 'elite':
             SelectionAlgorithm.elite()
         elif self.selection_algorithm == 'ruleta':
-            SelectionAlgorithm.ruleta(fits_populations)
+            SelectionAlgorithm.roulette(fits_populations)
         elif self.selection_algorithm == 'universal':
             SelectionAlgorithm.universal(fits_populations)
         elif self.selection_algorithm == 'boltzman':
             SelectionAlgorithm.boltzman(fits_populations)
         elif self.selection_algorithm == 'torneos':
-            SelectionAlgorithm.torneos(fits_populations)
+            SelectionAlgorithm.tournament(fits_populations, self.is_tournament_probabilistic)
         elif self.selection_algorithm == 'ranking':
             SelectionAlgorithm.ranking(fits_populations)
 
     def crossover(self, parents):
-        # if self.crossover_algorithm == 'anular':
-        #     return CrossoverAlgorithm.anular_crossover(parents)
-        if self.crossover_algorithm == 'two_points':
-            return CrossoverAlgorithm.two_point_crossover(parents)
-        elif self.crossover_algorithm == 'uniform':
-            return CrossoverAlgorithm.uniform_crossover(parents)
+        father, mother = parents
+        array_len = len(father.genes)
 
-        return CrossoverAlgorithm.one_point_crossover(parents)
+        if self.crossover_algorithm == 'anular':
+            r, l = CrossoverAlgorithm.setup_anular_parameters(array_len)
+            return CrossoverAlgorithm.anular_crossover(father, mother, r, l)
+        if self.crossover_algorithm == 'two_points':
+            index1, index2 = CrossoverAlgorithm.setup_indexes(array_len)
+            return CrossoverAlgorithm.two_point_crossover(father, mother, index1, index2)
+        elif self.crossover_algorithm == 'uniform':
+            return CrossoverAlgorithm.uniform_crossover(father, mother)
+
+        index = CrossoverAlgorithm.setup_index(array_len)
+        return CrossoverAlgorithm.one_point_crossover(father, mother, index)
 
     def mutation(self, chromosome):
         index = random.randint(0, len(self.target) - 1)

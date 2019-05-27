@@ -39,6 +39,7 @@ class Parameters:
         self.gloves = []
         self.shirts = []
 
+        self.max_generation = 1000
         self.population_size = 1000
         
     def set_stop_condition(self, stop_condition):
@@ -92,6 +93,9 @@ class Parameters:
     def set_population_size(self, population_size):
         self.population_size = population_size
 
+    def set_max_generation(self, max_generation):
+        self.max_generation = max_generation
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run genetic algorithm.')
@@ -130,6 +134,9 @@ if __name__ == "__main__":
                         help='Path to helmets file.')
     parser.add_argument('-s', '--shirts', type=str, default='testdata/pecheras.tsv',
                         help='Path to shirts file.')
+
+    parser.add_argument('-max_g', '--max_generation', type=str, default=10000,
+                        help='Max generation for stop condition.')
     args = parser.parse_args()
 
     weapons = read_file(args.weapons)
@@ -159,6 +166,8 @@ if __name__ == "__main__":
     parameters.set_helmets(helmets)
     parameters.set_gloves(gloves)
     parameters.set_shirts(shirts)
+
+    parameters.set_max_generation(args.max_generation)
 
     functionsImplementations = GeneticFunctionsImplementation(parameters)
 
