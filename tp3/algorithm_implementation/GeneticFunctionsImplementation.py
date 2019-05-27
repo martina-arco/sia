@@ -51,8 +51,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         population = []
 
-        for i in self.population_size:
-            chromosome = Chromosome(len(self.weapons))
+        for i in range(0, self.population_size):
+            chromosome = Chromosome(items_size=len(self.weapons))
             population.append(chromosome)
 
         return population

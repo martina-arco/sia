@@ -101,7 +101,8 @@ if __name__ == "__main__":
     parser.add_argument('-sa', '--selection_algorithm', type=str, default='elite',
                         help='Selection algorithm to use.')
     parser.add_argument('-ca', '--crossover_algorithm', type=str, default='one_point',
-                        help='Crossover algorithm to use.')
+                        help='Crossover algorithm to use.',
+                        choices=['one_point', 'two_points', 'uniform', 'anular'])
     parser.add_argument('-ma', '--mutation_algorithm', type=str, default='gen',
                         help='Mutation algorithm to use.')
 
@@ -133,7 +134,7 @@ if __name__ == "__main__":
                         help='Path to shirts file.')
 
     parser.add_argument('-max_g', '--max_generation', type=str, default=10000,
-                        help='Max generation for stop condition.')
+                        help='Max generation for stop condition.', required=False)
     args = parser.parse_args()
 
     weapons = read_file(args.weapons)
