@@ -1,8 +1,7 @@
 from GeneticFunctions import GeneticFunctions
-from SelectionAlgorithm import SelectionAlgorithm
-from CrossoverAlgorithm import CrossoverAlgorithm
+from algorithm_implementation.SelectionAlgorithms import SelectionAlgorithm
+from algorithm_implementation.CrossoverAlgorithms import CrossoverAlgorithm
 from Chromosome import Chromosome
-import random
 
 
 class GeneticFunctionsImplementation(GeneticFunctions):
@@ -110,11 +109,12 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         return CrossoverAlgorithm.one_point_crossover(father, mother, index)
 
     def mutation(self, chromosome):
-        index = random.randint(0, len(self.target) - 1)
-        vary = random.randint(-5, 5)
-        mutated = list(chromosome)
-        mutated[index] += vary
-        return mutated
+        pass
+        # index = random.randint(0, len(self.target) - 1)
+        # vary = random.randint(-5, 5)
+        # mutated = list(chromosome)
+        # mutated[index] += vary
+        # return mutated
 
     # internals
     # def tournament(self, fits_populations):

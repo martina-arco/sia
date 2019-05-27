@@ -28,11 +28,11 @@ class SelectionAlgorithm(object):
         pass
 
     @staticmethod
-    def tournament(populations):
+    def tournament(populations, is_tournament_probabilistic):
         # Esto del while true no lo entiendo, deberia estar usando un corte
         while True:
-            father = SelectionAlgorithm.tournament_deployment(populations)
-            mother = SelectionAlgorithm.tournament_deployment(populations)
+            father = SelectionAlgorithm.tournament_deployment(populations, is_tournament_probabilistic)
+            mother = SelectionAlgorithm.tournament_deployment(populations, is_tournament_probabilistic)
             yield (father, mother)
 
     @staticmethod
@@ -51,7 +51,7 @@ class SelectionAlgorithm(object):
         mini_tournament.add(SelectionAlgorithm.select_random(fits_populations))
 
         if is_tournament_probabilistic:
-            if random.randint(1, high=None) > 0.5:
+            if random.random(0, 1) > 0.5:
                 return max(mini_tournament)
             else:
                 return min(mini_tournament)
@@ -66,14 +66,14 @@ class SelectionAlgorithm(object):
     def select_by_inverted_probability(inverted_population):
         accumulation = 0
         x = 0
-        
-        pop_size = inverted_population.size()
-        prob_size = (pop_size+1)*(pop_size/2)
+
+        pop_size = len(inverted_population)
+        prob_size = (pop_size+1) * (pop_size/2)
         selection_number = random.randint(0, high=prob_size)
 
         for x in range(1, pop_size):
             accumulation += x
             if x >= selection_number:
-                return inverted_population.get(x)
+                return inverted_population[x]
 
-        return inverted_population.get(x)
+        return inverted_population[x]

@@ -1,7 +1,4 @@
-from GeneticAlgorithm import GeneticAlgorithm
-from CrossoverAlgorithm import CrossoverAlgorithm
-from Chromosome import Chromosome
-from GeneticFunctionsImplementation import GeneticFunctionsImplementation
+from algorithm_implementation.GeneticFunctionsImplementation import GeneticFunctionsImplementation
 import argparse
 import csv
 
