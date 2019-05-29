@@ -20,10 +20,38 @@ class SelectionAlgorithm(object):
             mother = self.select_by_probability(sorted_population)
             yield (father, mother)
 
-    # No lo entendi
     @staticmethod
-    def universal(populations):
-        pass
+    def universal(populations, k):
+        result = set()
+        sorted_population = sorted(populations)
+        value_rand_r = random.randint(0, high=1)
+        r = 0
+        for i in range(0, k-1):
+            r[i] = (r+i-1)/k
+
+        accumulation = 0
+        prob_size = 0
+        pop_size = sorted_population.size()
+        for i in range(1, pop_size):
+            prob_size += sorted_population[i].fitness
+
+        i = 0
+        for x in range(1, pop_size):
+            accumulation += sorted_population[x].fitness
+            if accumulation >= r[i]:
+                result.add(sorted_population[x])
+                for t in range(i+1, k):
+                    if accumulation >= r[t]:
+                        result.add(sorted_population[x])
+                    else:
+                        i = t
+                        break
+
+        # lleno los espacios restantes con el ultimo que supero
+        if result.size() != k:
+            for r in range(i, k):
+                result[r] = result[i-1]
+
 
     # Hago el calculo de boltzman y lo uso como limite para trigger de fitness
     @staticmethod
@@ -88,7 +116,7 @@ class SelectionAlgorithm(object):
         prob_size = 0
         pop_size = sorted_population.size()
         for i in range(1, pop_size):
-            prob_size += sorted_population.get(i).fitness
+            prob_size += sorted_population[i].fitness
 
         selection_number = random.randint(1, high=prob_size)
 

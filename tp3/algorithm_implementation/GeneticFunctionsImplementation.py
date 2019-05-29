@@ -37,6 +37,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.population_size = parameters.population_size
 
         self.is_tournament_probabilistic = False
+        # supongo que el counter es el numero de generacion
+        self.population_temp = 100-self.counter
         # self.prob_crossover = prob_crossover
         # self.prob_mutation = prob_mutation
 
