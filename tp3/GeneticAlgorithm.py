@@ -32,5 +32,3 @@ class GeneticAlgorithm(object):
                 next_generation.append(self.genetics.mutation(ch) if mutate else ch)
 
         return next_generation[0:size]
-
-    pass

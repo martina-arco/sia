@@ -2,29 +2,34 @@ import random
 
 
 # se ordenan por aptitud y devuelve el top
-def elite(populations):
-    sorted_population = sorted(populations)
+def elite(sorted_population):
     while True:
         father = next(sorted_population)
         mother = next(sorted_population)
         yield (father, mother)
 
 
-def roulette(self, populations):
-    sorted_population = sorted(populations)
+def roulette(self, sorted_population):
     while True:
         father = self.select_by_probability(sorted_population)
         mother = self.select_by_probability(sorted_population)
         yield (father, mother)
 
 
-def universal(populations, k):
+def universal(self, sorted_population, k):
+    universal_array = iter(universal_array_builder(sorted_population, k))
+    while True:
+        father = next(universal_array)
+        mother = next(universal_array)
+        yield (mother, father)
+
+
+def universal_array_builder(self, sorted_population, k):
     result = set()
-    sorted_population = sorted(populations)
     value_rand_r = random.randint(0, high=1)
     r = []
     for i in range(0, k - 1):
-        r[i] = (r + i - 1) / k
+        r[i] = (value_rand_r + i - 1) / k
 
     accumulation = 0
     prob_size = 0
@@ -48,6 +53,7 @@ def universal(populations, k):
     if len(result) != k:
         for r in range(i, k):
             result[r] = result[i - 1]
+        return result
 
 
 # Hago el calculo de boltzman y lo uso como limite para trigger de fitness
@@ -55,11 +61,10 @@ def boltzman(population):
     pass
 
 
-def tournament(populations, is_tournament_probabilistic):
-    # Esto del while true no lo entiendo, deberia estar usando un corte
+def tournament(self, populations, is_tournament_probabilistic):
     while True:
-        father = tournament_deployment(populations, is_tournament_probabilistic)
-        mother = tournament_deployment(populations, is_tournament_probabilistic)
+        father = self.tournament_deployment(populations, is_tournament_probabilistic)
+        mother = self.tournament_deployment(populations, is_tournament_probabilistic)
         yield (father, mother)
 
 

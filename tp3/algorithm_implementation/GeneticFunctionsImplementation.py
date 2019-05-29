@@ -40,6 +40,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.is_tournament_probabilistic = False
 
         self.generation_max = parameters.max_generation
+        # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
+        self.generation_k = 1
 
         self.attack_multiplier = parameters.attack_multiplier
         self.defense_multiplier = parameters.defense_multiplier
@@ -113,14 +115,15 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         # return self.counter >= self.limit
 
     def selection(self, fits_populations):
+        sorted_populations = sorted(fits_populations)
         if self.selection_algorithm == 'elite':
-            return SelectionAlgorithms.elite(fits_populations)
+            return SelectionAlgorithms.elite(sorted_populations)
 
         elif self.selection_algorithm == 'roulette':
-            return SelectionAlgorithms.roulette(fits_populations)
+            return SelectionAlgorithms.roulette(sorted_populations)
 
         elif self.selection_algorithm == 'universal':
-            return SelectionAlgorithms.universal(fits_populations)
+            return SelectionAlgorithms.universal(sorted_populations)
 
         elif self.selection_algorithm == 'boltzman':
             return SelectionAlgorithms.boltzman(fits_populations)
