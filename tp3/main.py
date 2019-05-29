@@ -15,11 +15,17 @@ def read_file(file_name):
 
 class Parameters:
     def __init__(self):
+
+        self.population_size = 0
+        self.prob_crossover = 0.0
+        self.prob_mutation = 0.0
         
         self.stop_condition = ''
         self.selection_algorithm = ''
         self.crossover_algorithm = ''
         self.mutation_algorithm = ''
+
+        self.max_generation = 0
 
         self.attack_multiplier = ''
         self.defense_multiplier = ''
@@ -36,8 +42,14 @@ class Parameters:
         self.gloves = []
         self.shirts = []
 
-        self.max_generation = 1000
-        self.population_size = 1000
+    def set_population_size(self, population_size):
+        self.population_size = population_size
+        
+    def set_prob_crossover(self, prob_crossover):
+        self.prob_crossover = prob_crossover
+
+    def set_prob_mutation(self, prob_mutation):
+        self.prob_mutation = prob_mutation
         
     def set_stop_condition(self, stop_condition):
         self.stop_condition = stop_condition
@@ -50,6 +62,9 @@ class Parameters:
         
     def set_mutation_algorithm(self, mutation_algorithm):
         self.mutation_algorithm = mutation_algorithm
+
+    def set_max_generation(self, max_generation):
+        self.max_generation = max_generation
         
     def set_attack_multiplier(self, attack_multiplier):
         self.attack_multiplier = attack_multiplier
@@ -87,28 +102,36 @@ class Parameters:
     def set_shirts(self, shirts):
         self.shirts = shirts
 
-    def set_population_size(self, population_size):
-        self.population_size = population_size
-
-    def set_max_generation(self, max_generation):
-        self.max_generation = max_generation
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run genetic algorithm.')
+
+    parser.add_argument('-ps', '--population_size', type=int, default=1000,
+                        help='Initial population size.')
+    parser.add_argument('-pc', '--prob_crossover', type=float, default=0.9,
+                        help='Probability of doing crossover.')
+    parser.add_argument('-pm', '--prob_mutation', type=float, default=0.2,
+                        help='Probability of mutating.')
+    
     parser.add_argument('-sc', '--stop_condition', type=str, default='generation_number',
-                        help='Stop condition for iterations.')
+                        help='Stop condition for iterations.',
+                        choices=['generation_number', 'structure', 'content', 'optimal'])
     parser.add_argument('-sa', '--selection_algorithm', type=str, default='elite',
-                        help='Selection algorithm to use.')
+                        help='Selection algorithm to use.',
+                        choices=['elite', 'roulette', 'universal', 'boltzman', 'tournament', 'ranking'])
     parser.add_argument('-ca', '--crossover_algorithm', type=str, default='one_point',
                         help='Crossover algorithm to use.',
                         choices=['one_point', 'two_points', 'uniform', 'anular'])
     parser.add_argument('-ma', '--mutation_algorithm', type=str, default='gen',
-                        help='Mutation algorithm to use.')
+                        help='Mutation algorithm to use.',
+                        choices=['uniform gen', 'uniform multi_gen', 'non_uniform gen', 'non_uniform multi_gen'])
 
-    parser.add_argument('-am', '--attack_multiplier', type=float, default=0.9,
+    parser.add_argument('-max_g', '--max_generation', type=str, default=10000,
+                        help='Max generation for stop condition.', required=False)
+
+    parser.add_argument('-atm', '--attack_multiplier', type=float, default=0.9,
                         help='Attack multiplier to use when calculating fitness.')
-    parser.add_argument('-dm', '--defense_multiplier', type=float, default=0.1,
+    parser.add_argument('-dfm', '--defense_multiplier', type=float, default=0.1,
                         help='Defense multiplier to use when calculating fitness.')
 
     parser.add_argument('-frm', '--force_multiplier', type=float, default=0.9,
@@ -133,8 +156,6 @@ if __name__ == "__main__":
     parser.add_argument('-s', '--shirts', type=str, default='testdata/pecheras.tsv',
                         help='Path to shirts file.')
 
-    parser.add_argument('-max_g', '--max_generation', type=str, default=10000,
-                        help='Max generation for stop condition.', required=False)
     args = parser.parse_args()
 
     weapons = read_file(args.weapons)
@@ -145,10 +166,16 @@ if __name__ == "__main__":
 
     parameters = Parameters()
 
+    parameters.set_population_size(args.population_size)
+    parameters.set_prob_crossover(args.prob_crossover)
+    parameters.set_prob_mutation(args.prob_mutation)
+
     parameters.set_stop_condition(args.stop_condition)
     parameters.set_selection_algorithm(args.selection_algorithm)
     parameters.set_crossover_algorithm(args.crossover_algorithm)
     parameters.set_mutation_algorithm(args.mutation_algorithm)
+
+    parameters.set_max_generation(args.max_generation)
 
     parameters.set_attack_multiplier(args.attack_multiplier)
     parameters.set_defense_multiplier(args.defense_multiplier)
@@ -164,8 +191,6 @@ if __name__ == "__main__":
     parameters.set_helmets(helmets)
     parameters.set_gloves(gloves)
     parameters.set_shirts(shirts)
-
-    parameters.set_max_generation(args.max_generation)
 
     functionsImplementations = GeneticFunctionsImplementation(parameters)
 

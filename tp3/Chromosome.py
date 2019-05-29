@@ -1,11 +1,6 @@
 import numpy as np
 import random
-
-WEAPON = 0
-BOOT = 1
-HELMET = 2
-GLOVE = 3
-SHIRT = 4
+import utils
 
 
 class Chromosome:
@@ -56,16 +51,18 @@ class Chromosome:
         return 100 * self.calculate_stat('Vi', life_multiplier, weapons, boots, helmets, gloves, shirts)
 
     def atm(self):
-        return 0.5 - (3 * self.genes[5] - 5) ** 4 + (3 * self.genes[5] - 5) ** 2 + self.genes[5] / 2
+        return 0.5 - (3 * self.genes[utils.HEIGHT] - 5) ** 4 + (3 * self.genes[utils.HEIGHT] - 5) ** 2 + \
+               self.genes[utils.HEIGHT] / 2
 
     def dem(self):
-        return 2 + (3 * self.genes[5] - 5) ** 4 - (3 * self.genes[5] - 5) ** 2 - self.genes[5] / 2
+        return 2 + (3 * self.genes[utils.HEIGHT] - 5) ** 4 - (3 * self.genes[utils.HEIGHT] - 5) ** 2 - \
+               self.genes[utils.HEIGHT] / 2
 
     def calculate_stat(self, stat, multiplier, weapons, boots, helmets, gloves, shirts):
         return np.tanh(0.01 * multiplier *
-                       (weapons[self.genes[WEAPON]][stat] + boots[self.genes[BOOT]][stat] +
-                        helmets[self.genes[HELMET]][stat] + gloves[self.genes[GLOVE]][stat] +
-                        shirts[self.genes[SHIRT]][stat]))
+                       (weapons[self.genes[utils.WEAPON]][stat] + boots[self.genes[utils.BOOT]][stat] +
+                        helmets[self.genes[utils.HELMET]][stat] + gloves[self.genes[utils.GLOVE]][stat] +
+                        shirts[self.genes[utils.SHIRT]][stat]))
 
     def __eq__(self, other):
         if isinstance(other, Chromosome):
