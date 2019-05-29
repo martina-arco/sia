@@ -12,17 +12,20 @@ class SelectionAlgorithm(object):
             mother = next(sorted_population)
             yield (father, mother)
 
-    # No lo entendi
     @staticmethod
-    def roulette(populations):
-        pass
+    def roulette(self, populations):
+        sorted_population = sorted(populations)
+        while True:
+            father = self.select_by_probability(sorted_population)
+            mother = self.select_by_probability(sorted_population)
+            yield (father, mother)
 
     # No lo entendi
     @staticmethod
     def universal(populations):
         pass
 
-    # No lo entendi
+    # Hago el calculo de boltzman y lo uso como limite para trigger de fitness
     @staticmethod
     def boltzman(population):
         pass
@@ -69,11 +72,30 @@ class SelectionAlgorithm(object):
 
         pop_size = len(inverted_population)
         prob_size = (pop_size+1) * (pop_size/2)
-        selection_number = random.randint(0, high=prob_size)
+        selection_number = random.randint(1, high=prob_size)
 
         for x in range(1, pop_size):
             accumulation += x
             if x >= selection_number:
                 return inverted_population[x]
 
+        # Por ahi tiene que retornar un error, no estoy seguro
         return inverted_population[x]
+
+    @staticmethod
+    def select_by_probability(self, sorted_population):
+        accumulation = 0
+        prob_size = 0
+        pop_size = sorted_population.size()
+        for i in range(1, pop_size):
+            prob_size += sorted_population.get(i).fitness
+
+        selection_number = random.randint(1, high=prob_size)
+
+        for x in range(1, pop_size):
+            accumulation += sorted_population[x].fitness
+            if accumulation >= selection_number:
+                return sorted_population[x]
+
+        # Creo que tiene que retornar un error
+        pass

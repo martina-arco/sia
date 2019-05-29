@@ -80,7 +80,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def selection(self, fits_populations):
         if self.selection_algorithm == 'elite':
-            SelectionAlgorithm.elite()
+            SelectionAlgorithm.elite(fits_populations)
         elif self.selection_algorithm == 'ruleta':
             SelectionAlgorithm.roulette(fits_populations)
         elif self.selection_algorithm == 'universal':
