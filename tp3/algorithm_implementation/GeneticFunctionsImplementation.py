@@ -1,33 +1,30 @@
 import random
 import utils
 
-import algorithm_implementation.StopConditions as StopConditions
+from algorithm_implementation.StopConditions import MaxGenerationStopCondition
+from algorithm_implementation.StopConditions import StructureStopCondition
+from algorithm_implementation.StopConditions import ContentStopCondition
+from algorithm_implementation.StopConditions import OptimalStopCondition
+
 import algorithm_implementation.SelectionAlgorithms as SelectionAlgorithms
-import algorithm_implementation.CrossoverAlgorithms as CrossoverAlgorithms
-import algorithm_implementation.MutationAlgorithms as MutationAlgorithms
+
+from algorithm_implementation.CrossoverAlgorithms import OnePointCrossover
+from algorithm_implementation.CrossoverAlgorithms import TwoPointCrossover
+from algorithm_implementation.CrossoverAlgorithms import UniformCrossover
+from algorithm_implementation.CrossoverAlgorithms import AnularCrossover
+
+from algorithm_implementation.MutationAlgorithms import GenMutation
+from algorithm_implementation.MutationAlgorithms import MultiGenMutation
+
 
 from GeneticFunctions import GeneticFunctions
 from Chromosome import Chromosome
 
 
-def select_random_index():
-    return random.randint(0, utils.CHROMOSOME_SIZE - 1)
-
-
-def select_two_random_indexes():
-    index1 = random.randint(0, utils.CHROMOSOME_SIZE - 2)
-    index2 = random.randint(0, utils.CHROMOSOME_SIZE - 2)
-
-    if index1 > index2:
-        index1, index2 = index2, index1
-
-    return index1, index2
-
-
 class GeneticFunctionsImplementation(GeneticFunctions):
 
     def __init__(self, parameters):
-        self.generations = 0
+        self.generation = 0
 
         self.population_size = parameters.population_size
         self.prob_crossover = parameters.prob_crossover
@@ -39,7 +36,35 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.mutation_algorithm = parameters.mutation_algorithm
         self.is_tournament_probabilistic = False
 
+        if self.stop_condition == 'generation_number':
+            self.stop_condition_implementation = MaxGenerationStopCondition()
+        elif self.stop_condition == 'structure':
+            self.stop_condition_implementation = StructureStopCondition()
+        elif self.stop_condition == 'content':
+            self.stop_condition_implementation = ContentStopCondition()
+        else:
+            self.stop_condition_implementation = OptimalStopCondition()
+
         self.generation_max = parameters.max_generation
+        self.fitness_min = parameters.fitness_min
+        self.generation_percentage_to_say_equals = parameters.generation_percentage_to_say_equals
+        self.best_fits = []
+        self.generation_number_to_say_equals = parameters.generation_number_to_say_equals
+
+        if self.crossover_algorithm == 'anular':
+            self.crossover_algorithm_implementation = AnularCrossover()
+        elif self.crossover_algorithm == 'two_points':
+            self.crossover_algorithm_implementation = TwoPointCrossover()
+        elif self.crossover_algorithm == 'uniform':
+            self.crossover_algorithm_implementation = UniformCrossover()
+        else:
+            self.crossover_algorithm_implementation = OnePointCrossover()
+
+        if 'multi_gen' in self.mutation_algorithm:
+            self.mutation_algorithm_implementation = MultiGenMutation()
+        else:
+            self.mutation_algorithm_implementation = GenMutation()
+
         # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
         self.generation_k = 1
 
@@ -63,7 +88,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         self.is_tournament_probabilistic = False
         # supongo que el counter es el numero de generacion
-        self.population_temp = 100-self.counter
+        self.population_temp = 100 - self.generation
         # self.prob_crossover = prob_crossover
         # self.prob_mutation = prob_mutation
 
@@ -90,29 +115,23 @@ class GeneticFunctionsImplementation(GeneticFunctions):
                                             self.shirts)
 
     def check_stop(self, fits_populations):
-        self.generations += 1
+        self.generation += 1
 
         if self.stop_condition == 'generation_number':
-            return StopConditions.is_max_generation(self.generations, self.generation_max)
+            return self.stop_condition_implementation.check_stop(self.generation, self.generation_max)
+
         elif self.stop_condition == 'structure':
-            return StopConditions.structure()
+            return self.stop_condition_implementation.check_stop(fits_populations,
+                                                                 self.generation_percentage_to_say_equals)
         elif self.stop_condition == 'content':
-            return StopConditions.content()
+            fits = [f for f, ch in fits_populations]
+            best_fit = max(fits)
+            self.best_fits.append(best_fit)
+            if self.generation % self.generation_number_to_say_equals == 0:
+                return self.stop_condition_implementation.check_stop(self.best_fits, None)
 
-        return StopConditions.optimal()
-
-        # if self.counter % 10 == 0:
-        #     best_match = list(sorted(fits_populations))[-1][1]
-        #     fits = [f for f, ch in fits_populations]
-        #     best = max(fits)
-        #     worst = min(fits)
-        #     ave = sum(fits) / len(fits)
-        #     print(
-        #         "[G %3d] score=(%4d, %4d, %4d): %r" %
-        #         (self.counter, best, ave, worst,
-        #          self.chromo2text(best_match)))
-        #     pass
-        # return self.counter >= self.limit
+        else:
+            return self.stop_condition_implementation.check_stop(fits_populations, self.fitness_min)
 
     def selection(self, fits_populations):
         sorted_populations = sorted(fits_populations)
@@ -136,21 +155,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def crossover(self, parents):
         father, mother = parents
-        array_len = len(father.genes)
-
-        if self.crossover_algorithm == 'anular':
-            r, l = CrossoverAlgorithms.setup_anular_parameters(array_len)
-            return CrossoverAlgorithms.anular_crossover(father, mother, r, l)
-
-        elif self.crossover_algorithm == 'two_points':
-            index1, index2 = select_two_random_indexes()
-            return CrossoverAlgorithms.two_point_crossover(father, mother, index1, index2)
-
-        elif self.crossover_algorithm == 'uniform':
-            return CrossoverAlgorithms.uniform_crossover(father, mother)
-
-        index = select_random_index()
-        return CrossoverAlgorithms.one_point_crossover(father, mother, index)
+        return self.crossover_algorithm_implementation.crossover(father, mother)
 
     # falta que cambie si es no uniforme
     def probability_mutation(self):
@@ -158,9 +163,4 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def mutation(self, chromosome):
         items_size = len(self.weapons)
-
-        if 'multi_gen' in self.mutation_algorithm:
-            return MutationAlgorithms.multi_gen(chromosome.genes, items_size, self.prob_mutation)
-
-        index = select_random_index()
-        return MutationAlgorithms.gen(chromosome.genes, index, items_size)
+        return self.mutation_algorithm_implementation.mutate(chromosome, items_size, self.prob_mutation)

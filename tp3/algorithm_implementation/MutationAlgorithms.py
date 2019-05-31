@@ -4,20 +4,6 @@ import utils
 from Chromosome import Chromosome
 
 
-def gen(genes, index, items_size):
-    genes[index] = mutate_gene(index, items_size)
-    return Chromosome(genes=genes)
-
-
-def multi_gen(genes, items_size, prob_mutation):
-    for index in range(0, len(genes)):
-        mutate = random.random() < prob_mutation
-        if mutate:
-            genes[index] = mutate_gene(index, items_size)
-
-    return Chromosome(genes=genes)
-
-
 def mutate_gene(index, items_size):
     if index == utils.HEIGHT:
         random_gene = random.uniform(1.3, 2.0)
@@ -25,3 +11,34 @@ def mutate_gene(index, items_size):
         random_gene = random.randint(0, items_size)
 
     return random_gene
+
+
+class Mutation(object):
+
+    def mutate(self, chromosome, items_size, prob_mutation):
+        pass
+
+
+class GenMutation(Mutation):
+    def mutate(self, chromosome, items_size, prob_mutation):
+        mutate = random.random() < prob_mutation
+        if mutate:
+            index = utils.select_random_index()
+            new_genes = chromosome.genes
+            new_genes[index] = mutate_gene(index, items_size)
+            return Chromosome(genes=new_genes)
+
+        return chromosome
+
+
+class MultiGenMutation(Mutation):
+    def mutate(self, chromosome, items_size, prob_mutation):
+        new_genes = chromosome.genes
+        for index in range(0, utils.CHROMOSOME_SIZE):
+            mutate = random.random() < prob_mutation
+            if mutate:
+                new_genes[index] = mutate_gene(index, items_size)
+
+        return Chromosome(genes=new_genes)
+
+

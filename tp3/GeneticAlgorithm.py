@@ -28,7 +28,6 @@ class GeneticAlgorithm(object):
             # children = self.genetics.crossover(parents) if cross else parents
             children = self.genetics.crossover(parents)
             for ch in children:
-                mutate = random.random() < self.genetics.probability_mutation()
-                next_generation.append(self.genetics.mutation(ch) if mutate else ch)
+                next_generation.append(self.genetics.mutation(ch))
 
         return next_generation[0:size]
