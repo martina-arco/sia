@@ -4,6 +4,7 @@ from Chromosome import Chromosome
 
 from algorithm_implementation.SelectionAlgorithms import EliteSelection
 from algorithm_implementation.SelectionAlgorithms import RouletteSelection
+from algorithm_implementation.SelectionAlgorithms import UniversalSelection
 
 chromosome1 = Chromosome(genes=[1, 1, 1])
 chromosome2 = Chromosome(genes=[2, 2, 2])
@@ -15,6 +16,8 @@ chromosome6 = Chromosome(genes=[6, 6, 6])
 
 fits_population = [(1, chromosome1), (2, chromosome2), (3, chromosome3), (4, chromosome4), (5, chromosome5),
                    (5, chromosome5), (1, chromosome1), (3, chromosome3), (4, chromosome4), (2, chromosome2)]
+
+fits_population_with_large_fitness = [(1000, chromosome1), (2, chromosome2), (3, chromosome3)]
 
 
 def sorted_population():
@@ -32,9 +35,20 @@ class SelectionTest(unittest.TestCase):
 
     def test_roulette_selection(self):
         selection_algorithm = RouletteSelection()
+        parents = selection_algorithm.selection(fits_population_with_large_fitness, 10)
+        self.assertIn(chromosome1, parents)
         parents = selection_algorithm.selection(fits_population, 5)
         self.assertEqual(len(parents), 5)
         parents = selection_algorithm.selection(fits_population, 10)
+        self.assertEqual(len(parents), 10)
+
+    def test_universal_selection(self):
+        selection_algorithm = UniversalSelection()
+        parents = selection_algorithm.selection(fits_population_with_large_fitness, 10)
         self.assertIn(chromosome1, parents)
+        parents = selection_algorithm.selection(fits_population, 5)
+        self.assertEqual(len(parents), 5)
+        parents = selection_algorithm.selection(fits_population, 10)
+        self.assertEqual(len(parents), 10)
 
 

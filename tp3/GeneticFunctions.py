@@ -28,10 +28,10 @@ class GeneticFunctions(object):
         """
         pass
 
-    def crossover(self, parents):
+    def crossover(self, father, mother):
         """breed children
         """
-        return parents
+        pass
 
     def mutation(self, chromosome):
         """mutate chromosome

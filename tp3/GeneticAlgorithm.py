@@ -18,15 +18,17 @@ class GeneticAlgorithm(object):
         return population
 
     def next_generation(self, population_fitness):
-        parents_generator = self.genetics.selection(population_fitness)
+        parents = self.genetics.selection(population_fitness)
         next_generation = []
+        i = 0
 
-        for parents in parents_generator:
-            # cross = random.random() < self.genetics.probability_crossover()
-            # children = self.genetics.crossover(parents) if cross else parents
-            children = self.genetics.crossover(parents)
+        while i < len(parents)-2:
+            father = parents[i]
+            mother = parents[i+1]
+            children = self.genetics.crossover(father, mother)
             for ch in children:
                 next_generation.append(self.genetics.mutation(ch))
+            i += 2
 
         # falta el reemplazo
         return next_generation

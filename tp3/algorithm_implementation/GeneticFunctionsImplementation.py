@@ -163,14 +163,10 @@ class GeneticFunctionsImplementation(GeneticFunctions):
     def selection(self, fits_populations):
         return self.selection_algorithm_implementation_1.selection(fits_populations, self.k)
 
-    def crossover(self, parents):
-        father, mother = parents
+    def crossover(self, father, mother):
         return self.crossover_algorithm_implementation.crossover(father, mother)
 
-    # falta que cambie si es no uniforme
-    def probability_mutation(self):
-        return self.prob_mutation
-
+    # cambiar probabilidad si es no uniforme
     def mutation(self, chromosome):
         items_size = len(self.weapons)
         return self.mutation_algorithm_implementation.mutate(chromosome, items_size, self.prob_mutation)

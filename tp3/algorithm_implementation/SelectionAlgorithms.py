@@ -17,29 +17,27 @@ class EliteSelection(SelectionAlgorithm):
 
 class RouletteSelection(SelectionAlgorithm):
     def selection(self, fits_population, k):
-        sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
-        parents = []
+        fitness_accumulation = accumulative_fitness(fits_population)
+        chromosomes = []
 
         for i in range(0, k):
-            parent = select_by_probability(sorted_population)
-            parents.append(parent)
+            parent = select_by_probability(fitness_accumulation, fits_population, random.uniform(0, 1))
+            chromosomes.append(parent)
 
-        return parents
+        return chromosomes
 
 
 class UniversalSelection(SelectionAlgorithm):
     def selection(self, fits_population, k):
-        sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
-        universal_array = universal_array_builder(sorted_population, k)
-        i = 0
-        parents = []
+        fitness_accumulation = accumulative_fitness(fits_population)
+        chromosomes = []
 
-        while i < len(sorted_population) - 1:
-            father = universal_array[i][1]
-            mother = universal_array[i+1][1]
-            parents.append((mother, father))
+        for i in range(1, k+1):
+            r = (random.uniform(0, 1) + i - 1) / k
+            parent = select_by_probability(fitness_accumulation, fits_population, r)
+            chromosomes.append(parent)
 
-        return parents
+        return chromosomes
 
 
 class BoltzmanSelection(SelectionAlgorithm):
@@ -78,38 +76,21 @@ class RankingSelection(SelectionAlgorithm):
         return parents
 
 
-# internals
-def universal_array_builder(sorted_population, k):
-    result = []
-    value_rand_r = random.randint(0, high=1)
-    r = []
-    for i in range(0, k - 1):
-        r[i] = (value_rand_r + i - 1) / k
+def accumulative_fitness(population):
+    accumulated_fitness = []
+    fitness_sum = 0
+    population_size = len(population)
 
-    accumulation = 0
-    prob_size = 0
-    pop_size = len(sorted_population)
+    for i in range(0, population_size):
+        fitness_sum += population[i][0]
 
-    for i in range(1, pop_size):
-        prob_size += sorted_population[i].fitness
+    accumulated_fitness.append(population[0][0] / fitness_sum)
 
-    i = 0
-    for x in range(1, pop_size):
-        accumulation += sorted_population[x].fitness
-        if accumulation >= r[i]:
-            result.append(sorted_population[x])
-            for t in range(i + 1, k):
-                if accumulation >= r[t]:
-                    result.append(sorted_population[x])
-                else:
-                    i = t
-                    break
+    for i in range(1, population_size):
+        relative = population[i][0] / fitness_sum
+        accumulated_fitness.append(accumulated_fitness[i-1] + relative)
 
-    # lleno los espacios restantes con el ultimo que supero
-    if len(result) != k:
-        for r in range(i, k):
-            result[r] = result[i - 1]
-        return result
+    return accumulated_fitness
 
 
 def tournament_deployment(fits_populations, is_tournament_probabilistic):
@@ -148,19 +129,10 @@ def select_by_inverted_probability(inverted_population):
     return inverted_population[x]
 
 
-def select_by_probability(sorted_population):
-    accumulation = 0
-    fitness_sum = 0
-    pop_size = len(sorted_population)
-
-    for i in range(0, pop_size):
-        fitness_sum += sorted_population[i][0]
-
-    selection_number = random.uniform(0, fitness_sum)
-
-    for x in range(0, pop_size):
-        accumulation += sorted_population[x][0]
-        if accumulation >= selection_number:
-            chromosome_result = sorted_population[x][1]
-            del sorted_population[x]
-            return chromosome_result
+def select_by_probability(accumulated_fitness, population, r):
+    for x in range(0, len(population)):
+        if accumulated_fitness[x] >= r:
+            chromosome = population[x][1]
+            return chromosome
+    # si no agarre ninguno es porque es el ultimo
+    return population[len(population)-1][1]
