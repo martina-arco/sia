@@ -15,7 +15,8 @@ class GeneticAlgorithm(object):
         return population
 
     def next_generation(self, population_fitness):
-        parents = self.genetics.selection(population_fitness)
+        population_scaled = self.genetics.fitness_scaling(population_fitness)
+        parents = self.genetics.selection(population_scaled)
         next_generation = []
         i = 0
 

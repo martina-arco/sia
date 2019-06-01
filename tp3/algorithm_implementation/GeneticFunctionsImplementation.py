@@ -10,7 +10,6 @@ from algorithm_implementation.StopConditions import OptimalStopCondition
 from algorithm_implementation.SelectionAlgorithms import EliteSelection
 from algorithm_implementation.SelectionAlgorithms import RouletteSelection
 from algorithm_implementation.SelectionAlgorithms import UniversalSelection
-from algorithm_implementation.SelectionAlgorithms import BoltzmanSelection
 from algorithm_implementation.SelectionAlgorithms import TournamentSelection
 from algorithm_implementation.SelectionAlgorithms import RankingSelection
 
@@ -22,6 +21,8 @@ from algorithm_implementation.CrossoverAlgorithms import AnularCrossover
 from algorithm_implementation.MutationAlgorithms import GenMutation
 from algorithm_implementation.MutationAlgorithms import MultiGenMutation
 
+from algorithm_implementation.ScalingAlgorithms import NoScaling
+from algorithm_implementation.ScalingAlgorithms import BoltzmannSelection
 
 from GeneticFunctions import GeneticFunctions
 from Chromosome import Chromosome
@@ -40,6 +41,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.selection_algorithm = parameters.selection_algorithm
         self.crossover_algorithm = parameters.crossover_algorithm
         self.mutation_algorithm = parameters.mutation_algorithm
+        self.scaling_algorithm = parameters.scaling_algorithm
         self.is_tournament_probabilistic = False
 
         if self.stop_condition == 'generation_number':
@@ -66,8 +68,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             self.selection_algorithm_implementation_1 = RouletteSelection()
         elif self.selection_algorithm == 'universal':
             self.selection_algorithm_implementation_1 = UniversalSelection()
-        elif self.selection_algorithm == 'boltzman':
-            self.selection_algorithm_implementation_1 = BoltzmanSelection()
         elif self.selection_algorithm == 'tournament':
             self.selection_algorithm_implementation_1 = TournamentSelection(self.is_tournament_probabilistic)
         elif self.selection_algorithm == 'ranking':
@@ -79,12 +79,15 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             self.selection_algorithm_implementation_2 = RouletteSelection()
         elif self.selection_algorithm == 'universal':
             self.selection_algorithm_implementation_2 = UniversalSelection()
-        elif self.selection_algorithm == 'boltzman':
-            self.selection_algorithm_implementation_2 = BoltzmanSelection()
         elif self.selection_algorithm == 'tournament':
             self.selection_algorithm_implementation_2 = TournamentSelection(self.is_tournament_probabilistic)
         elif self.selection_algorithm == 'ranking':
             self.selection_algorithm_implementation_2 = RankingSelection()
+
+        if self.scaling_algorithm == 'boltzmann':
+            self.scaling_algorithm_implementation = BoltzmannSelection(parameters.initial_temperature, parameters.temperature_step)
+        else:
+            self.scaling_algorithm_implementation = NoScaling()
 
         if self.crossover_algorithm == 'anular':
             self.crossover_algorithm_implementation = AnularCrossover()
@@ -120,7 +123,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         # self.limit = parameters.limit
         self.population_size = parameters.population_size
-        self.population_temp = 100 - self.generation
 
     def initial(self):
         population = []
@@ -178,3 +180,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
     def mutation(self, chromosome):
         items_size = len(self.weapons)
         return self.mutation_algorithm_implementation.mutate(chromosome, items_size, self.prob_mutation)
+
+    def fitness_scaling(self, fits_population):
+        return self.scaling_algorithm_implementation.scale(fits_population)

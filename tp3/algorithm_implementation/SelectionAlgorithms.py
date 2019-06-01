@@ -40,12 +40,6 @@ class UniversalSelection(SelectionAlgorithm):
         return chromosomes
 
 
-class BoltzmanSelection(SelectionAlgorithm):
-    # Hago el calculo de boltzman y lo uso como limite para trigger de fitness
-    def selection(self, arg1, arg2):
-        pass
-
-
 class TournamentSelection(SelectionAlgorithm):
     def __init__(self, is_tournament_probabilistic):
         self.is_tournament_probabilistic = is_tournament_probabilistic

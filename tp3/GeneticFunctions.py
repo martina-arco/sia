@@ -37,4 +37,9 @@ class GeneticFunctions(object):
         """mutate chromosome
         """
         return chromosome
+
+    def fitness_scaling(self, fits_population):
+        """list of tuples of ftinesses and chrosomes
+        """
+        return fits_population
     pass

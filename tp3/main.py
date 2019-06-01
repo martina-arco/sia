@@ -92,8 +92,17 @@ class Parameters:
     
     def set_expertise_multiplier(self, expertise_multiplier):
         self.expertise_multiplier = expertise_multiplier
-        
+
     def set_resistance_multiplier(self, resistance_multiplier):
+        self.resistance_multiplier = resistance_multiplier
+
+    def set_scaling_algorithm(self, resistance_multiplier):
+        self.resistance_multiplier = resistance_multiplier
+
+    def set_initial_temperature(self, resistance_multiplier):
+        self.resistance_multiplier = resistance_multiplier
+
+    def set_temperature_step(self, resistance_multiplier):
         self.resistance_multiplier = resistance_multiplier
         
     def set_life_multiplier(self, life_multiplier):
@@ -130,13 +139,16 @@ if __name__ == "__main__":
                         choices=['generation_number', 'structure', 'content', 'optimal'])
     parser.add_argument('-sa', '--selection_algorithm', type=str, default='elite',
                         help='Selection algorithm to use.',
-                        choices=['elite', 'roulette', 'universal', 'boltzman', 'tournament', 'ranking'])
+                        choices=['elite', 'roulette', 'universal', 'tournament', 'ranking'])
     parser.add_argument('-ca', '--crossover_algorithm', type=str, default='one_point',
                         help='Crossover algorithm to use.',
                         choices=['one_point', 'two_points', 'uniform', 'anular'])
     parser.add_argument('-ma', '--mutation_algorithm', type=str, default='gen',
                         help='Mutation algorithm to use.',
                         choices=['uniform gen', 'uniform multi_gen', 'non_uniform gen', 'non_uniform multi_gen'])
+    parser.add_argument('-sca', '--scaling_algorithm', type=str, default='none',
+                        help='Scaling algorithm to use.',
+                        choices=['none', 'boltzmann'])
 
     parser.add_argument('-fm', '--fitness_min', type=int, default=0,
                         help='Fitness considered to stop algorithm if it is less than that')
@@ -146,6 +158,10 @@ if __name__ == "__main__":
                         help='Number of equal fitnesses to consider it is not changing in generations')
     parser.add_argument('-max_g', '--max_generation', type=str, default=10000,
                         help='Max generation for stop condition.', required=False)
+    parser.add_argument('-it', '--initial-temperature', type=int, default=100,
+                        help='Initial temperature for scaling algorithm')
+    parser.add_argument('-ts', '--temperature-step', type=float, default=1,
+                        help='Temperature step per generation')
 
     parser.add_argument('-atm', '--attack_multiplier', type=float, default=0.9,
                         help='Attack multiplier to use when calculating fitness.')
