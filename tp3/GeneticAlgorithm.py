@@ -1,6 +1,3 @@
-import random
-
-
 class GeneticAlgorithm(object):
     def __init__(self, genetics):
         self.genetics = genetics

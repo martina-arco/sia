@@ -1,6 +1,3 @@
-import math
-import utils
-
 
 class StopCondition(object):
     def check_stop(self, arg1, arg2):
@@ -13,11 +10,9 @@ class MaxGenerationStopCondition(StopCondition):
 
 
 class StructureStopCondition(StopCondition):
-    def check_stop(self, fits_population, generation_percentage_to_say_equals):
-        fits_population.sort(key=utils.sort_by_fitness, reverse=True)
-        amount_to_analyze = math.floor(len(fits_population) * generation_percentage_to_say_equals)
-        for i in range(1, amount_to_analyze):
-            if fits_population[i][1] != fits_population[i-1][1]:
+    def check_stop(self, sorted_population, previous_generation):
+        for i in range(1, len(previous_generation)):
+            if sorted_population[i][1] != previous_generation[i][1]:
                 return False
         return True
 

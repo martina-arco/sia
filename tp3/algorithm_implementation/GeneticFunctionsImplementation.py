@@ -1,5 +1,6 @@
 import random
 import utils
+import math
 
 from algorithm_implementation.StopConditions import MaxGenerationStopCondition
 from algorithm_implementation.StopConditions import StructureStopCondition
@@ -54,6 +55,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.fitness_min = parameters.fitness_min
         self.generation_percentage_to_say_equals = parameters.generation_percentage_to_say_equals
         self.best_fits = []
+        self.previous_generation = []
+        self.count_of_equal_generations = 0
         self.generation_number_to_say_equals = parameters.generation_number_to_say_equals
         self.is_tournament_probabilistic = False
 
@@ -119,13 +122,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.population_size = parameters.population_size
         self.population_temp = 100 - self.generation
 
-    # GeneticFunctions interface impls
-    # def probability_crossover(self):
-    #     return self.prob_crossover
-    #
-    # def probability_mutation(self):
-    #     return self.prob_mutation
-
     def initial(self):
         population = []
 
@@ -148,14 +144,26 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             return self.stop_condition_implementation.check_stop(self.generation, self.generation_max)
 
         elif self.stop_condition == 'structure':
-            return self.stop_condition_implementation.check_stop(fits_populations,
-                                                                 self.generation_percentage_to_say_equals)
+            fits_populations.sort(key=utils.sort_by_fitness, reverse=True)
+            finished = self.stop_condition_implementation.check_stop(fits_populations, self.previous_generation)
+
+            population_size_to_analyze = math.floor(len(fits_populations) * self.generation_percentage_to_say_equals)
+            self.previous_generation = fits_populations.copy()[0:population_size_to_analyze]
+
+            if finished:
+                self.count_of_equal_generations += 1
+            else:
+                self.count_of_equal_generations = 0
+
+            return self.count_of_equal_generations >= self.generation_number_to_say_equals
+
         elif self.stop_condition == 'content':
             fits = [f for f, ch in fits_populations]
             best_fit = max(fits)
             self.best_fits.append(best_fit)
             if self.generation % self.generation_number_to_say_equals == 0:
                 return self.stop_condition_implementation.check_stop(self.best_fits, None)
+            return False
 
         else:
             return self.stop_condition_implementation.check_stop(fits_populations, self.fitness_min)

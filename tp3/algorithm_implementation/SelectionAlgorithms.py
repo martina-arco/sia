@@ -21,8 +21,8 @@ class RouletteSelection(SelectionAlgorithm):
         chromosomes = []
 
         for i in range(0, k):
-            parent = select_by_probability(fitness_accumulation, fits_population, random.uniform(0, 1))
-            chromosomes.append(parent)
+            chromosome = select_by_probability(fitness_accumulation, fits_population, random.uniform(0, 1))
+            chromosomes.append(chromosome)
 
         return chromosomes
 
@@ -34,8 +34,8 @@ class UniversalSelection(SelectionAlgorithm):
 
         for i in range(1, k+1):
             r = (random.uniform(0, 1) + i - 1) / k
-            parent = select_by_probability(fitness_accumulation, fits_population, r)
-            chromosomes.append(parent)
+            chromosome = select_by_probability(fitness_accumulation, fits_population, r)
+            chromosomes.append(chromosome)
 
         return chromosomes
 
@@ -51,29 +51,26 @@ class TournamentSelection(SelectionAlgorithm):
         self.is_tournament_probabilistic = is_tournament_probabilistic
 
     def selection(self, populations, k):
-        i = 0
-        parents = []
+        chromosomes = []
 
-        while i < len(populations) - 1:
-            father = tournament_deployment(populations, self.is_tournament_probabilistic)
-            mother = tournament_deployment(populations, self.is_tournament_probabilistic)
-            parents.append((father, mother))
+        for i in range(0, k):
+            chromosome = tournament_deployment(populations, self.is_tournament_probabilistic)
+            chromosomes.append(chromosome)
 
-        return parents
+        return chromosomes
 
 
 class RankingSelection(SelectionAlgorithm):
     def selection(self, fits_population, k):
         sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
         i = 0
-        parents = []
+        chromosomes = []
 
         while i < len(sorted_population) - 1:
-            father = select_by_inverted_probability(sorted_population)
-            mother = select_by_inverted_probability(sorted_population)
-            parents.append((father, mother))
+            chromosome = select_by_inverted_probability(sorted_population)
+            chromosomes.append(chromosome)
 
-        return parents
+        return chromosomes
 
 
 def accumulative_fitness(population):
@@ -91,6 +88,14 @@ def accumulative_fitness(population):
         accumulated_fitness.append(accumulated_fitness[i-1] + relative)
 
     return accumulated_fitness
+
+
+def select_by_probability(accumulated_fitness, population, r):
+    for x in range(0, len(population)):
+        if accumulated_fitness[x] >= r:
+            return population[x][1]
+    # si no agarre ninguno es porque es el ultimo
+    return population[len(population)-1][1]
 
 
 def tournament_deployment(fits_populations, is_tournament_probabilistic):
@@ -118,7 +123,7 @@ def select_by_inverted_probability(inverted_population):
 
     pop_size = len(inverted_population)
     prob_size = (pop_size+1) * (pop_size/2)
-    selection_number = random.randint(1, high=prob_size)
+    selection_number = random.randint(1, prob_size)
 
     for x in range(1, pop_size):
         accumulation += x
@@ -127,12 +132,3 @@ def select_by_inverted_probability(inverted_population):
 
     # Por ahi tiene que retornar un error, no estoy seguro
     return inverted_population[x]
-
-
-def select_by_probability(accumulated_fitness, population, r):
-    for x in range(0, len(population)):
-        if accumulated_fitness[x] >= r:
-            chromosome = population[x][1]
-            return chromosome
-    # si no agarre ninguno es porque es el ultimo
-    return population[len(population)-1][1]
