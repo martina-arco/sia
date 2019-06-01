@@ -24,15 +24,9 @@ class GeneticFunctions(object):
         return False
 
     def selection(self, fits_populations):
-        """generator of selected parents
+        """list of tuples of parent's chrosomes
         """
-        gen = iter(sorted(fits_populations))
-        while True:
-            f1, ch1 = next(gen)
-            f2, ch2 = next(gen)
-            yield (ch1, ch2)
-            pass
-        return
+        pass
 
     def crossover(self, parents):
         """breed children

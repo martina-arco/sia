@@ -1,31 +1,86 @@
 import random
+import utils
+
+
+class SelectionAlgorithm(object):
+    def selection(self, arg1, arg2):
+        pass
 
 
 # se ordenan por aptitud y devuelve el top
-def elite(sorted_population):
-    while True:
-        father = next(sorted_population)
-        mother = next(sorted_population)
-        yield (father, mother)
+class EliteSelection(SelectionAlgorithm):
+    def selection(self, fits_population, k):
+        sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
+        chromosomes = [ch for f, ch in sorted_population]
+        return chromosomes[0:k]
 
 
-def roulette(self, sorted_population):
-    while True:
-        father = self.select_by_probability(sorted_population)
-        mother = self.select_by_probability(sorted_population)
-        yield (father, mother)
+class RouletteSelection(SelectionAlgorithm):
+    def selection(self, fits_population, k):
+        sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
+        parents = []
+
+        for i in range(0, k):
+            parent = select_by_probability(sorted_population)
+            parents.append(parent)
+
+        return parents
 
 
-def universal(self, sorted_population, k):
-    universal_array = iter(universal_array_builder(sorted_population, k))
-    while True:
-        father = next(universal_array)
-        mother = next(universal_array)
-        yield (mother, father)
+class UniversalSelection(SelectionAlgorithm):
+    def selection(self, fits_population, k):
+        sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
+        universal_array = universal_array_builder(sorted_population, k)
+        i = 0
+        parents = []
+
+        while i < len(sorted_population) - 1:
+            father = universal_array[i][1]
+            mother = universal_array[i+1][1]
+            parents.append((mother, father))
+
+        return parents
 
 
-def universal_array_builder(self, sorted_population, k):
-    result = set()
+class BoltzmanSelection(SelectionAlgorithm):
+    # Hago el calculo de boltzman y lo uso como limite para trigger de fitness
+    def selection(self, arg1, arg2):
+        pass
+
+
+class TournamentSelection(SelectionAlgorithm):
+    def __init__(self, is_tournament_probabilistic):
+        self.is_tournament_probabilistic = is_tournament_probabilistic
+
+    def selection(self, populations, k):
+        i = 0
+        parents = []
+
+        while i < len(populations) - 1:
+            father = tournament_deployment(populations, self.is_tournament_probabilistic)
+            mother = tournament_deployment(populations, self.is_tournament_probabilistic)
+            parents.append((father, mother))
+
+        return parents
+
+
+class RankingSelection(SelectionAlgorithm):
+    def selection(self, fits_population, k):
+        sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
+        i = 0
+        parents = []
+
+        while i < len(sorted_population) - 1:
+            father = select_by_inverted_probability(sorted_population)
+            mother = select_by_inverted_probability(sorted_population)
+            parents.append((father, mother))
+
+        return parents
+
+
+# internals
+def universal_array_builder(sorted_population, k):
+    result = []
     value_rand_r = random.randint(0, high=1)
     r = []
     for i in range(0, k - 1):
@@ -34,6 +89,7 @@ def universal_array_builder(self, sorted_population, k):
     accumulation = 0
     prob_size = 0
     pop_size = len(sorted_population)
+
     for i in range(1, pop_size):
         prob_size += sorted_population[i].fitness
 
@@ -41,10 +97,10 @@ def universal_array_builder(self, sorted_population, k):
     for x in range(1, pop_size):
         accumulation += sorted_population[x].fitness
         if accumulation >= r[i]:
-            result.add(sorted_population[x])
+            result.append(sorted_population[x])
             for t in range(i + 1, k):
                 if accumulation >= r[t]:
-                    result.add(sorted_population[x])
+                    result.append(sorted_population[x])
                 else:
                     i = t
                     break
@@ -54,26 +110,6 @@ def universal_array_builder(self, sorted_population, k):
         for r in range(i, k):
             result[r] = result[i - 1]
         return result
-
-
-# Hago el calculo de boltzman y lo uso como limite para trigger de fitness
-def boltzman(population):
-    pass
-
-
-def tournament(self, populations, is_tournament_probabilistic):
-    while True:
-        father = self.tournament_deployment(populations, is_tournament_probabilistic)
-        mother = self.tournament_deployment(populations, is_tournament_probabilistic)
-        yield (father, mother)
-
-
-def ranking(populations):
-    sorted_population = sorted(populations, reverse=True)
-    while True:
-        father = select_by_inverted_probability(sorted_population)
-        mother = select_by_inverted_probability(sorted_population)
-        yield (father, mother)
 
 
 def tournament_deployment(fits_populations, is_tournament_probabilistic):
@@ -114,14 +150,17 @@ def select_by_inverted_probability(inverted_population):
 
 def select_by_probability(sorted_population):
     accumulation = 0
-    prob_size = 0
-    pop_size = sorted_population.size()
-    for i in range(1, pop_size):
-        prob_size += sorted_population[i].fitness
+    fitness_sum = 0
+    pop_size = len(sorted_population)
 
-    selection_number = random.randint(1, high=prob_size)
+    for i in range(0, pop_size):
+        fitness_sum += sorted_population[i][0]
 
-    for x in range(1, pop_size):
-        accumulation += sorted_population[x].fitness
+    selection_number = random.uniform(0, fitness_sum)
+
+    for x in range(0, pop_size):
+        accumulation += sorted_population[x][0]
         if accumulation >= selection_number:
-            return sorted_population[x]
+            chromosome_result = sorted_population[x][1]
+            del sorted_population[x]
+            return chromosome_result

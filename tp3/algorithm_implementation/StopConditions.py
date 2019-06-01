@@ -1,5 +1,5 @@
-import numpy as np
 import math
+import utils
 
 
 class StopCondition(object):
@@ -12,13 +12,9 @@ class MaxGenerationStopCondition(StopCondition):
         return generation > max_generation
 
 
-def sort_by_fitness(fit):
-    return fit[0]
-
-
 class StructureStopCondition(StopCondition):
     def check_stop(self, fits_population, generation_percentage_to_say_equals):
-        fits_population.sort(key=sort_by_fitness, reverse=True)
+        fits_population.sort(key=utils.sort_by_fitness, reverse=True)
         amount_to_analyze = math.floor(len(fits_population) * generation_percentage_to_say_equals)
         for i in range(1, amount_to_analyze):
             if fits_population[i][1] != fits_population[i-1][1]:

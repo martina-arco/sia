@@ -21,7 +21,7 @@ class Mutation(object):
 
 class GenMutation(Mutation):
     def mutate(self, chromosome, items_size, prob_mutation):
-        mutate = random.random() < prob_mutation
+        mutate = random.uniform(0, 1) < prob_mutation
         if mutate:
             index = utils.select_random_index()
             new_genes = chromosome.genes
@@ -35,7 +35,7 @@ class MultiGenMutation(Mutation):
     def mutate(self, chromosome, items_size, prob_mutation):
         new_genes = chromosome.genes
         for index in range(0, utils.CHROMOSOME_SIZE):
-            mutate = random.random() < prob_mutation
+            mutate = random.uniform(0, 1) < prob_mutation
             if mutate:
                 new_genes[index] = mutate_gene(index, items_size)
 

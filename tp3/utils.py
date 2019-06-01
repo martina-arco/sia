@@ -10,6 +10,10 @@ HEIGHT = 5
 CHROMOSOME_SIZE = 6
 
 
+def sort_by_fitness(fit):
+    return fit[0]
+
+
 def select_random_index():
     return random.randint(0, CHROMOSOME_SIZE - 1)
 

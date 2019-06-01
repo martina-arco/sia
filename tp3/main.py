@@ -25,6 +25,9 @@ class Parameters:
         self.crossover_algorithm = ''
         self.mutation_algorithm = ''
 
+        self.fitness_min = 0
+        self.generation_percentage_to_say_equals = 0.0
+        self.generation_number_to_say_equals = 0
         self.max_generation = 0
 
         self.attack_multiplier = ''
@@ -62,6 +65,15 @@ class Parameters:
         
     def set_mutation_algorithm(self, mutation_algorithm):
         self.mutation_algorithm = mutation_algorithm
+
+    def set_fitness_min(self, fitness_min):
+        self.fitness_min = fitness_min
+
+    def set_generation_percentage_to_say_equals(self, generation_percentage_to_say_equals):
+        self.generation_percentage_to_say_equals = generation_percentage_to_say_equals
+
+    def set_generation_number_to_say_equals(self, generation_number_to_say_equals):
+        self.generation_number_to_say_equals = generation_number_to_say_equals
 
     def set_max_generation(self, max_generation):
         self.max_generation = max_generation
@@ -126,6 +138,12 @@ if __name__ == "__main__":
                         help='Mutation algorithm to use.',
                         choices=['uniform gen', 'uniform multi_gen', 'non_uniform gen', 'non_uniform multi_gen'])
 
+    parser.add_argument('-fm', '--fitness_min', type=int, default=0,
+                        help='Fitness considered to stop algorithm if it is less than that')
+    parser.add_argument('-pe', '--generation_percentage_to_say_equals', type=float, default=1,
+                        help='Percentage of equal chromosomes to consider one generation equal to another')
+    parser.add_argument('-ne', '--generation_number_to_say_equals', type=int, default=10,
+                        help='Number of equal fitnesses to consider it is not changing in generations')
     parser.add_argument('-max_g', '--max_generation', type=str, default=10000,
                         help='Max generation for stop condition.', required=False)
 
@@ -175,6 +193,9 @@ if __name__ == "__main__":
     parameters.set_crossover_algorithm(args.crossover_algorithm)
     parameters.set_mutation_algorithm(args.mutation_algorithm)
 
+    parameters.set_fitness_min(args.fitness_min)
+    parameters.set_generation_percentage_to_say_equals(args.generation_percentage_to_say_equals)
+    parameters.set_generation_number_to_say_equals(args.generation_number_to_say_equals)
     parameters.set_max_generation(args.max_generation)
 
     parameters.set_attack_multiplier(args.attack_multiplier)

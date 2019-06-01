@@ -6,7 +6,12 @@ from algorithm_implementation.StopConditions import StructureStopCondition
 from algorithm_implementation.StopConditions import ContentStopCondition
 from algorithm_implementation.StopConditions import OptimalStopCondition
 
-import algorithm_implementation.SelectionAlgorithms as SelectionAlgorithms
+from algorithm_implementation.SelectionAlgorithms import EliteSelection
+from algorithm_implementation.SelectionAlgorithms import RouletteSelection
+from algorithm_implementation.SelectionAlgorithms import UniversalSelection
+from algorithm_implementation.SelectionAlgorithms import BoltzmanSelection
+from algorithm_implementation.SelectionAlgorithms import TournamentSelection
+from algorithm_implementation.SelectionAlgorithms import RankingSelection
 
 from algorithm_implementation.CrossoverAlgorithms import OnePointCrossover
 from algorithm_implementation.CrossoverAlgorithms import TwoPointCrossover
@@ -50,6 +55,33 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.generation_percentage_to_say_equals = parameters.generation_percentage_to_say_equals
         self.best_fits = []
         self.generation_number_to_say_equals = parameters.generation_number_to_say_equals
+        self.is_tournament_probabilistic = False
+
+        if self.selection_algorithm == 'elite':
+            self.selection_algorithm_implementation_1 = EliteSelection()
+        elif self.selection_algorithm == 'roulette':
+            self.selection_algorithm_implementation_1 = RouletteSelection()
+        elif self.selection_algorithm == 'universal':
+            self.selection_algorithm_implementation_1 = UniversalSelection()
+        elif self.selection_algorithm == 'boltzman':
+            self.selection_algorithm_implementation_1 = BoltzmanSelection()
+        elif self.selection_algorithm == 'tournament':
+            self.selection_algorithm_implementation_1 = TournamentSelection(self.is_tournament_probabilistic)
+        elif self.selection_algorithm == 'ranking':
+            self.selection_algorithm_implementation_1 = RankingSelection()
+        
+        if self.selection_algorithm == 'elite':
+            self.selection_algorithm_implementation_2 = EliteSelection()
+        elif self.selection_algorithm == 'roulette':
+            self.selection_algorithm_implementation_2 = RouletteSelection()
+        elif self.selection_algorithm == 'universal':
+            self.selection_algorithm_implementation_2 = UniversalSelection()
+        elif self.selection_algorithm == 'boltzman':
+            self.selection_algorithm_implementation_2 = BoltzmanSelection()
+        elif self.selection_algorithm == 'tournament':
+            self.selection_algorithm_implementation_2 = TournamentSelection(self.is_tournament_probabilistic)
+        elif self.selection_algorithm == 'ranking':
+            self.selection_algorithm_implementation_2 = RankingSelection()
 
         if self.crossover_algorithm == 'anular':
             self.crossover_algorithm_implementation = AnularCrossover()
@@ -66,7 +98,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             self.mutation_algorithm_implementation = GenMutation()
 
         # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
-        self.generation_k = 1
+        self.k = 1
 
         self.attack_multiplier = parameters.attack_multiplier
         self.defense_multiplier = parameters.defense_multiplier
@@ -85,12 +117,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         # self.limit = parameters.limit
         self.population_size = parameters.population_size
-
-        self.is_tournament_probabilistic = False
-        # supongo que el counter es el numero de generacion
         self.population_temp = 100 - self.generation
-        # self.prob_crossover = prob_crossover
-        # self.prob_mutation = prob_mutation
 
     # GeneticFunctions interface impls
     # def probability_crossover(self):
@@ -134,24 +161,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             return self.stop_condition_implementation.check_stop(fits_populations, self.fitness_min)
 
     def selection(self, fits_populations):
-        sorted_populations = sorted(fits_populations)
-        if self.selection_algorithm == 'elite':
-            return SelectionAlgorithms.elite(sorted_populations)
-
-        elif self.selection_algorithm == 'roulette':
-            return SelectionAlgorithms.roulette(sorted_populations)
-
-        elif self.selection_algorithm == 'universal':
-            return SelectionAlgorithms.universal(sorted_populations)
-
-        elif self.selection_algorithm == 'boltzman':
-            return SelectionAlgorithms.boltzman(fits_populations)
-
-        elif self.selection_algorithm == 'tournament':
-            return SelectionAlgorithms.tournament(fits_populations, self.is_tournament_probabilistic)
-
-        elif self.selection_algorithm == 'ranking':
-            return SelectionAlgorithms.ranking(fits_populations)
+        return self.selection_algorithm_implementation_1.selection(fits_populations, self.k)
 
     def crossover(self, parents):
         father, mother = parents
