@@ -3,7 +3,7 @@ class GeneticAlgorithm(object):
         self.genetics = genetics
 
     def run(self):
-        population = self.genetics.initial
+        population = self.genetics.initial()
         finished = False
 
         while not finished:
