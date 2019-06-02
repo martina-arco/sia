@@ -1,6 +1,7 @@
-from algorithm_implementation.GeneticFunctionsImplementation import GeneticFunctionsImplementation
 import argparse
 import csv
+from algorithm_implementation.GeneticFunctionsImplementation import GeneticFunctionsImplementation
+from GeneticAlgorithm import GeneticAlgorithm
 
 
 def read_file(file_name):
@@ -8,9 +9,17 @@ def read_file(file_name):
     with open(file_name) as tsvfile:
         reader = csv.DictReader(tsvfile, dialect='excel-tab')
         for row in reader:
-            array.append(row)
-
+            array.append(parse(row))
     return array
+
+
+def parse(row):
+    for key, value in row.items():
+        if key == 'id':
+            row[key] = int(value)
+        else:
+            row[key] = float(value)
+    return row
 
 
 class Parameters:
@@ -24,11 +33,14 @@ class Parameters:
         self.selection_algorithm = ''
         self.crossover_algorithm = ''
         self.mutation_algorithm = ''
+        self.scaling_algorithm = ''
 
         self.fitness_min = 0
         self.generation_percentage_to_say_equals = 0.0
         self.generation_number_to_say_equals = 0
         self.max_generation = 0
+        self.initial_temperature = 1
+        self.temperature_step = 1.0
 
         self.attack_multiplier = ''
         self.defense_multiplier = ''
@@ -96,14 +108,14 @@ class Parameters:
     def set_resistance_multiplier(self, resistance_multiplier):
         self.resistance_multiplier = resistance_multiplier
 
-    def set_scaling_algorithm(self, resistance_multiplier):
-        self.resistance_multiplier = resistance_multiplier
+    def set_scaling_algorithm(self, scaling_algorithm):
+        self.scaling_algorithm = scaling_algorithm
 
-    def set_initial_temperature(self, resistance_multiplier):
-        self.resistance_multiplier = resistance_multiplier
+    def set_initial_temperature(self, initial_temperature):
+        self.initial_temperature = initial_temperature
 
-    def set_temperature_step(self, resistance_multiplier):
-        self.resistance_multiplier = resistance_multiplier
+    def set_temperature_step(self, temperature_step):
+        self.temperature_step = temperature_step
         
     def set_life_multiplier(self, life_multiplier):
         self.life_multiplier = life_multiplier
@@ -208,11 +220,14 @@ if __name__ == "__main__":
     parameters.set_selection_algorithm(args.selection_algorithm)
     parameters.set_crossover_algorithm(args.crossover_algorithm)
     parameters.set_mutation_algorithm(args.mutation_algorithm)
+    parameters.set_scaling_algorithm(args.scaling_algorithm)
 
     parameters.set_fitness_min(args.fitness_min)
     parameters.set_generation_percentage_to_say_equals(args.generation_percentage_to_say_equals)
     parameters.set_generation_number_to_say_equals(args.generation_number_to_say_equals)
     parameters.set_max_generation(args.max_generation)
+    parameters.set_initial_temperature(args.initial_temperature)
+    parameters.set_temperature_step(args.temperature_step)
 
     parameters.set_attack_multiplier(args.attack_multiplier)
     parameters.set_defense_multiplier(args.defense_multiplier)
@@ -231,4 +246,4 @@ if __name__ == "__main__":
 
     functionsImplementations = GeneticFunctionsImplementation(parameters)
 
-    # GeneticAlgorithm(functionsImplementations).run()
+    GeneticAlgorithm(functionsImplementations).run()

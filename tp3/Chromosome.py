@@ -7,8 +7,8 @@ class Chromosome:
 
     def __init__(self, items_size=0, genes=None):
         if genes is None:
-            self.genes = [random.randint(0, items_size), random.randint(0, items_size), random.randint(0, items_size),
-                          random.randint(0, items_size), random.randint(0, items_size), random.uniform(1.3, 2)]
+            self.genes = [random.randint(0, items_size - 1), random.randint(0, items_size - 1), random.randint(0, items_size - 1),
+                          random.randint(0, items_size - 1), random.randint(0, items_size - 1), random.uniform(1.3, 2)]
         else:
             self.genes = genes
 
