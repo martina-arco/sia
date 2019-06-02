@@ -25,6 +25,8 @@ from algorithm_implementation.ScalingAlgorithms import BoltzmannSelection
 from algorithm_implementation.ScalingAlgorithms import RelativeScaling
 
 from algorithm_implementation.ReplacementMethods import ReplacementOne
+from algorithm_implementation.ReplacementMethods import ReplacementTwo
+from algorithm_implementation.ReplacementMethods import ReplacementThree
 
 from GeneticFunctions import GeneticFunctions
 from Chromosome import Chromosome
@@ -37,12 +39,15 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.generation = 0
 
         self.population_size = parameters.population_size
+        self.percentage_3 = parameters.percentage_3
+        self.percentage_4 = parameters.percentage_4
 
         self.stop_condition = parameters.stop_condition
         self.selection_algorithm = parameters.selection_algorithm
         self.crossover_algorithm = parameters.crossover_algorithm
         self.mutation_algorithm = parameters.mutation_algorithm
         self.scaling_algorithm = parameters.scaling_algorithm
+        self.replacement_method = parameters.replacement_method
         self.is_tournament_probabilistic = False
 
         if self.stop_condition == 'generation_number':
@@ -87,6 +92,28 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         elif self.selection_algorithm == 'ranking':
             self.selection_algorithm_implementation_2 = RankingSelection()
 
+        if self.selection_algorithm == 'elite':
+            self.selection_algorithm_implementation_3 = EliteSelection()
+        elif self.selection_algorithm == 'roulette':
+            self.selection_algorithm_implementation_3 = RouletteSelection()
+        elif self.selection_algorithm == 'universal':
+            self.selection_algorithm_implementation_3 = UniversalSelection()
+        elif self.selection_algorithm == 'tournament':
+            self.selection_algorithm_implementation_3 = TournamentSelection(self.is_tournament_probabilistic)
+        elif self.selection_algorithm == 'ranking':
+            self.selection_algorithm_implementation_3 = RankingSelection()
+
+        if self.selection_algorithm == 'elite':
+            self.selection_algorithm_implementation_4 = EliteSelection()
+        elif self.selection_algorithm == 'roulette':
+            self.selection_algorithm_implementation_4 = RouletteSelection()
+        elif self.selection_algorithm == 'universal':
+            self.selection_algorithm_implementation_4 = UniversalSelection()
+        elif self.selection_algorithm == 'tournament':
+            self.selection_algorithm_implementation_4 = TournamentSelection(self.is_tournament_probabilistic)
+        elif self.selection_algorithm == 'ranking':
+            self.selection_algorithm_implementation_4 = RankingSelection()
+
         if parameters.parent_selection_algorithm == 'elite':
             self.parent_selection_algorithm = EliteSelection()
         elif parameters.parent_selection_algorithm== 'roulette':
@@ -114,7 +141,20 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         else:
             self.crossover_algorithm_implementation = OnePointCrossover()
 
-        self.replacement_method_implementation = ReplacementOne(parameters.population_size)
+        if self.replacement_method == 'replacement_one':
+            self.replacement_method_implementation = ReplacementOne(parameters.population_size)
+        elif self.replacement_method == 'replacement_two':
+            self.replacement_method_implementation = ReplacementTwo(parameters.population_size,
+                                                                    self.selection_algorithm_implementation_3,
+                                                                    parameters.percentage_3,
+                                                                    parameters.percentage_4)
+                                                                    self.selection_algorithm_implementation_4,
+        elif self.replacement_method == 'replacement_three':
+            self.replacement_method_implementation = ReplacementThree(parameters.population_size,
+                                                                      self.selection_algorithm_implementation_3,
+                                                                      parameters.percentage_3,
+                                                                      self.selection_algorithm_implementation_4,
+                                                                      parameters.percentage_4)
 
         # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
         self.k = parameters.k
