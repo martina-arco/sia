@@ -23,6 +23,8 @@ from algorithm_implementation.MutationAlgorithms import MultiGenMutation
 from algorithm_implementation.ScalingAlgorithms import NoScaling
 from algorithm_implementation.ScalingAlgorithms import BoltzmannSelection
 
+from algorithm_implementation.ReplacementMethods import ReplacementOne
+
 from GeneticFunctions import GeneticFunctions
 from Chromosome import Chromosome
 
@@ -101,6 +103,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             self.mutation_algorithm_implementation = MultiGenMutation()
         else:
             self.mutation_algorithm_implementation = GenMutation()
+
+        self.replacement_method_implementation = ReplacementOne()
 
         # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
         self.k = parameters.k
@@ -182,3 +186,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def fitness_scaling(self, fits_population):
         return self.scaling_algorithm_implementation.scale(fits_population)
+
+    def replacement(self, parents):
+        return self.replacement_method_implementation.replacement(parents, k)
