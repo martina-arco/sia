@@ -104,7 +104,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         else:
             self.mutation_algorithm_implementation = GenMutation()
 
-        self.replacement_method_implementation = ReplacementOne()
+        self.replacement_method_implementation = ReplacementOne(parameters.population_size)
 
         # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
         self.k = parameters.k
@@ -187,9 +187,15 @@ class GeneticFunctionsImplementation(GeneticFunctions):
     def fitness_scaling(self, fits_population):
         return self.scaling_algorithm_implementation.scale(fits_population)
 
-    def replacement(self, parents):
-        return self.replacement_method_implementation.replacement(parents, k)
+    def replacement(self, parents, children):
+        return self.replacement_method_implementation.replacement(parents, children)
+
+    def offspring_size(self):
+        return self.replacement_method_implementation.offspring_size()
 
     def update_parameters(self):
         self.mutation_algorithm_implementation.update_parameters()
         self.scaling_algorithm_implementation.update_parameters()
+
+    def parent_selection(self, parent_pool):
+        return self.selection_algorithm_implementation_2.selection(parent_pool, 2)

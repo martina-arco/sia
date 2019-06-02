@@ -1,23 +1,24 @@
 class ReplacementMethod(object):
-    def replacement(self, fits_population, k, items_size, prob_mutation):
-        return fits_population
+    def offspring_size(self):
+        pass
+
+    def replacement(self, parents, children):
+        pass
 
 
 class ReplacementOne(ReplacementMethod):
-    def replacement(self, fits_population, k, items_size, prob_mutation):
-        new_population = []
+    def __init__(self, pop_size):
+        self.pop_size = pop_size
 
-        for i in range(0, len(fits_population)):
-            chromosomes = selection(self, fits_population, 2)
-            children = crossover(self, chromosomes[0], chromosomes[1])
-            mutated_child = mutate(self, children[0], items_size, prob_mutation)
-            new_population.append(mutated_child)
+    def offspring_size(self):
+        return self.pop_size
 
-        return new_population
+    def replacement(self, parents, children):
+        return [ch for fit, ch in children]
 
 
 class ReplacementTwo(ReplacementMethod):
-    def replacement(self, fits_population, k, items_size, prob_mutation):
+    def replacement(self, parents, children):
         new_population = []
 
         chromosomes = selection(self, fits_population, k)
@@ -34,7 +35,7 @@ class ReplacementTwo(ReplacementMethod):
 
 
 class ReplacementThree(ReplacementMethod):
-    def replacement(self, fits_population, k, items_size, prob_mutation):
+    def replacement(self, parents, children):
         new_population = []
 
         chromosomes = selection(self, fits_population, k)

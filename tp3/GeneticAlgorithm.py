@@ -16,12 +16,12 @@ class GeneticAlgorithm(object):
 
     def next_generation(self, population_fitness):
         population_scaled = self.genetics.fitness_scaling(population_fitness)
-        parents = self.genetics.selection(population_scaled)
+        parent_pool = self.genetics.selection(population_scaled)
 
         offspring = []
         for i in range(0, self.genetics.offspring_size(), 2):
-            father, mother = self.genetics.parent_selection(parents)
-            children = self.genetics.crossover(father, mother)
+            parents = self.genetics.parent_selection(parent_pool)
+            children = self.genetics.crossover(parents[0][1], parents[1][1])
             for ch in children:
                 offspring.append(self.genetics.mutation(ch))
 

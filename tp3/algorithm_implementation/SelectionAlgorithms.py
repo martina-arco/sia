@@ -11,8 +11,8 @@ class SelectionAlgorithm(object):
 class EliteSelection(SelectionAlgorithm):
     def selection(self, fits_population, k):
         sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
-        chromosomes = [ch for f, ch in sorted_population]
-        return chromosomes[0:k]
+        # chromosomes = [ch for f, ch in sorted_population]
+        return sorted_population[0:k]
 
 
 class RouletteSelection(SelectionAlgorithm):
@@ -87,9 +87,9 @@ def accumulative_fitness(population):
 def select_by_probability(accumulated_fitness, population, r):
     for x in range(0, len(population)):
         if accumulated_fitness[x] >= r:
-            return population[x][1]
+            return population[x]
     # si no agarre ninguno es porque es el ultimo
-    return population[len(population)-1][1]
+    return population[len(population)-1]
 
 
 def tournament_deployment(fits_populations, is_tournament_probabilistic):
