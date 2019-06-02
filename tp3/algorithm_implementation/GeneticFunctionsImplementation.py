@@ -22,6 +22,7 @@ from algorithm_implementation.MutationAlgorithms import MultiGenMutation
 
 from algorithm_implementation.ScalingAlgorithms import NoScaling
 from algorithm_implementation.ScalingAlgorithms import BoltzmannSelection
+from algorithm_implementation.ScalingAlgorithms import RelativeScaling
 
 from algorithm_implementation.ReplacementMethods import ReplacementOne
 
@@ -86,8 +87,21 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         elif self.selection_algorithm == 'ranking':
             self.selection_algorithm_implementation_2 = RankingSelection()
 
+        if parameters.parent_selection_algorithm == 'elite':
+            self.parent_selection_algorithm = EliteSelection()
+        elif parameters.parent_selection_algorithm== 'roulette':
+            self.parent_selection_algorithm = RouletteSelection()
+        elif parameters.parent_selection_algorithm == 'universal':
+            self.parent_selection_algorithm = UniversalSelection()
+        elif parameters.parent_selection_algorithm == 'tournament':
+            self.parent_selection_algorithm = TournamentSelection(self.is_tournament_probabilistic)
+        elif parameters.parent_selection_algorithm == 'ranking':
+            self.parent_selection_algorithm = RankingSelection()
+
         if self.scaling_algorithm == 'boltzmann':
             self.scaling_algorithm_implementation = BoltzmannSelection(parameters.initial_temperature, parameters.temperature_step)
+        if self.scaling_algorithm == 'relative':
+            self.scaling_algorithm_implementation = RelativeScaling()
         else:
             self.scaling_algorithm_implementation = NoScaling()
 
@@ -104,6 +118,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
         self.k = parameters.k
+
+        self.A = 1.0
 
         self.attack_multiplier = parameters.attack_multiplier
         self.defense_multiplier = parameters.defense_multiplier
@@ -180,7 +196,9 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             return self.stop_condition_implementation.check_stop(fits_populations, self.fitness_min)
 
     def selection(self, fits_populations):
-        return self.selection_algorithm_implementation_1.selection(fits_populations, self.k)
+        method1 = self.selection_algorithm_implementation_1.selection(fits_populations, math.ceil(self.k * self.A))
+        method2 = self.selection_algorithm_implementation_2.selection(fits_populations, math.floor(self.k * (1 - self.A)))
+        return method1 + method2
 
     def crossover(self, father, mother):
         return self.crossover_algorithm_implementation.crossover(father, mother)
@@ -203,7 +221,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.scaling_algorithm_implementation.update_parameters()
 
     def parent_selection(self, parent_pool):
-        return self.selection_algorithm_implementation_2.selection(parent_pool, 2)
+        return self.parent_selection_algorithm.selection(parent_pool, 2)
 
     def plot(self, population_fitness):
         # avg_fitness = sum(fit for fit, ch in population_fitness) / len(population_fitness)

@@ -171,7 +171,7 @@ if __name__ == "__main__":
                         help='Percentage of equal chromosomes to consider one generation equal to another')
     parser.add_argument('-ne', '--generation_number_to_say_equals', type=int, default=10,
                         help='Number of equal fitnesses to consider it is not changing in generations')
-    parser.add_argument('-max_g', '--max_generation', type=str, default=100,
+    parser.add_argument('-max_g', '--max_generation', type=int, default=100,
                         help='Max generation for stop condition.', required=False)
     parser.add_argument('-it', '--initial-temperature', type=int, default=100,
                         help='Initial temperature for scaling algorithm')
@@ -211,6 +211,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    print('Loading data...')
     weapons = read_file(args.weapons)
     boots = read_file(args.boots)
     helmets = read_file(args.helmets)
@@ -252,6 +253,7 @@ if __name__ == "__main__":
     parameters.set_gloves(gloves)
     parameters.set_shirts(shirts)
 
+    print('Initializing algorithm')
     functionsImplementations = GeneticFunctionsImplementation(parameters)
 
     GeneticAlgorithm(functionsImplementations).run()

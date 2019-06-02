@@ -28,3 +28,10 @@ class BoltzmannSelection(ScalingAlgorithm):
 
 class NoScaling(ScalingAlgorithm):
     pass
+
+
+class RelativeScaling(ScalingAlgorithm):
+    def scale(self, fits_population):
+        avg_fitness = sum(fit for fit, ch in fits_population) / len(fits_population)
+        scaled_population = [(f / avg_fitness, ch) for f, ch in fits_population]
+        return scaled_population
