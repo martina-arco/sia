@@ -27,6 +27,7 @@ from algorithm_implementation.ReplacementMethods import ReplacementOne
 
 from GeneticFunctions import GeneticFunctions
 from Chromosome import Chromosome
+from RealtimePlot import RealtimePlot
 
 
 class GeneticFunctionsImplementation(GeneticFunctions):
@@ -128,6 +129,10 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         # self.limit = parameters.limit
 
+        # Plotting
+        self.plot_freq = 1
+        self.fitness_plot = RealtimePlot()
+
     def initial(self):
         population = []
 
@@ -199,3 +204,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def parent_selection(self, parent_pool):
         return self.selection_algorithm_implementation_2.selection(parent_pool, 2)
+
+    def plot(self, population_fitness):
+        # avg_fitness = sum(fit for fit, ch in population_fitness) / len(population_fitness)
+        max_fitness = max(population_fitness)[0]
+        self.fitness_plot.add(self.generation, max_fitness)

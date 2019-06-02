@@ -8,6 +8,8 @@ class GeneticAlgorithm(object):
 
         while not finished:
             population_fitness = [(self.genetics.fitness(ch), ch) for ch in population]
+            if self.genetics.generation % self.genetics.plot_freq == 0:
+                self.genetics.plot(population_fitness)
             finished = self.genetics.check_stop(population_fitness)
             if not finished:
                 population = self.next_generation(population_fitness)
