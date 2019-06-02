@@ -35,6 +35,7 @@ class Parameters:
         self.mutation_algorithm = ''
         self.scaling_algorithm = ''
 
+        self.k = 0
         self.fitness_min = 0
         self.generation_percentage_to_say_equals = 0.0
         self.generation_number_to_say_equals = 0
@@ -77,6 +78,9 @@ class Parameters:
         
     def set_mutation_algorithm(self, mutation_algorithm):
         self.mutation_algorithm = mutation_algorithm
+
+    def set_k(self, k):
+        self.k = k
 
     def set_fitness_min(self, fitness_min):
         self.fitness_min = fitness_min
@@ -139,7 +143,7 @@ class Parameters:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run genetic algorithm.')
 
-    parser.add_argument('-ps', '--population_size', type=int, default=1000,
+    parser.add_argument('-ps', '--population_size', type=int, default=100,
                         help='Initial population size.')
     parser.add_argument('-pc', '--prob_crossover', type=float, default=0.9,
                         help='Probability of doing crossover.')
@@ -162,6 +166,8 @@ if __name__ == "__main__":
                         help='Scaling algorithm to use.',
                         choices=['none', 'boltzmann'])
 
+    parser.add_argument('-k', '--k_selection', type=int, default=50,
+                        help='Number of individuals to be selected.')
     parser.add_argument('-fm', '--fitness_min', type=int, default=0,
                         help='Fitness considered to stop algorithm if it is less than that')
     parser.add_argument('-pe', '--generation_percentage_to_say_equals', type=float, default=1,
@@ -222,6 +228,7 @@ if __name__ == "__main__":
     parameters.set_mutation_algorithm(args.mutation_algorithm)
     parameters.set_scaling_algorithm(args.scaling_algorithm)
 
+    parameters.set_k(args.k_selection)
     parameters.set_fitness_min(args.fitness_min)
     parameters.set_generation_percentage_to_say_equals(args.generation_percentage_to_say_equals)
     parameters.set_generation_number_to_say_equals(args.generation_number_to_say_equals)

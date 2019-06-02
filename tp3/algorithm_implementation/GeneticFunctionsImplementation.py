@@ -1,4 +1,3 @@
-import random
 import utils
 import math
 
@@ -104,7 +103,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             self.mutation_algorithm_implementation = GenMutation()
 
         # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
-        self.k = 1
+        self.k = parameters.k
 
         self.attack_multiplier = parameters.attack_multiplier
         self.defense_multiplier = parameters.defense_multiplier
@@ -135,7 +134,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def fitness(self, chromosome):
         return chromosome.calculate_fitness(self.attack_multiplier, self.defense_multiplier, self.force_multiplier,
-                                            self.agility_multiplier,self.expertise_multiplier, self.resistance_multiplier,
+                                            self.agility_multiplier, self.expertise_multiplier, self.resistance_multiplier,
                                             self.life_multiplier, self.weapons, self.boots, self.helmets, self.gloves,
                                             self.shirts)
 
@@ -176,7 +175,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
     def crossover(self, father, mother):
         return self.crossover_algorithm_implementation.crossover(father, mother)
 
-    # cambiar probabilidad si es no uniforme
+    # TODO cambiar probabilidad si es no uniforme
     def mutation(self, chromosome):
         items_size = len(self.weapons)
         return self.mutation_algorithm_implementation.mutate(chromosome, items_size, self.prob_mutation)
