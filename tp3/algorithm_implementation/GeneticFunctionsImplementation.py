@@ -131,7 +131,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         # Plotting
         self.plot_freq = 1
-        self.fitness_plot = RealtimePlot()
+        self.fitness_plot = RealtimePlot(x_label='Generation', y_label='Max Fitness')
 
     def initial(self):
         population = []

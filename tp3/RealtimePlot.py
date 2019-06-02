@@ -2,9 +2,12 @@ import matplotlib.pyplot as plt
 
 
 class RealtimePlot:
-    def __init__(self):
+    def __init__(self, title='', x_label='', y_label=''):
         self.figure = plt.figure()
         self.axes = self.figure.add_subplot(111)
+        self.axes.set_title(title)
+        self.axes.set_xlabel(x_label)
+        self.axes.set_ylabel(y_label)
         self.x_data = []
         self.y_data = []
         self.plot, = self.axes.plot(self.x_data, self.y_data)
