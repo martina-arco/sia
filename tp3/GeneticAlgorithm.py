@@ -17,16 +17,17 @@ class GeneticAlgorithm(object):
     def next_generation(self, population_fitness):
         population_scaled = self.genetics.fitness_scaling(population_fitness)
         parents = self.genetics.selection(population_scaled)
-        next_generation = []
-        i = 0
 
-        while i < len(parents)-2:
-            father = parents[i]
-            mother = parents[i+1]
+        offspring = []
+        for i in range(0, self.genetics.offspring_size(), 2):
+            father, mother = self.genetics.parent_selection(parents)
             children = self.genetics.crossover(father, mother)
             for ch in children:
-                next_generation.append(self.genetics.mutation(ch))
-            i += 2
+                offspring.append(self.genetics.mutation(ch))
 
-        # falta el reemplazo
+        offspring_fitness = [(self.genetics.fitness(ch), ch) for ch in offspring]
+        offspring_scaled = self.genetics.fitness_scaling(offspring_fitness)
+        next_generation = self.genetics.replacement(population_scaled, offspring_scaled)
+
+        self.genetics.update_parameters()
         return next_generation

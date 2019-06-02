@@ -189,3 +189,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def replacement(self, parents):
         return self.replacement_method_implementation.replacement(parents, k)
+
+    def update_parameters(self):
+        self.mutation_algorithm_implementation.update_parameters()
+        self.scaling_algorithm_implementation.update_parameters()

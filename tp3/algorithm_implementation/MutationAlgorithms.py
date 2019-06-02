@@ -14,6 +14,8 @@ def mutate_gene(index, items_size):
 
 
 class Mutation(object):
+    def update_parameters(self):
+        pass
 
     def mutate(self, chromosome, items_size, prob_mutation):
         pass
