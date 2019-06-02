@@ -26,8 +26,6 @@ class Parameters:
     def __init__(self):
 
         self.population_size = 0
-        self.prob_crossover = 0.0
-        self.prob_mutation = 0.0
         
         self.stop_condition = ''
         self.selection_algorithm = ''
@@ -42,6 +40,8 @@ class Parameters:
         self.max_generation = 0
         self.initial_temperature = 1
         self.temperature_step = 1.0
+        self.prob_mutation = 0.0
+        self.rate_mutation = 0.0
 
         self.attack_multiplier = ''
         self.defense_multiplier = ''
@@ -60,12 +60,6 @@ class Parameters:
 
     def set_population_size(self, population_size):
         self.population_size = population_size
-        
-    def set_prob_crossover(self, prob_crossover):
-        self.prob_crossover = prob_crossover
-
-    def set_prob_mutation(self, prob_mutation):
-        self.prob_mutation = prob_mutation
         
     def set_stop_condition(self, stop_condition):
         self.stop_condition = stop_condition
@@ -93,6 +87,12 @@ class Parameters:
 
     def set_max_generation(self, max_generation):
         self.max_generation = max_generation
+
+    def set_prob_mutation(self, prob_mutation):
+        self.prob_mutation = prob_mutation
+    
+    def set_rate_mutation(self, rate_mutation):
+        self.rate_mutation = rate_mutation
         
     def set_attack_multiplier(self, attack_multiplier):
         self.attack_multiplier = attack_multiplier
@@ -145,10 +145,6 @@ if __name__ == "__main__":
 
     parser.add_argument('-ps', '--population_size', type=int, default=100,
                         help='Initial population size.')
-    parser.add_argument('-pc', '--prob_crossover', type=float, default=0.9,
-                        help='Probability of doing crossover.')
-    parser.add_argument('-pm', '--prob_mutation', type=float, default=0.2,
-                        help='Probability of mutating.')
     
     parser.add_argument('-sc', '--stop_condition', type=str, default='generation_number',
                         help='Stop condition for iterations.',
@@ -180,6 +176,10 @@ if __name__ == "__main__":
                         help='Initial temperature for scaling algorithm')
     parser.add_argument('-ts', '--temperature-step', type=float, default=1,
                         help='Temperature step per generation')
+    parser.add_argument('-pm', '--prob_mutation', type=float, default=0.2,
+                        help='Probability of mutating.')
+    parser.add_argument('-rm', '--rate_mutation', type=float, default=0.2,
+                        help='Rate at which mutation will decline in non uniform mutation.')
 
     parser.add_argument('-atm', '--attack_multiplier', type=float, default=0.9,
                         help='Attack multiplier to use when calculating fitness.')
@@ -219,8 +219,6 @@ if __name__ == "__main__":
     parameters = Parameters()
 
     parameters.set_population_size(args.population_size)
-    parameters.set_prob_crossover(args.prob_crossover)
-    parameters.set_prob_mutation(args.prob_mutation)
 
     parameters.set_stop_condition(args.stop_condition)
     parameters.set_selection_algorithm(args.selection_algorithm)
@@ -235,6 +233,8 @@ if __name__ == "__main__":
     parameters.set_max_generation(args.max_generation)
     parameters.set_initial_temperature(args.initial_temperature)
     parameters.set_temperature_step(args.temperature_step)
+    parameters.set_prob_mutation(args.prob_mutation)
+    parameters.set_rate_mutation(args.rate_mutation)
 
     parameters.set_attack_multiplier(args.attack_multiplier)
     parameters.set_defense_multiplier(args.defense_multiplier)
@@ -253,4 +253,4 @@ if __name__ == "__main__":
 
     functionsImplementations = GeneticFunctionsImplementation(parameters)
 
-    GeneticAlgorithm(functionsImplementations).run()
+    # GeneticAlgorithm(functionsImplementations).run()

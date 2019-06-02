@@ -35,8 +35,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.generation = 0
 
         self.population_size = parameters.population_size
-        self.prob_crossover = parameters.prob_crossover
-        self.prob_mutation = parameters.prob_mutation
 
         self.stop_condition = parameters.stop_condition
         self.selection_algorithm = parameters.selection_algorithm
@@ -62,6 +60,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.count_of_equal_generations = 0
         self.generation_number_to_say_equals = parameters.generation_number_to_say_equals
         self.is_tournament_probabilistic = False
+        self.prob_mutation = parameters.prob_mutation
+        self.rate_mutation = parameters.rate_mutation
 
         if self.selection_algorithm == 'elite':
             self.selection_algorithm_implementation_1 = EliteSelection()
@@ -99,11 +99,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         else:
             self.crossover_algorithm_implementation = OnePointCrossover()
 
-        if 'multi_gen' in self.mutation_algorithm:
-            self.mutation_algorithm_implementation = MultiGenMutation()
-        else:
-            self.mutation_algorithm_implementation = GenMutation()
-
         self.replacement_method_implementation = ReplacementOne(parameters.population_size)
 
         # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
@@ -124,8 +119,14 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.gloves = parameters.gloves
         self.shirts = parameters.shirts
 
+        if 'multi_gen' in self.mutation_algorithm:
+            self.mutation_algorithm_implementation = MultiGenMutation(self.prob_mutation, self.rate_mutation,
+                                                                      len(self.weapons))
+        else:
+            self.mutation_algorithm_implementation = GenMutation(self.prob_mutation, self.rate_mutation,
+                                                                 len(self.weapons))
+
         # self.limit = parameters.limit
-        self.population_size = parameters.population_size
 
     def initial(self):
         population = []
@@ -181,8 +182,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     # TODO cambiar probabilidad si es no uniforme
     def mutation(self, chromosome):
-        items_size = len(self.weapons)
-        return self.mutation_algorithm_implementation.mutate(chromosome, items_size, self.prob_mutation)
+        return self.mutation_algorithm_implementation.mutate(chromosome)
 
     def fitness_scaling(self, fits_population):
         return self.scaling_algorithm_implementation.scale(fits_population)
