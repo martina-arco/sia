@@ -221,10 +221,10 @@ if __name__ == "__main__":
 
     parser.add_argument('-p1', '--percentage_for_selection', type=float, default=0.5,
                         help='Percentage to use method 1 and 2 for selection.',
-                        choices=range(0, 1))
+                        choices=np.arange(0, 1, 0.01))
     parser.add_argument('-p2', '--percentage_for_replacement', type=float, default=0.5,
                         help='Percentage to use method 3 and 4 for replacement.',
-                        choices=range(0, 1))
+                        choices=np.arange(0, 1, 0.01))
 
     parser.add_argument('-k', '--k_selection', type=int, default=50,
                         help='Number of individuals to be selected.')
@@ -246,10 +246,10 @@ if __name__ == "__main__":
                         help='Temperature step per generation')
     parser.add_argument('-pm', '--prob_mutation', type=float, default=0.2,
                         help='Probability of mutating.',
-                        choices=range(0, 1))
+                        choices=np.arange(0, 1, 0.01))
     parser.add_argument('-rm', '--rate_mutation', type=float, default=0.2,
                         help='Rate at which mutation will decline in non uniform mutation.',
-                        choices=range(0, 1))
+                        choices=np.arange(0, 1, 0.01))
 
     parser.add_argument('-atm', '--attack_multiplier', type=float, default=0.9,
                         help='Attack multiplier to use when calculating fitness.')
@@ -280,15 +280,18 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    if args.seed is not None and len(args.seed) != args.population_size:
+        raise ValueError("Seed length must be equals to population size.")
+
+    if args.k_selection > args.population_size or args.k_selection % 2 == 1:
+        raise ValueError("K should be even and smaller than population size.")
+
     print('Loading data...')
     weapons = read_file(args.weapons)
     boots = read_file(args.boots)
     helmets = read_file(args.helmets)
     gloves = read_file(args.gloves)
     shirts = read_file(args.shirts)
-
-    if args.seed is not None and len(args.seed) != args.population_size:
-        raise ValueError("Seed length must be equals to population size.")
 
     parameters = Parameters()
 

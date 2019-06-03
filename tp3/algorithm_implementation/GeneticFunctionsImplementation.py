@@ -169,9 +169,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.k = parameters.k
 
         # ToDo: Verificar que esto esta bien cortado
-        if self.k > self.population_size or self.k % 2 == 1:
-            print("Error de numero k y/o tamaño de poblacion")
-            exit()
+
 
         self.A = 1.0
         self.best_chromosome = (0, Chromosome(1))
