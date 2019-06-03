@@ -64,6 +64,12 @@ class Chromosome:
                         helmets[self.genes[utils.HELMET]][stat] + gloves[self.genes[utils.GLOVE]][stat] +
                         shirts[self.genes[utils.SHIRT]][stat]))
 
+    def __hash__(self):
+        hash_result = 0
+        for i in range(0, len(self.genes)):
+            hash_result += hash(self.genes[i])
+        return hash_result
+
     def __eq__(self, other):
         if isinstance(other, Chromosome):
             return np.array_equal(self.genes, other.genes)

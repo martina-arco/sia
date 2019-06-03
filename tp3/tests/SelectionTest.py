@@ -1,10 +1,12 @@
+import random
 import unittest
 import utils
 from Chromosome import Chromosome
 
-from algorithm_implementation.SelectionAlgorithms import EliteSelection
+from algorithm_implementation.SelectionAlgorithms import EliteSelection, TournamentSelection
 from algorithm_implementation.SelectionAlgorithms import RouletteSelection
 from algorithm_implementation.SelectionAlgorithms import UniversalSelection
+from algorithm_implementation.SelectionAlgorithms import RankingSelection
 
 chromosome1 = Chromosome(genes=[1, 1, 1])
 chromosome2 = Chromosome(genes=[2, 2, 2])
@@ -50,5 +52,62 @@ class SelectionTest(unittest.TestCase):
         self.assertEqual(len(parents), 5)
         parents = selection_algorithm.selection(fits_population, 10)
         self.assertEqual(len(parents), 10)
+
+    def test_ranking_selection(self):
+        rank_chromosomes = []
+        fits_large_population = []
+        result_selection = {}
+        for i in range(0, 100):
+            chromo = Chromosome(genes=[i, i, i])
+            rank_chromosomes.append(chromo)
+            result_selection[chromo] = 0
+            fits_large_population.append((i, rank_chromosomes[i]))
+        expected_chromosome = rank_chromosomes[99]
+        random.shuffle(rank_chromosomes)
+        selection_algorithm = RankingSelection()
+        for i in range(0, 100):
+            parents = selection_algorithm.selection(fits_large_population, 5)
+            for x in range(0, len(parents)):
+                result_selection[parents[x][1]] += 1
+
+        max_chromosome_selected = None
+        max_chromosome_selected_num = 0
+        for x in range(0, 100):
+            if max_chromosome_selected_num < result_selection[rank_chromosomes[x]]:
+                max_chromosome_selected = rank_chromosomes[x]
+                max_chromosome_selected_num = result_selection[rank_chromosomes[x]]
+
+        self.assertEqual(expected_chromosome, max_chromosome_selected)
+
+        parents = selection_algorithm.selection(fits_population, 5)
+        self.assertEqual(len(parents), 5)
+        parents = selection_algorithm.selection(fits_population, 10)
+        self.assertEqual(len(parents), 10)
+
+    def test_tournament_selection(self):
+        result_selection = {chromosome1: 0,
+                            chromosome2: 0,
+                            chromosome3: 0
+                            }
+        selection_algorithm = TournamentSelection(is_tournament_probabilistic=False)
+        for i in range(0, 100):
+            parents = selection_algorithm.selection(fits_population_with_large_fitness, 3)
+            for x in range(0, len(parents)):
+                result_selection[parents[x][1]] += 1
+
+        max_chromosome_selected = None
+
+        if result_selection[chromosome1] > result_selection[chromosome2]:
+            if result_selection[chromosome1] > result_selection[chromosome3]:
+                max_chromosome_selected = chromosome1
+            else:
+                max_chromosome_selected = chromosome3
+        else:
+            if result_selection[chromosome2] > result_selection[chromosome3]:
+                max_chromosome_selected = chromosome2
+            else:
+                max_chromosome_selected = chromosome3
+
+        self.assertEqual(chromosome1, max_chromosome_selected)
 
 

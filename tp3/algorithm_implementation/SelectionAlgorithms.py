@@ -56,13 +56,16 @@ class TournamentSelection(SelectionAlgorithm):
 
 class RankingSelection(SelectionAlgorithm):
     def selection(self, fits_population, k):
-        sorted_population = sorted(fits_population, key=utils.sort_by_fitness, reverse=True)
+        sorted_population = sorted(fits_population, key=utils.sort_by_fitness)
         i = 0
         chromosomes = []
 
-        while i < len(sorted_population) - 1:
+
+        # while i < len(sorted_population) - 1:
+        while i < k:
             chromosome = select_by_inverted_probability(sorted_population)
             chromosomes.append(chromosome)
+            i += 1
 
         return chromosomes
 
@@ -99,12 +102,12 @@ def tournament_deployment(fits_populations, is_tournament_probabilistic):
     mini_tournament.add(select_random(fits_populations))
 
     if is_tournament_probabilistic:
-        if random.random(0, 1) > 0.5:
-            return max(mini_tournament)
+        if random.uniform(0, 1) > 0.5:
+            return max(mini_tournament, key=utils.sort_by_fitness)
         else:
-            return min(mini_tournament)
+            return min(mini_tournament, key=utils.sort_by_fitness)
     else:
-        return max(mini_tournament)
+        return max(mini_tournament, key=utils.sort_by_fitness)
 
 
 def select_random(fits_populations):
