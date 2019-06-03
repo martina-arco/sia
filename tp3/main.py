@@ -192,7 +192,7 @@ if __name__ == "__main__":
     parser.add_argument('-ca', '--crossover_algorithm', type=str, default='one_point',
                         help='Crossover algorithm to use.',
                         choices=['one_point', 'two_points', 'uniform', 'anular'])
-    parser.add_argument('-ma', '--mutation_algorithm', type=str, default='gen',
+    parser.add_argument('-ma', '--mutation_algorithm', type=str, default='uniform_gen',
                         help='Mutation algorithm to use.',
                         choices=['uniform_gen', 'uniform_multi_gen', 'non_uniform_gen', 'non_uniform_multi_gen'])
     parser.add_argument('-sca', '--scaling_algorithm', type=str, default='none',
@@ -217,6 +217,7 @@ if __name__ == "__main__":
     parser.add_argument('-sa5', '--selection_algorithm_5', type=str, default='tournament',
                         help='Selection algorithm to use for parents to crossover.',
                         choices=['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking'])
+
     parser.add_argument('-p1', '--percentage_for_selection', type=float, default=0.5,
                         help='Percentage to use method 1 and 2 for selection.')
     parser.add_argument('-p2', '--percentage_for_replacement', type=float, default=0.5,
@@ -226,12 +227,14 @@ if __name__ == "__main__":
                         help='Number of individuals to be selected.')
     parser.add_argument('-fm', '--fitness_min', type=int, default=0,
                         help='Fitness considered to stop algorithm if it is less than that')
+
     parser.add_argument('-pe', '--population_percentage_to_say_equals', type=float, default=0.7,
                         help='Percentage of equal chromosomes in population to consider one population equal to another')
     parser.add_argument('-ne', '--generation_number_to_say_equals', type=int, default=10,
                         help='Number of equal generations, in the case of content it will be based on fitness, '
                              'in structure it is based on chromosome genes')
-    parser.add_argument('-max_g', '--max_generation', type=int, default=100,
+
+    parser.add_argument('-max_g', '--max_generation', type=int, default=1000,
                         help='Max generation for stop condition.', required=False)
     parser.add_argument('-it', '--initial-temperature', type=int, default=100,
                         help='Initial temperature for scaling algorithm')

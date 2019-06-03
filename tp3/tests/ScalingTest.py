@@ -1,6 +1,5 @@
 import unittest
 import utils
-import operator
 from Chromosome import Chromosome
 
 from algorithm_implementation.ScalingAlgorithms import NoScaling

@@ -1,8 +1,6 @@
 import unittest
-import utils
 from Chromosome import Chromosome
 
-from algorithm_implementation.ReplacementMethods import ReplacementOne
 from algorithm_implementation.ReplacementMethods import ReplacementTwo
 from algorithm_implementation.ReplacementMethods import ReplacementThree
 
