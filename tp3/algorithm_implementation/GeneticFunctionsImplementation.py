@@ -147,8 +147,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             self.replacement_method_implementation = ReplacementTwo(parameters.population_size,
                                                                     self.selection_algorithm_implementation_3,
                                                                     parameters.percentage_3,
-                                                                    parameters.percentage_4)
                                                                     self.selection_algorithm_implementation_4,
+                                                                    parameters.percentage_4)
         elif self.replacement_method == 'replacement_three':
             self.replacement_method_implementation = ReplacementThree(parameters.population_size,
                                                                       self.selection_algorithm_implementation_3,
