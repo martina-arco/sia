@@ -30,13 +30,13 @@ class SelectionTest(unittest.TestCase):
         selection_algorithm = EliteSelection()
 
         parents = selection_algorithm.selection(fits_population, 5)
-        expected = [chromosome5, chromosome5, chromosome4, chromosome4, chromosome3]
+        expected = [(5, chromosome5), (5, chromosome5), (4, chromosome4), (4, chromosome4), (3, chromosome3)]
         self.assertEqual(parents, expected)
 
     def test_roulette_selection(self):
         selection_algorithm = RouletteSelection()
         parents = selection_algorithm.selection(fits_population_with_large_fitness, 10)
-        self.assertIn(chromosome1, parents)
+        self.assertIn((1000, chromosome1), parents)
         parents = selection_algorithm.selection(fits_population, 5)
         self.assertEqual(len(parents), 5)
         parents = selection_algorithm.selection(fits_population, 10)
@@ -45,7 +45,7 @@ class SelectionTest(unittest.TestCase):
     def test_universal_selection(self):
         selection_algorithm = UniversalSelection()
         parents = selection_algorithm.selection(fits_population_with_large_fitness, 10)
-        self.assertIn(chromosome1, parents)
+        self.assertIn((1000, chromosome1), parents)
         parents = selection_algorithm.selection(fits_population, 5)
         self.assertEqual(len(parents), 5)
         parents = selection_algorithm.selection(fits_population, 10)
