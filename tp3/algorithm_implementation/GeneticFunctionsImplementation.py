@@ -191,6 +191,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.plot_freq = 1
         self.max_fitness_plot = RealtimePlot(x_label='Generation', y_label='Max Fitness')
         self.average_fitness_plot = RealtimePlot(x_label='Generation', y_label='Average Fitness')
+        self.chromosome_diversity_plot = RealtimePlot(x_label='Generation', y_label='Amount of different chromosomes')
 
     def initial(self):
         population = []
@@ -223,7 +224,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         elif self.stop_condition == 'structure':
             finished = self.stop_condition_implementation.check_stop(fits_populations, self.previous_generation)
-
             population_size_to_analyze = math.floor(len(fits_populations) * self.population_percentage_to_say_equals)
             self.previous_generation = fits_populations.copy()[0:population_size_to_analyze]
 
@@ -237,7 +237,9 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         elif self.stop_condition == 'content':
             self.best_fits.append(best_fit)
             if self.generation % self.generation_number_to_say_equals == 0:
-                return self.stop_condition_implementation.check_stop(self.best_fits, None)
+                finished = self.stop_condition_implementation.check_stop(self.best_fits, None)
+                self.best_fits.clear()
+                return finished
             return False
 
         else:
@@ -272,7 +274,15 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         return self.parent_selection_algorithm.selection(parent_pool, 2)
 
     def plot(self, population_fitness):
-        avg_fitness = sum(fit for fit, ch in population_fitness) / len(population_fitness)
+        different_chromosomes = set()
+        fitness_sum = 0
+
+        for fit, ch in population_fitness:
+            fitness_sum += fit
+            different_chromosomes.add(ch)
+
+        avg_fitness = fitness_sum / len(population_fitness)
         max_fitness = max(population_fitness)[0]
         self.max_fitness_plot.add(self.generation, max_fitness)
         self.average_fitness_plot.add(self.generation, avg_fitness)
+        self.chromosome_diversity_plot.add(self.generation, len(different_chromosomes))

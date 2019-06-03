@@ -186,7 +186,7 @@ if __name__ == "__main__":
     parser.add_argument('-sd', '--seed', type=str, required=False,
                         help='Seed for initial population, must be a string of population size length')
     
-    parser.add_argument('-sc', '--stop_condition', type=str, default='generation_number',
+    parser.add_argument('-sc', '--stop_condition', type=str, default='content',
                         help='Stop condition for iterations.',
                         choices=['generation_number', 'structure', 'content', 'optimal'])
     parser.add_argument('-ca', '--crossover_algorithm', type=str, default='one_point',
@@ -226,7 +226,7 @@ if __name__ == "__main__":
                         help='Number of individuals to be selected.')
     parser.add_argument('-fm', '--fitness_min', type=int, default=0,
                         help='Fitness considered to stop algorithm if it is less than that')
-    parser.add_argument('-pe', '--population_percentage_to_say_equals', type=float, default=1,
+    parser.add_argument('-pe', '--population_percentage_to_say_equals', type=float, default=0.7,
                         help='Percentage of equal chromosomes in population to consider one population equal to another')
     parser.add_argument('-ne', '--generation_number_to_say_equals', type=int, default=10,
                         help='Number of equal generations, in the case of content it will be based on fitness, '
@@ -336,6 +336,7 @@ if __name__ == "__main__":
     print('Total time taken: ' + str(time_taken) + ' s')
     time_taken = time.time() - start_algorithm
     print('Algorithm time taken: ' + str(time_taken) + ' s')
+    print('Amount of generations: ' + str(functionsImplementations.generation))
     print('Best fitness reached: ' + str(functionsImplementations.best_chromosome[utils.FITNESS]))
     print('Best chromosome: ' + str(functionsImplementations.best_chromosome[utils.CHROMOSOME]))
     plt.show()
