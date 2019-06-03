@@ -66,7 +66,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             self.stop_condition_implementation = OptimalStopCondition()
 
         self.generation_max = parameters.max_generation
-        self.fitness_min = parameters.fitness_min
+        self.fitness_max = parameters.fitness_max
         self.population_percentage_to_say_equals = parameters.population_percentage_to_say_equals
         self.best_fits = []
         self.previous_generation = []
@@ -220,7 +220,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
                                             self.life_multiplier, self.weapons, self.boots, self.helmets, self.gloves,
                                             self.shirts)
 
-    # TODO: optimal que llega por parametro
     def check_stop(self, fits_populations):
         self.generation += 1
         fits_populations.sort(key=utils.sort_by_fitness, reverse=True)
@@ -252,7 +251,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             return False
 
         else:
-            return self.stop_condition_implementation.check_stop(fits_populations, self.fitness_min)
+            return self.stop_condition_implementation.check_stop(best_fit, self.fitness_max)
 
     def selection(self, fits_populations):
         method1 = self.selection_algorithm_implementation_1.selection(fits_populations, math.ceil(self.k * self.A))

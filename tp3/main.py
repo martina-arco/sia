@@ -48,7 +48,7 @@ class Parameters:
         self.replacement_method = 0
         
         self.k = 0
-        self.fitness_min = 0
+        self.fitness_max = 0
         self.population_percentage_to_say_equals = 0.0
         self.generation_number_to_say_equals = 0
         self.max_generation = 0
@@ -114,8 +114,8 @@ class Parameters:
     def set_k(self, k):
         self.k = k
 
-    def set_fitness_min(self, fitness_min):
-        self.fitness_min = fitness_min
+    def set_fitness_max(self, fitness_max):
+        self.fitness_max = fitness_max
 
     def set_population_percentage_to_say_equals(self, generation_percentage_to_say_equals):
         self.population_percentage_to_say_equals = generation_percentage_to_say_equals
@@ -228,8 +228,8 @@ if __name__ == "__main__":
 
     parser.add_argument('-k', '--k_selection', type=int, default=50,
                         help='Number of individuals to be selected.')
-    parser.add_argument('-fm', '--fitness_min', type=int, default=0,
-                        help='Fitness considered to stop algorithm if it is less than that')
+    parser.add_argument('-fm', '--fitness_max', type=int, default=0,
+                        help='Fitness considered to stop algorithm if it is more than that')
 
     parser.add_argument('-pe', '--population_percentage_to_say_equals', type=float, default=0.7,
                         help='Percentage of equal chromosomes in population to consider one population equal to another',
@@ -315,7 +315,7 @@ if __name__ == "__main__":
     parameters.set_replacement_method(args.replacement_method)
 
     parameters.set_k(args.k_selection)
-    parameters.set_fitness_min(args.fitness_min)
+    parameters.set_fitness_max(args.fitness_max)
     parameters.set_population_percentage_to_say_equals(args.population_percentage_to_say_equals)
     parameters.set_generation_number_to_say_equals(args.generation_number_to_say_equals)
     parameters.set_max_generation(args.max_generation)

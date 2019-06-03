@@ -25,22 +25,6 @@ class ContentStopCondition(StopCondition):
         return True
 
 
-# todavia no se muy bien que hacer
 class OptimalStopCondition(StopCondition):
-    def check_stop(self, fits_population, fitness_min):
-        fits = [f for f, ch in fits_population]
-        ave = sum(fits) / len(fits)
-        return ave < fitness_min
-
-        # if self.counter % 10 == 0:
-        #     best_match = list(sorted(fits_populations))[-1][1]
-        #     fits = [f for f, ch in fits_populations]
-        #     best = max(fits)
-        #     worst = min(fits)
-        #     ave = sum(fits) / len(fits)
-        #     print(
-        #         "[G %3d] score=(%4d, %4d, %4d): %r" %
-        #         (self.counter, best, ave, worst,
-        #          self.chromo2text(best_match)))
-        #     pass
-        # return self.counter >= self.limit
+    def check_stop(self, best_fit, fitness_max):
+        return best_fit > fitness_max
