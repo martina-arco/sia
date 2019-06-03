@@ -48,7 +48,7 @@ class UniformCrossover(Crossover):
 
 class AnularCrossover(Crossover):
     def crossover(self, father, mother):
-        r, l = self.setup_anular_parameters(len(father))
+        r, l = self.setup_anular_parameters(len(father.genes))
         child1_genes = []
         child2_genes = []
 

@@ -47,7 +47,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.scaling_algorithm = parameters.scaling_algorithm
         self.replacement_method = parameters.replacement_method
         self.is_tournament_probabilistic = False
-        
+
         self.selection_algorithm_1 = parameters.selection_algorithm_1
         self.selection_algorithm_2 = parameters.selection_algorithm_2
         self.selection_algorithm_3 = parameters.selection_algorithm_3
@@ -72,7 +72,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.previous_generation = []
         self.count_of_equal_generations = 0
         self.generation_number_to_say_equals = parameters.generation_number_to_say_equals
-        self.is_tournament_probabilistic = False
         self.prob_mutation = parameters.prob_mutation
         self.rate_mutation = parameters.rate_mutation
 
@@ -83,10 +82,11 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         elif self.selection_algorithm_1 == 'universal':
             self.selection_algorithm_implementation_1 = UniversalSelection()
         elif 'tournament' in self.selection_algorithm_1:
-            self.selection_algorithm_implementation_1 = TournamentSelection('probabilistic' in self.selection_algorithm_1)
+            self.selection_algorithm_implementation_1 = TournamentSelection(
+                'probabilistic' in self.selection_algorithm_1)
         elif self.selection_algorithm_1 == 'ranking':
             self.selection_algorithm_implementation_1 = RankingSelection()
-        
+
         if self.selection_algorithm_2 == 'elite':
             self.selection_algorithm_implementation_2 = EliteSelection()
         elif self.selection_algorithm_2 == 'roulette':
@@ -94,7 +94,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         elif self.selection_algorithm_2 == 'universal':
             self.selection_algorithm_implementation_2 = UniversalSelection()
         elif 'tournament' in self.selection_algorithm_2:
-            self.selection_algorithm_implementation_2 = TournamentSelection('probabilistic' in self.selection_algorithm_2)
+            self.selection_algorithm_implementation_2 = TournamentSelection(
+                'probabilistic' in self.selection_algorithm_2)
         elif self.selection_algorithm_2 == 'ranking':
             self.selection_algorithm_implementation_2 = RankingSelection()
 
@@ -105,7 +106,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         elif self.selection_algorithm_3 == 'universal':
             self.selection_algorithm_implementation_3 = UniversalSelection()
         elif 'tournament' in self.selection_algorithm_3:
-            self.selection_algorithm_implementation_3 = TournamentSelection('probabilistic' in self.selection_algorithm_3)
+            self.selection_algorithm_implementation_3 = TournamentSelection(
+                'probabilistic' in self.selection_algorithm_3)
         elif self.selection_algorithm_3 == 'ranking':
             self.selection_algorithm_implementation_3 = RankingSelection()
 
@@ -116,7 +118,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         elif self.selection_algorithm_4 == 'universal':
             self.selection_algorithm_implementation_4 = UniversalSelection()
         elif 'tournament' in self.selection_algorithm_4:
-            self.selection_algorithm_implementation_4 = TournamentSelection('probabilistic' in self.selection_algorithm_4)
+            self.selection_algorithm_implementation_4 = TournamentSelection(
+                'probabilistic' in self.selection_algorithm_4)
         elif self.selection_algorithm_4 == 'ranking':
             self.selection_algorithm_implementation_4 = RankingSelection()
 
@@ -127,12 +130,14 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         elif parameters.parent_selection_algorithm == 'universal':
             self.parent_selection_algorithm = UniversalSelection()
         elif 'tournament' in parameters.parent_selection_algorithm:
-            self.parent_selection_algorithm = TournamentSelection('probabilistic' in parameters.parent_selection_algorithm)
+            self.parent_selection_algorithm = TournamentSelection(
+                'probabilistic' in parameters.parent_selection_algorithm)
         elif parameters.parent_selection_algorithm == 'ranking':
             self.parent_selection_algorithm = RankingSelection()
 
         if self.scaling_algorithm == 'boltzmann':
-            self.scaling_algorithm_implementation = BoltzmannSelection(parameters.initial_temperature, parameters.temperature_step)
+            self.scaling_algorithm_implementation = BoltzmannSelection(parameters.initial_temperature,
+                                                                       parameters.temperature_step)
         if self.scaling_algorithm == 'relative':
             self.scaling_algorithm_implementation = RelativeScaling()
         else:
@@ -162,6 +167,11 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         # ToDo: Acordarse de verificar que sea par
         self.k = parameters.k
+
+        # ToDo: Verificar que esto esta bien cortado
+        if self.k > self.population_size or self.k % 2 == 1:
+            print("Error de numero k y/o tamaño de poblacion")
+            exit()
 
         self.A = 1.0
         self.best_chromosome = (0, Chromosome(1))
@@ -207,7 +217,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def fitness(self, chromosome):
         return chromosome.calculate_fitness(self.attack_multiplier, self.defense_multiplier, self.force_multiplier,
-                                            self.agility_multiplier, self.expertise_multiplier, self.resistance_multiplier,
+                                            self.agility_multiplier, self.expertise_multiplier,
+                                            self.resistance_multiplier,
                                             self.life_multiplier, self.weapons, self.boots, self.helmets, self.gloves,
                                             self.shirts)
 
@@ -247,7 +258,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
     def selection(self, fits_populations):
         method1 = self.selection_algorithm_implementation_1.selection(fits_populations, math.ceil(self.k * self.A))
-        method2 = self.selection_algorithm_implementation_2.selection(fits_populations, math.floor(self.k * (1 - self.A)))
+        method2 = self.selection_algorithm_implementation_2.selection(fits_populations,
+                                                                      math.floor(self.k * (1 - self.A)))
         return method1 + method2
 
     def crossover(self, father, mother):

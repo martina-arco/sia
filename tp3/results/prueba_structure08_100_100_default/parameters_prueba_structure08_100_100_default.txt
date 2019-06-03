@@ -1,0 +1,22 @@
+-w
+fulldata/armas.tsv
+-b
+fulldata/botas.tsv
+-hm
+fulldata/cascos.tsv
+-g
+fulldata/guantes.tsv
+-s
+fulldata/pecheras.tsv
+-sc
+structure
+-pe
+0.8
+-ps
+100
+
+Total time taken: 2028.436716556549 s
+Algorithm time taken: 1977.708065032959 s
+Amount of generations: 15975
+Best fitness reached: 51.1423943757414
+Best chromosome: Weapon: 87563, Boot: 166861, Helmet: 440189, Glove: 25679, Shirt: 86387, Height: 1.9152052855325201

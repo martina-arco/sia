@@ -5,6 +5,7 @@ import time
 from algorithm_implementation.GeneticFunctionsImplementation import GeneticFunctionsImplementation
 from GeneticAlgorithm import GeneticAlgorithm
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def read_file(file_name):
@@ -219,9 +220,11 @@ if __name__ == "__main__":
                         choices=['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking'])
 
     parser.add_argument('-p1', '--percentage_for_selection', type=float, default=0.5,
-                        help='Percentage to use method 1 and 2 for selection.')
+                        help='Percentage to use method 1 and 2 for selection.',
+                        choices=range(0, 1))
     parser.add_argument('-p2', '--percentage_for_replacement', type=float, default=0.5,
-                        help='Percentage to use method 3 and 4 for replacement.')
+                        help='Percentage to use method 3 and 4 for replacement.',
+                        choices=range(0, 1))
 
     parser.add_argument('-k', '--k_selection', type=int, default=50,
                         help='Number of individuals to be selected.')
@@ -229,7 +232,8 @@ if __name__ == "__main__":
                         help='Fitness considered to stop algorithm if it is less than that')
 
     parser.add_argument('-pe', '--population_percentage_to_say_equals', type=float, default=0.7,
-                        help='Percentage of equal chromosomes in population to consider one population equal to another')
+                        help='Percentage of equal chromosomes in population to consider one population equal to another',
+                        choices=np.arange(0, 1, 0.01))
     parser.add_argument('-ne', '--generation_number_to_say_equals', type=int, default=10,
                         help='Number of equal generations, in the case of content it will be based on fitness, '
                              'in structure it is based on chromosome genes')
@@ -241,9 +245,11 @@ if __name__ == "__main__":
     parser.add_argument('-ts', '--temperature-step', type=float, default=1,
                         help='Temperature step per generation')
     parser.add_argument('-pm', '--prob_mutation', type=float, default=0.2,
-                        help='Probability of mutating.')
+                        help='Probability of mutating.',
+                        choices=range(0, 1))
     parser.add_argument('-rm', '--rate_mutation', type=float, default=0.2,
-                        help='Rate at which mutation will decline in non uniform mutation.')
+                        help='Rate at which mutation will decline in non uniform mutation.',
+                        choices=range(0, 1))
 
     parser.add_argument('-atm', '--attack_multiplier', type=float, default=0.9,
                         help='Attack multiplier to use when calculating fitness.')
