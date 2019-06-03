@@ -187,7 +187,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
                                                                  len(self.weapons))
         # Plotting
         self.plot_freq = 1
-        self.fitness_plot = RealtimePlot(x_label='Generation', y_label='Max Fitness')
+        self.max_fitness_plot = RealtimePlot(x_label='Generation', y_label='Max Fitness')
+        self.average_fitness_plot = RealtimePlot(x_label='Generation', y_label='Average Fitness')
 
     def initial(self):
         population = []
@@ -264,6 +265,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         return self.parent_selection_algorithm.selection(parent_pool, 2)
 
     def plot(self, population_fitness):
-        # avg_fitness = sum(fit for fit, ch in population_fitness) / len(population_fitness)
+        avg_fitness = sum(fit for fit, ch in population_fitness) / len(population_fitness)
         max_fitness = max(population_fitness)[0]
-        self.fitness_plot.add(self.generation, max_fitness)
+        self.max_fitness_plot.add(self.generation, max_fitness)
+        self.average_fitness_plot.add(self.generation, avg_fitness)

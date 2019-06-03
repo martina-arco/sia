@@ -1,5 +1,6 @@
 import argparse
 import csv
+import time
 from algorithm_implementation.GeneticFunctionsImplementation import GeneticFunctionsImplementation
 from GeneticAlgorithm import GeneticAlgorithm
 import matplotlib.pyplot as plt
@@ -172,6 +173,7 @@ class Parameters:
 
 
 if __name__ == "__main__":
+    start = time.time()
     parser = argparse.ArgumentParser(description='Run genetic algorithm.')
 
     parser.add_argument('-ps', '--population_size', type=int, default=100,
@@ -314,7 +316,12 @@ if __name__ == "__main__":
     parameters.set_shirts(shirts)
 
     print('Initializing algorithm')
+    start_algorithm = time.time()
     functionsImplementations = GeneticFunctionsImplementation(parameters)
 
     GeneticAlgorithm(functionsImplementations).run()
+    time_taken = time.time() - start
+    print('Total time taken: ' + str(time_taken) + ' s')
+    time_taken = time.time() - start_algorithm
+    print('Algorithm time taken: ' + str(time_taken) + ' s')
     plt.show()
