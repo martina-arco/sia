@@ -5,8 +5,17 @@ import utils
 
 class Chromosome:
 
-    def __init__(self, items_size=0, genes=None):
-        if genes is None:
+    def __init__(self, items_size=0, genes=None, seed=None):
+        if seed is not None:
+            self.genes = []
+            random.seed(seed)
+            for i in range(utils.CHROMOSOME_SIZE):
+                if i != utils.HEIGHT:
+                    self.genes.append(random.randint(0, items_size-1))
+                else:
+                    self.genes.append(random.uniform(1.3, 2))
+
+        elif genes is None:
             self.genes = [random.randint(0, items_size - 1), random.randint(0, items_size - 1), random.randint(0, items_size - 1),
                           random.randint(0, items_size - 1), random.randint(0, items_size - 1), random.uniform(1.3, 2)]
         else:

@@ -1,4 +1,5 @@
 import random
+import string
 
 WEAPON = 0
 BOOT = 1
@@ -26,4 +27,11 @@ def select_two_random_indexes():
         index1, index2 = index2, index1
 
     return index1, index2
+
+
+def generate_seed_for_population(population_size):
+    seed = ""
+    for i in range(population_size):
+        seed += random.choice(string.ascii_letters)
+    return seed
 

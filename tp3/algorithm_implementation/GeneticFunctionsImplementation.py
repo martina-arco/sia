@@ -66,7 +66,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         self.generation_max = parameters.max_generation
         self.fitness_min = parameters.fitness_min
-        self.generation_percentage_to_say_equals = parameters.generation_percentage_to_say_equals
+        self.population_percentage_to_say_equals = parameters.population_percentage_to_say_equals
         self.best_fits = []
         self.previous_generation = []
         self.count_of_equal_generations = 0
@@ -215,7 +215,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             fits_populations.sort(key=utils.sort_by_fitness, reverse=True)
             finished = self.stop_condition_implementation.check_stop(fits_populations, self.previous_generation)
 
-            population_size_to_analyze = math.floor(len(fits_populations) * self.generation_percentage_to_say_equals)
+            population_size_to_analyze = math.floor(len(fits_populations) * self.population_percentage_to_say_equals)
             self.previous_generation = fits_populations.copy()[0:population_size_to_analyze]
 
             if finished:

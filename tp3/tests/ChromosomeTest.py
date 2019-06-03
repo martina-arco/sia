@@ -1,13 +1,15 @@
 import unittest
 import main
 import numpy as np
+import utils
+import random
 
 from Chromosome import Chromosome
 
 chromosome1 = Chromosome(genes=[1, 1, 1, 1, 1, 1.5])
 
 
-class FitnessTest(unittest.TestCase):
+class ChromosomeTest(unittest.TestCase):
 
     def test_fitness(self):
         weapons = main.read_file('../testdata/armas.tsv')
@@ -49,5 +51,26 @@ class FitnessTest(unittest.TestCase):
                                                 agility_multiplier, expertise_multiplier, resistance_multiplier,
                                                 life_multiplier, weapons, boots, helmets, gloves, shirts)
         self.assertEqual(fitness, expected_fitness)
+
+    def test_initial_population_with_seed(self):
+        initial_population = []
+        population_with_seed = []
+        different_population = []
+        population_size = 5
+
+        seeds = utils.generate_seed_for_population(population_size)
+        seeds2 = utils.generate_seed_for_population(population_size)
+        for i in range(population_size):
+            seed = seeds[i]
+            seed2 = seeds2[i]
+            chromosome = Chromosome(items_size=3, seed=seed)
+            initial_population.append(chromosome)
+            chromosome_with_seed = Chromosome(items_size=3, seed=seed)
+            population_with_seed.append(chromosome_with_seed)
+            different_chromosome = Chromosome(items_size=3, seed=seed2)
+            different_population.append(different_chromosome)
+
+        self.assertEqual(initial_population, population_with_seed)
+        self.assertNotEqual(initial_population, different_population)
 
 

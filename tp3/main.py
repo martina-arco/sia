@@ -46,7 +46,7 @@ class Parameters:
         
         self.k = 0
         self.fitness_min = 0
-        self.generation_percentage_to_say_equals = 0.0
+        self.population_percentage_to_say_equals = 0.0
         self.generation_number_to_say_equals = 0
         self.max_generation = 0
         self.initial_temperature = 1
@@ -111,8 +111,8 @@ class Parameters:
     def set_fitness_min(self, fitness_min):
         self.fitness_min = fitness_min
 
-    def set_generation_percentage_to_say_equals(self, generation_percentage_to_say_equals):
-        self.generation_percentage_to_say_equals = generation_percentage_to_say_equals
+    def set_population_percentage_to_say_equals(self, generation_percentage_to_say_equals):
+        self.population_percentage_to_say_equals = generation_percentage_to_say_equals
 
     def set_generation_number_to_say_equals(self, generation_number_to_say_equals):
         self.generation_number_to_say_equals = generation_number_to_say_equals
@@ -187,7 +187,7 @@ if __name__ == "__main__":
                         choices=['one_point', 'two_points', 'uniform', 'anular'])
     parser.add_argument('-ma', '--mutation_algorithm', type=str, default='gen',
                         help='Mutation algorithm to use.',
-                        choices=['uniform gen', 'uniform multi_gen', 'non_uniform gen', 'non_uniform multi_gen'])
+                        choices=['uniform_gen', 'uniform_multi_gen', 'non_uniform_gen', 'non_uniform_multi_gen'])
     parser.add_argument('-sca', '--scaling_algorithm', type=str, default='none',
                         help='Scaling algorithm to use.',
                         choices=['none', 'boltzmann'])
@@ -219,10 +219,11 @@ if __name__ == "__main__":
                         help='Number of individuals to be selected.')
     parser.add_argument('-fm', '--fitness_min', type=int, default=0,
                         help='Fitness considered to stop algorithm if it is less than that')
-    parser.add_argument('-pe', '--generation_percentage_to_say_equals', type=float, default=1,
-                        help='Percentage of equal chromosomes to consider one generation equal to another')
+    parser.add_argument('-pe', '--population_percentage_to_say_equals', type=float, default=1,
+                        help='Percentage of equal chromosomes in population to consider one population equal to another')
     parser.add_argument('-ne', '--generation_number_to_say_equals', type=int, default=10,
-                        help='Number of equal fitnesses to consider it is not changing in generations')
+                        help='Number of equal generations, in the case of content it will be based on fitness, '
+                             'in structure it is based on chromosome genes')
     parser.add_argument('-max_g', '--max_generation', type=int, default=100,
                         help='Max generation for stop condition.', required=False)
     parser.add_argument('-it', '--initial-temperature', type=int, default=100,
@@ -292,7 +293,7 @@ if __name__ == "__main__":
 
     parameters.set_k(args.k_selection)
     parameters.set_fitness_min(args.fitness_min)
-    parameters.set_generation_percentage_to_say_equals(args.generation_percentage_to_say_equals)
+    parameters.set_population_percentage_to_say_equals(args.population_percentage_to_say_equals)
     parameters.set_generation_number_to_say_equals(args.generation_number_to_say_equals)
     parameters.set_max_generation(args.max_generation)
     parameters.set_initial_temperature(args.initial_temperature)
