@@ -1,5 +1,6 @@
 import argparse
 import csv
+import utils
 import time
 from algorithm_implementation.GeneticFunctionsImplementation import GeneticFunctionsImplementation
 from GeneticAlgorithm import GeneticAlgorithm
@@ -335,5 +336,6 @@ if __name__ == "__main__":
     print('Total time taken: ' + str(time_taken) + ' s')
     time_taken = time.time() - start_algorithm
     print('Algorithm time taken: ' + str(time_taken) + ' s')
-    print('Best fitness reached: ' + str(functionsImplementations.best_fitness))
+    print('Best fitness reached: ' + str(functionsImplementations.best_chromosome[utils.FITNESS]))
+    print('Best chromosome: ' + str(functionsImplementations.best_chromosome[utils.CHROMOSOME]))
     plt.show()

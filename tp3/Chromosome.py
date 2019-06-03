@@ -73,6 +73,15 @@ class Chromosome:
                         helmets[self.genes[utils.HELMET]][stat] + gloves[self.genes[utils.GLOVE]][stat] +
                         shirts[self.genes[utils.SHIRT]][stat]))
 
+    def __str__(self):
+        string = "Weapon: " + str(self.genes[utils.WEAPON]) + ", "
+        string += "Boot: " + str(self.genes[utils.BOOT]) + ", "
+        string += "Helmet: " + str(self.genes[utils.HELMET]) + ", "
+        string += "Glove: " + str(self.genes[utils.GLOVE]) + ", "
+        string += "Shirt: " + str(self.genes[utils.SHIRT]) + ", "
+        string += "Height: " + str(self.genes[utils.HEIGHT])
+        return string
+
     def __hash__(self):
         hash_result = 0
         for i in range(0, len(self.genes)):

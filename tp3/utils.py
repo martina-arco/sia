@@ -10,6 +10,9 @@ HEIGHT = 5
 
 CHROMOSOME_SIZE = 6
 
+FITNESS = 0
+CHROMOSOME = 1
+
 
 def sort_by_fitness(fit):
     return fit[0]

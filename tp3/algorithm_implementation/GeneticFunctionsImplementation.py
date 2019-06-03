@@ -164,7 +164,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.k = parameters.k
 
         self.A = 1.0
-        self.best_fitness = 0.0
+        self.best_chromosome = (0, Chromosome(1))
 
         self.attack_multiplier = parameters.attack_multiplier
         self.defense_multiplier = parameters.defense_multiplier
@@ -196,7 +196,10 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         population = []
 
         for i in range(0, self.population_size):
-            chromosome = Chromosome(items_size=len(self.weapons), seed=self.seed[i])
+            if self.seed is not None:
+                chromosome = Chromosome(items_size=len(self.weapons), seed=self.seed[i])
+            else:
+                chromosome = Chromosome(items_size=len(self.weapons))
             population.append(chromosome)
 
         return population
@@ -210,16 +213,15 @@ class GeneticFunctionsImplementation(GeneticFunctions):
     # TODO: optimal que llega por parametro
     def check_stop(self, fits_populations):
         self.generation += 1
-        fits = [f for f, ch in fits_populations]
-        best_fit = max(fits)
-        if best_fit > self.best_fitness:
-            self.best_fitness = best_fit
+        fits_populations.sort(key=utils.sort_by_fitness, reverse=True)
+        best_fit = fits_populations[0][utils.FITNESS]
+        if best_fit > self.best_chromosome[utils.FITNESS]:
+            self.best_chromosome = fits_populations[0]
 
         if self.stop_condition == 'generation_number':
             return self.stop_condition_implementation.check_stop(self.generation, self.generation_max)
 
         elif self.stop_condition == 'structure':
-            fits_populations.sort(key=utils.sort_by_fitness, reverse=True)
             finished = self.stop_condition_implementation.check_stop(fits_populations, self.previous_generation)
 
             population_size_to_analyze = math.floor(len(fits_populations) * self.population_percentage_to_say_equals)
