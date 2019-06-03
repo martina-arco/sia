@@ -20,7 +20,7 @@ class Mutation(object):
         self.items_size = items_size
 
     def update_parameters(self):
-        pass
+        self.mutation_probability = self.mutation_probability * (1 - self.rate)
 
     def mutate(self, chromosome):
         pass

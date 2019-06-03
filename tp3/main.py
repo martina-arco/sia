@@ -29,11 +29,20 @@ class Parameters:
         self.population_size = 0
         
         self.stop_condition = ''
-        self.selection_algorithm = ''
         self.crossover_algorithm = ''
         self.mutation_algorithm = ''
         self.scaling_algorithm = ''
+        
+        self.selection_algorithm_1 = ''
+        self.selection_algorithm_2 = ''
+        self.selection_algorithm_3 = ''
+        self.selection_algorithm_4 = ''
+        self.parent_selection_algorithm = ''
+        self.percentage_for_selection = 0.0
+        self.percentage_for_replacement = 0.0
 
+        self.replacement_method = 0
+        
         self.k = 0
         self.fitness_min = 0
         self.generation_percentage_to_say_equals = 0.0
@@ -64,15 +73,36 @@ class Parameters:
         
     def set_stop_condition(self, stop_condition):
         self.stop_condition = stop_condition
-    
-    def set_selection_algorithm(self, selection_algorithm):
-        self.selection_algorithm = selection_algorithm
 
     def set_crossover_algorithm(self, crossover_algorithm):
         self.crossover_algorithm = crossover_algorithm
         
     def set_mutation_algorithm(self, mutation_algorithm):
         self.mutation_algorithm = mutation_algorithm
+        
+    def set_selection_algorithm_1(self, selection_algorithm):
+        self.selection_algorithm_1 = selection_algorithm
+        
+    def set_selection_algorithm_2(self, selection_algorithm):
+        self.selection_algorithm_2 = selection_algorithm
+        
+    def set_selection_algorithm_3(self, selection_algorithm):
+        self.selection_algorithm_3 = selection_algorithm
+        
+    def set_selection_algorithm_4(self, selection_algorithm):
+        self.selection_algorithm_4 = selection_algorithm
+        
+    def set_selection_algorithm_5(self, selection_algorithm):
+        self.parent_selection_algorithm = selection_algorithm
+        
+    def set_percentage_1(self, percentage):
+        self.percentage_for_selection = percentage
+        
+    def set_percentage_2(self, percentage):
+        self.percentage_for_replacement = percentage
+
+    def set_replacement_method(self, method):
+        self.replacement_method = method
 
     def set_k(self, k):
         self.k = k
@@ -150,9 +180,6 @@ if __name__ == "__main__":
     parser.add_argument('-sc', '--stop_condition', type=str, default='generation_number',
                         help='Stop condition for iterations.',
                         choices=['generation_number', 'structure', 'content', 'optimal'])
-    parser.add_argument('-sa', '--selection_algorithm', type=str, default='elite',
-                        help='Selection algorithm to use.',
-                        choices=['elite', 'roulette', 'universal', 'tournament', 'ranking'])
     parser.add_argument('-ca', '--crossover_algorithm', type=str, default='one_point',
                         help='Crossover algorithm to use.',
                         choices=['one_point', 'two_points', 'uniform', 'anular'])
@@ -162,6 +189,29 @@ if __name__ == "__main__":
     parser.add_argument('-sca', '--scaling_algorithm', type=str, default='none',
                         help='Scaling algorithm to use.',
                         choices=['none', 'boltzmann'])
+    parser.add_argument('-rpm', '--replacement_method', type=int, default=1,
+                        help='Replacement method to use.',
+                        choices=[1, 2, 3])
+
+    parser.add_argument('-sa1', '--selection_algorithm_1', type=str, default='probabilistic_tournament',
+                        help='Selection algorithm to use for selection.',
+                        choices=['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking'])
+    parser.add_argument('-sa2', '--selection_algorithm_2', type=str, default='roulette',
+                        help='Selection algorithm to use for selection.',
+                        choices=['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking'])
+    parser.add_argument('-sa3', '--selection_algorithm_3', type=str, default='probabilistic_tournament',
+                        help='Selection algorithm to use for replacement.',
+                        choices=['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking'])
+    parser.add_argument('-sa4', '--selection_algorithm_4', type=str, default='roulette',
+                        help='Selection algorithm to use for replacement.',
+                        choices=['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking'])
+    parser.add_argument('-sa5', '--selection_algorithm_5', type=str, default='tournament',
+                        help='Selection algorithm to use for parents to crossover.',
+                        choices=['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking'])
+    parser.add_argument('-p1', '--percentage_for_selection', type=float, default=0.5,
+                        help='Percentage to use method 1 and 2 for selection.')
+    parser.add_argument('-p2', '--percentage_for_replacement', type=float, default=0.5,
+                        help='Percentage to use method 3 and 4 for replacement.')
 
     parser.add_argument('-k', '--k_selection', type=int, default=50,
                         help='Number of individuals to be selected.')
@@ -223,10 +273,20 @@ if __name__ == "__main__":
     parameters.set_population_size(args.population_size)
 
     parameters.set_stop_condition(args.stop_condition)
-    parameters.set_selection_algorithm(args.selection_algorithm)
     parameters.set_crossover_algorithm(args.crossover_algorithm)
     parameters.set_mutation_algorithm(args.mutation_algorithm)
     parameters.set_scaling_algorithm(args.scaling_algorithm)
+
+    parameters.set_selection_algorithm_1(args.selection_algorithm_1)
+    parameters.set_selection_algorithm_2(args.selection_algorithm_2)
+    parameters.set_selection_algorithm_3(args.selection_algorithm_3)
+    parameters.set_selection_algorithm_4(args.selection_algorithm_4)
+    parameters.set_selection_algorithm_5(args.selection_algorithm_5)
+
+    parameters.set_percentage_1(args.percentage_for_selection)
+    parameters.set_percentage_2(args.percentage_for_replacement)
+
+    parameters.set_replacement_method(args.replacement_method)
 
     parameters.set_k(args.k_selection)
     parameters.set_fitness_min(args.fitness_min)

@@ -39,16 +39,21 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.generation = 0
 
         self.population_size = parameters.population_size
-        self.percentage_3 = parameters.percentage_3
-        self.percentage_4 = parameters.percentage_4
 
         self.stop_condition = parameters.stop_condition
-        self.selection_algorithm = parameters.selection_algorithm
         self.crossover_algorithm = parameters.crossover_algorithm
         self.mutation_algorithm = parameters.mutation_algorithm
         self.scaling_algorithm = parameters.scaling_algorithm
         self.replacement_method = parameters.replacement_method
         self.is_tournament_probabilistic = False
+        
+        self.selection_algorithm_1 = parameters.selection_algorithm_1
+        self.selection_algorithm_2 = parameters.selection_algorithm_2
+        self.selection_algorithm_3 = parameters.selection_algorithm_3
+        self.selection_algorithm_4 = parameters.selection_algorithm_4
+
+        self.percentage_for_selection = parameters.percentage_for_selection
+        self.percentage_for_replacement = parameters.percentage_for_replacement
 
         if self.stop_condition == 'generation_number':
             self.stop_condition_implementation = MaxGenerationStopCondition()
@@ -70,58 +75,58 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.prob_mutation = parameters.prob_mutation
         self.rate_mutation = parameters.rate_mutation
 
-        if self.selection_algorithm == 'elite':
+        if self.selection_algorithm_1 == 'elite':
             self.selection_algorithm_implementation_1 = EliteSelection()
-        elif self.selection_algorithm == 'roulette':
+        elif self.selection_algorithm_1 == 'roulette':
             self.selection_algorithm_implementation_1 = RouletteSelection()
-        elif self.selection_algorithm == 'universal':
+        elif self.selection_algorithm_1 == 'universal':
             self.selection_algorithm_implementation_1 = UniversalSelection()
-        elif self.selection_algorithm == 'tournament':
-            self.selection_algorithm_implementation_1 = TournamentSelection(self.is_tournament_probabilistic)
-        elif self.selection_algorithm == 'ranking':
+        elif 'tournament' in self.selection_algorithm_1:
+            self.selection_algorithm_implementation_1 = TournamentSelection('probabilistic' in self.selection_algorithm_1)
+        elif self.selection_algorithm_1 == 'ranking':
             self.selection_algorithm_implementation_1 = RankingSelection()
         
-        if self.selection_algorithm == 'elite':
+        if self.selection_algorithm_2 == 'elite':
             self.selection_algorithm_implementation_2 = EliteSelection()
-        elif self.selection_algorithm == 'roulette':
+        elif self.selection_algorithm_2 == 'roulette':
             self.selection_algorithm_implementation_2 = RouletteSelection()
-        elif self.selection_algorithm == 'universal':
+        elif self.selection_algorithm_2 == 'universal':
             self.selection_algorithm_implementation_2 = UniversalSelection()
-        elif self.selection_algorithm == 'tournament':
-            self.selection_algorithm_implementation_2 = TournamentSelection(self.is_tournament_probabilistic)
-        elif self.selection_algorithm == 'ranking':
+        elif 'tournament' in self.selection_algorithm_2:
+            self.selection_algorithm_implementation_2 = TournamentSelection('probabilistic' in self.selection_algorithm_2)
+        elif self.selection_algorithm_2 == 'ranking':
             self.selection_algorithm_implementation_2 = RankingSelection()
 
-        if self.selection_algorithm == 'elite':
+        if self.selection_algorithm_3 == 'elite':
             self.selection_algorithm_implementation_3 = EliteSelection()
-        elif self.selection_algorithm == 'roulette':
+        elif self.selection_algorithm_3 == 'roulette':
             self.selection_algorithm_implementation_3 = RouletteSelection()
-        elif self.selection_algorithm == 'universal':
+        elif self.selection_algorithm_3 == 'universal':
             self.selection_algorithm_implementation_3 = UniversalSelection()
-        elif self.selection_algorithm == 'tournament':
-            self.selection_algorithm_implementation_3 = TournamentSelection(self.is_tournament_probabilistic)
-        elif self.selection_algorithm == 'ranking':
+        elif 'tournament' in self.selection_algorithm_3:
+            self.selection_algorithm_implementation_3 = TournamentSelection('probabilistic' in self.selection_algorithm_3)
+        elif self.selection_algorithm_3 == 'ranking':
             self.selection_algorithm_implementation_3 = RankingSelection()
 
-        if self.selection_algorithm == 'elite':
+        if self.selection_algorithm_4 == 'elite':
             self.selection_algorithm_implementation_4 = EliteSelection()
-        elif self.selection_algorithm == 'roulette':
+        elif self.selection_algorithm_4 == 'roulette':
             self.selection_algorithm_implementation_4 = RouletteSelection()
-        elif self.selection_algorithm == 'universal':
+        elif self.selection_algorithm_4 == 'universal':
             self.selection_algorithm_implementation_4 = UniversalSelection()
-        elif self.selection_algorithm == 'tournament':
-            self.selection_algorithm_implementation_4 = TournamentSelection(self.is_tournament_probabilistic)
-        elif self.selection_algorithm == 'ranking':
+        elif 'tournament' in self.selection_algorithm_4:
+            self.selection_algorithm_implementation_4 = TournamentSelection('probabilistic' in self.selection_algorithm_4)
+        elif self.selection_algorithm_4 == 'ranking':
             self.selection_algorithm_implementation_4 = RankingSelection()
 
         if parameters.parent_selection_algorithm == 'elite':
             self.parent_selection_algorithm = EliteSelection()
-        elif parameters.parent_selection_algorithm== 'roulette':
+        elif parameters.parent_selection_algorithm == 'roulette':
             self.parent_selection_algorithm = RouletteSelection()
         elif parameters.parent_selection_algorithm == 'universal':
             self.parent_selection_algorithm = UniversalSelection()
-        elif parameters.parent_selection_algorithm == 'tournament':
-            self.parent_selection_algorithm = TournamentSelection(self.is_tournament_probabilistic)
+        elif 'tournament' in parameters.parent_selection_algorithm:
+            self.parent_selection_algorithm = TournamentSelection('probabilistic' in parameters.parent_selection_algorithm)
         elif parameters.parent_selection_algorithm == 'ranking':
             self.parent_selection_algorithm = RankingSelection()
 
@@ -141,22 +146,20 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         else:
             self.crossover_algorithm_implementation = OnePointCrossover()
 
-        if self.replacement_method == 'replacement_one':
+        if self.replacement_method == 1:
             self.replacement_method_implementation = ReplacementOne(parameters.population_size)
-        elif self.replacement_method == 'replacement_two':
+        elif self.replacement_method == 2:
             self.replacement_method_implementation = ReplacementTwo(parameters.population_size,
                                                                     self.selection_algorithm_implementation_3,
-                                                                    parameters.percentage_3,
-                                                                    self.selection_algorithm_implementation_4,
-                                                                    parameters.percentage_4)
-        elif self.replacement_method == 'replacement_three':
+                                                                    parameters.percentage_for_replacement,
+                                                                    self.selection_algorithm_implementation_4)
+        elif self.replacement_method == 3:
             self.replacement_method_implementation = ReplacementThree(parameters.population_size,
                                                                       self.selection_algorithm_implementation_3,
-                                                                      parameters.percentage_3,
-                                                                      self.selection_algorithm_implementation_4,
-                                                                      parameters.percentage_4)
+                                                                      parameters.percentage_for_replacement,
+                                                                      self.selection_algorithm_implementation_4)
 
-        # ToDo: hay que agregar esto a los parametos y acordarse de verificar que sea par
+        # ToDo: Acordarse de verificar que sea par
         self.k = parameters.k
 
         self.A = 1.0
@@ -182,9 +185,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         else:
             self.mutation_algorithm_implementation = GenMutation(self.prob_mutation, self.rate_mutation,
                                                                  len(self.weapons))
-
-        # self.limit = parameters.limit
-
         # Plotting
         self.plot_freq = 1
         self.fitness_plot = RealtimePlot(x_label='Generation', y_label='Max Fitness')
@@ -243,7 +243,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
     def crossover(self, father, mother):
         return self.crossover_algorithm_implementation.crossover(father, mother)
 
-    # TODO cambiar probabilidad si es no uniforme
     def mutation(self, chromosome):
         return self.mutation_algorithm_implementation.mutate(chromosome)
 
@@ -257,7 +256,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         return self.replacement_method_implementation.offspring_size()
 
     def update_parameters(self):
-        self.mutation_algorithm_implementation.update_parameters()
+        if 'non_uniform' in self.mutation_algorithm:
+            self.mutation_algorithm_implementation.update_parameters()
         self.scaling_algorithm_implementation.update_parameters()
 
     def parent_selection(self, parent_pool):
