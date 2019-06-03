@@ -28,6 +28,7 @@ class Parameters:
     def __init__(self):
 
         self.population_size = 0
+        self.seed = ''
         
         self.stop_condition = ''
         self.crossover_algorithm = ''
@@ -71,6 +72,9 @@ class Parameters:
 
     def set_population_size(self, population_size):
         self.population_size = population_size
+
+    def set_seed(self, seed):
+        self.seed = seed
         
     def set_stop_condition(self, stop_condition):
         self.stop_condition = stop_condition
@@ -178,6 +182,8 @@ if __name__ == "__main__":
 
     parser.add_argument('-ps', '--population_size', type=int, default=100,
                         help='Initial population size.')
+    parser.add_argument('-sd', '--seed', type=str, required=False,
+                        help='Seed for initial population, must be a string of population size length')
     
     parser.add_argument('-sc', '--stop_condition', type=str, default='generation_number',
                         help='Stop condition for iterations.',
@@ -271,9 +277,13 @@ if __name__ == "__main__":
     gloves = read_file(args.gloves)
     shirts = read_file(args.shirts)
 
+    if args.seed is not None and len(args.seed) != args.population_size:
+        raise ValueError("Seed length must be equals to population size.")
+
     parameters = Parameters()
 
     parameters.set_population_size(args.population_size)
+    parameters.set_seed(args.seed)
 
     parameters.set_stop_condition(args.stop_condition)
     parameters.set_crossover_algorithm(args.crossover_algorithm)
@@ -325,4 +335,5 @@ if __name__ == "__main__":
     print('Total time taken: ' + str(time_taken) + ' s')
     time_taken = time.time() - start_algorithm
     print('Algorithm time taken: ' + str(time_taken) + ' s')
+    print('Best fitness reached: ' + str(functionsImplementations.best_fitness))
     plt.show()

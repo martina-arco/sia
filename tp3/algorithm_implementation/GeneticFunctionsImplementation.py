@@ -39,6 +39,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.generation = 0
 
         self.population_size = parameters.population_size
+        self.seed = parameters.seed
 
         self.stop_condition = parameters.stop_condition
         self.crossover_algorithm = parameters.crossover_algorithm
@@ -163,6 +164,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.k = parameters.k
 
         self.A = 1.0
+        self.best_fitness = 0.0
 
         self.attack_multiplier = parameters.attack_multiplier
         self.defense_multiplier = parameters.defense_multiplier
@@ -194,7 +196,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         population = []
 
         for i in range(0, self.population_size):
-            chromosome = Chromosome(items_size=len(self.weapons))
+            chromosome = Chromosome(items_size=len(self.weapons), seed=self.seed[i])
             population.append(chromosome)
 
         return population
@@ -205,8 +207,13 @@ class GeneticFunctionsImplementation(GeneticFunctions):
                                             self.life_multiplier, self.weapons, self.boots, self.helmets, self.gloves,
                                             self.shirts)
 
+    # TODO: optimal que llega por parametro
     def check_stop(self, fits_populations):
         self.generation += 1
+        fits = [f for f, ch in fits_populations]
+        best_fit = max(fits)
+        if best_fit > self.best_fitness:
+            self.best_fitness = best_fit
 
         if self.stop_condition == 'generation_number':
             return self.stop_condition_implementation.check_stop(self.generation, self.generation_max)
@@ -226,8 +233,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             return self.count_of_equal_generations >= self.generation_number_to_say_equals
 
         elif self.stop_condition == 'content':
-            fits = [f for f, ch in fits_populations]
-            best_fit = max(fits)
             self.best_fits.append(best_fit)
             if self.generation % self.generation_number_to_say_equals == 0:
                 return self.stop_condition_implementation.check_stop(self.best_fits, None)
