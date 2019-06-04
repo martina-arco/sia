@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import pickle
 
 
 class RealtimePlot:
@@ -20,3 +21,6 @@ class RealtimePlot:
         self.axes.relim()
         self.axes.autoscale_view()
         self.figure.canvas.draw()
+
+    def save(self, filepath):
+        pickle.dump(self.y_data, open(filepath, "wb"))
