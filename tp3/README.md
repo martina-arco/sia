@@ -6,6 +6,7 @@ sudo apt-get install python3
 sudo apt install python3-pip
 pip3 install numpy
 sudo apt-get install python-matplotlib
+python3 -m pip install -U matplotlib
 ```
 Luego, para correr el programa
 ```
