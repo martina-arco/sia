@@ -48,6 +48,7 @@ generation_number_to_say_equals=100
 prob_mutation=0.2
 rate_mutation=0.001
 
+: <<'COMMENT'
 for i in 'one_point' 'two_points' 'uniform' 'anular'
 do
     echo $i
@@ -108,6 +109,8 @@ do
     -pe $population_percentage_to_say_equals -ne $generation_number_to_say_equals -pm $prob_mutation -rm $rate_mutation -k $k
 done
 
+COMMENT
+
 for i in 1 2 3
 do
     echo $i
@@ -120,6 +123,7 @@ do
     -pe $population_percentage_to_say_equals -ne $generation_number_to_say_equals -pm $prob_mutation -rm $rate_mutation -k $k
 done
 
+: <<'COMMENT'
 for i in 'none' 'boltzmann'
 do
     echo $i
@@ -143,6 +147,8 @@ do
     -sa5 $selection_algorithm_5 -max_g $max_generation -fm $fitness_max -p1 1.0 -p2 $percentage_for_replacement \
     -pe $population_percentage_to_say_equals -ne $generation_number_to_say_equals -pm $prob_mutation -rm $rate_mutation -k $k
 done
+
+COMMENT
 
 for i in 'elite' 'roulette' 'universal' 'tournament' 'probabilistic_tournament' 'ranking'
 do

@@ -1,9 +1,9 @@
 import pickle
 import matplotlib.pyplot as plt
 
-dir = 'data/'
+dir = ''
 file_prefix = ''
-window = 50
+window = 1
 # files = ['one_point', 'two_points', 'uniform', 'anular']
 # labels = ['One Point', 'Two Points', 'Uniform', 'Anular']
 # file_prefix = 'Crossover'
@@ -24,11 +24,10 @@ window = 50
 # files = ['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking']
 # labels = ['Elite', 'Roulette', 'Universal', 'Tournament', 'P-Tournament', 'Ranking']
 # file_prefix = 'Selection3'
-file_prefix = 'sel5_'
-files = ['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking']
-labels = ['Elite', 'Roulette', 'Universal', 'Tournament', 'P-Tournament', 'Ranking']
-img_prefix = 'Selection5'
-
+file_prefix = ''
+files = ['last_run1', 'last_run2', 'last_run']
+labels = ['Method_1', 'Method_2', 'Method_3']
+img_prefix = 'Methods_comparison'
 
 for i in range(len(files)):
     max_fitness = pickle.load(open(dir + file_prefix + files[i] + '_max_fitness.p', "rb"))

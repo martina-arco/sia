@@ -21,14 +21,15 @@ class ReplacementOne(ReplacementMethod):
 
 
 class ReplacementTwo(ReplacementMethod):
-    def __init__(self, pop_size, selection_algorithm_1, percentage_1, selection_algorithm_2):
+    def __init__(self, pop_size, selection_algorithm_1, percentage_1, selection_algorithm_2, k):
         self.pop_size = pop_size
+        self.k = k
         self.selection_algorithm_1 = selection_algorithm_1
         self.percentage_1 = percentage_1
         self.selection_algorithm_2 = selection_algorithm_2
 
     def offspring_size(self):
-        return self.pop_size
+        return self.k
 
     def replacement(self, population, offspring):
         count_to_select = len(population) - len(offspring)
@@ -52,14 +53,15 @@ class ReplacementTwo(ReplacementMethod):
 
 
 class ReplacementThree(ReplacementMethod):
-    def __init__(self, pop_size, selection_algorithm_1, percentage_1, selection_algorithm_2):
+    def __init__(self, pop_size, selection_algorithm_1, percentage_1, selection_algorithm_2, k):
         self.pop_size = pop_size
+        self.k = k
         self.selection_algorithm_1 = selection_algorithm_1
         self.percentage_1 = percentage_1
         self.selection_algorithm_2 = selection_algorithm_2
 
     def offspring_size(self):
-        return self.pop_size
+        return self.k
 
     def replacement(self, population, offspring):
         count_to_select = len(population) - len(offspring)

@@ -40,6 +40,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.generation = 0
 
         self.population_size = parameters.population_size
+        self.k = parameters.k
         self.seed = parameters.seed
         self.export_path = parameters.export_path
 
@@ -161,15 +162,13 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             self.replacement_method_implementation = ReplacementTwo(parameters.population_size,
                                                                     self.selection_algorithm_implementation_3,
                                                                     parameters.percentage_for_replacement,
-                                                                    self.selection_algorithm_implementation_4)
+                                                                    self.selection_algorithm_implementation_4, self.k)
         elif self.replacement_method == 3:
             self.replacement_method_implementation = ReplacementThree(parameters.population_size,
                                                                       self.selection_algorithm_implementation_3,
                                                                       parameters.percentage_for_replacement,
-                                                                      self.selection_algorithm_implementation_4)
+                                                                      self.selection_algorithm_implementation_4, self.k)
 
-        # ToDo: Acordarse de verificar que sea par
-        self.k = parameters.k
 
         # ToDo: Verificar que esto esta bien cortado
         self.best_chromosome = (0, Chromosome(1))
