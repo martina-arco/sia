@@ -127,8 +127,8 @@ do
     python main.py -ex $export_path -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
     -frm $force_multiplier -agm $agility_multiplier -exm $expertise_multiplier -rsm $resistance_multiplier -lfm $life_multiplier \
     -w $weapons -b $boots -hm $helmets -g $gloves -s $shirts -sca $i -it $initial_temperature  -ts $temperature_step \
-    -rpm $replacement_method -sa1 $selection_algorithm_1 -sa2 $selection_algorithm_2 -sa3 $selection_algorithm_3 -sa4 $selection_algorithm_4 \
-    -sa5 $selection_algorithm_5 -max_g $max_generation -fm $fitness_max -p1 $percentage_for_selection -p2 $percentage_for_replacement \
+    -rpm $replacement_method -sa1 roulette -sa2 $selection_algorithm_2 -sa3 roulette -sa4 $selection_algorithm_4 \
+    -sa5 $selection_algorithm_5 -max_g $max_generation -fm $fitness_max -p1 1.0 -p2 1.0 \
     -pe $population_percentage_to_say_equals -ne $generation_number_to_say_equals -pm $prob_mutation -rm $rate_mutation -k $k
 done
 
