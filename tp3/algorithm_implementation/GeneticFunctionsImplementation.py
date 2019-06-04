@@ -1,5 +1,6 @@
 import utils
 import math
+import matplotlib.pyplot as plt
 
 from algorithm_implementation.StopConditions import MaxGenerationStopCondition
 from algorithm_implementation.StopConditions import StructureStopCondition
@@ -40,6 +41,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
 
         self.population_size = parameters.population_size
         self.seed = parameters.seed
+        self.export_path = parameters.export_path
 
         self.stop_condition = parameters.stop_condition
         self.crossover_algorithm = parameters.crossover_algorithm
@@ -74,6 +76,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.generation_number_to_say_equals = parameters.generation_number_to_say_equals
         self.prob_mutation = parameters.prob_mutation
         self.rate_mutation = parameters.rate_mutation
+        self.percentage_for_selection = parameters.percentage_for_selection
 
         if self.selection_algorithm_1 == 'elite':
             self.selection_algorithm_implementation_1 = EliteSelection()
@@ -169,9 +172,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.k = parameters.k
 
         # ToDo: Verificar que esto esta bien cortado
-
-
-        self.A = 1.0
         self.best_chromosome = (0, Chromosome(1))
 
         self.attack_multiplier = parameters.attack_multiplier
@@ -254,9 +254,10 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             return self.stop_condition_implementation.check_stop(best_fit, self.fitness_max)
 
     def selection(self, fits_populations):
-        method1 = self.selection_algorithm_implementation_1.selection(fits_populations, math.ceil(self.k * self.A))
+        method1 = self.selection_algorithm_implementation_1.selection(fits_populations,
+                                                                      math.ceil(self.k * self.percentage_for_selection))
         method2 = self.selection_algorithm_implementation_2.selection(fits_populations,
-                                                                      math.floor(self.k * (1 - self.A)))
+                                                                      math.floor(self.k * (1 - self.percentage_for_selection)))
         return method1 + method2
 
     def crossover(self, father, mother):
@@ -295,3 +296,9 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.max_fitness_plot.add(self.generation, max_fitness)
         self.average_fitness_plot.add(self.generation, avg_fitness)
         self.chromosome_diversity_plot.add(self.generation, len(different_chromosomes))
+        # plt.pause(0.001)
+
+    def save_data(self):
+        self.max_fitness_plot.save(self.export_path + '_max_fitness.p')
+        self.average_fitness_plot.save(self.export_path + '_avg_fitness.p')
+        self.chromosome_diversity_plot.save(self.export_path + '_chromosome_diversity.p')

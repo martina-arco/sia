@@ -2,6 +2,8 @@ import argparse
 import csv
 import utils
 import time
+import os
+import pickle
 from algorithm_implementation.GeneticFunctionsImplementation import GeneticFunctionsImplementation
 from GeneticAlgorithm import GeneticAlgorithm
 import matplotlib.pyplot as plt
@@ -9,11 +11,15 @@ import numpy as np
 
 
 def read_file(file_name):
-    array = []
-    with open(file_name) as tsvfile:
-        reader = csv.DictReader(tsvfile, dialect='excel-tab')
-        for row in reader:
-            array.append(parse(row))
+    if os.path.isfile(file_name + '.p'):
+        array = pickle.load(open(file_name + '.p', "rb"))
+    else:
+        array = []
+        with open(file_name) as tsvfile:
+            reader = csv.DictReader(tsvfile, dialect='excel-tab')
+            for row in reader:
+                array.append(parse(row))
+        pickle.dump(array, open(file_name + '.p', "wb"))
     return array
 
 
@@ -31,7 +37,8 @@ class Parameters:
 
         self.population_size = 0
         self.seed = ''
-        
+        self.export_path = ''
+
         self.stop_condition = ''
         self.crossover_algorithm = ''
         self.mutation_algorithm = ''
@@ -77,6 +84,9 @@ class Parameters:
 
     def set_seed(self, seed):
         self.seed = seed
+
+    def set_export_path(self, export_path):
+        self.export_path = export_path
         
     def set_stop_condition(self, stop_condition):
         self.stop_condition = stop_condition
@@ -186,6 +196,8 @@ if __name__ == "__main__":
                         help='Initial population size.')
     parser.add_argument('-sd', '--seed', type=str, required=False,
                         help='Seed for initial population, must be a string of population size length')
+    parser.add_argument('-ex', '--export_path', type=str, default='last_run',
+                        help='Export path for data files')
     
     parser.add_argument('-sc', '--stop_condition', type=str, default='content',
                         help='Stop condition for iterations.',
@@ -220,11 +232,9 @@ if __name__ == "__main__":
                         choices=['elite', 'roulette', 'universal', 'tournament', 'probabilistic_tournament', 'ranking'])
 
     parser.add_argument('-p1', '--percentage_for_selection', type=float, default=0.5,
-                        help='Percentage to use method 1 and 2 for selection.',
-                        choices=np.arange(0, 1, 0.01))
+                        help='Percentage to use method 1 and 2 for selection.')
     parser.add_argument('-p2', '--percentage_for_replacement', type=float, default=0.5,
-                        help='Percentage to use method 3 and 4 for replacement.',
-                        choices=np.arange(0, 1, 0.01))
+                        help='Percentage to use method 3 and 4 for replacement.')
 
     parser.add_argument('-k', '--k_selection', type=int, default=50,
                         help='Number of individuals to be selected.')
@@ -232,8 +242,7 @@ if __name__ == "__main__":
                         help='Fitness considered to stop algorithm if it is more than that')
 
     parser.add_argument('-pe', '--population_percentage_to_say_equals', type=float, default=0.7,
-                        help='Percentage of equal chromosomes in population to consider one population equal to another',
-                        choices=np.arange(0, 1, 0.01))
+                        help='Percentage of equal chromosomes in population to consider one population equal to another')
     parser.add_argument('-ne', '--generation_number_to_say_equals', type=int, default=10,
                         help='Number of equal generations, in the case of content it will be based on fitness, '
                              'in structure it is based on chromosome genes')
@@ -245,11 +254,9 @@ if __name__ == "__main__":
     parser.add_argument('-ts', '--temperature-step', type=float, default=1,
                         help='Temperature step per generation')
     parser.add_argument('-pm', '--prob_mutation', type=float, default=0.2,
-                        help='Probability of mutating.',
-                        choices=np.arange(0, 1, 0.01))
+                        help='Probability of mutating.')
     parser.add_argument('-rm', '--rate_mutation', type=float, default=0.2,
-                        help='Rate at which mutation will decline in non uniform mutation.',
-                        choices=np.arange(0, 1, 0.01))
+                        help='Rate at which mutation will decline in non uniform mutation.')
 
     parser.add_argument('-atm', '--attack_multiplier', type=float, default=0.9,
                         help='Attack multiplier to use when calculating fitness.')
@@ -297,6 +304,7 @@ if __name__ == "__main__":
 
     parameters.set_population_size(args.population_size)
     parameters.set_seed(args.seed)
+    parameters.set_export_path(args.export_path)
 
     parameters.set_stop_condition(args.stop_condition)
     parameters.set_crossover_algorithm(args.crossover_algorithm)
@@ -344,11 +352,20 @@ if __name__ == "__main__":
     functionsImplementations = GeneticFunctionsImplementation(parameters)
 
     GeneticAlgorithm(functionsImplementations).run()
+
     time_taken = time.time() - start
+    file = open(args.export_path + '_output.txt', 'w')
     print('Total time taken: ' + str(time_taken) + ' s')
+    file.write('Total time taken: ' + str(time_taken) + ' s' + '\n')
     time_taken = time.time() - start_algorithm
     print('Algorithm time taken: ' + str(time_taken) + ' s')
+    file.write('Algorithm time taken: ' + str(time_taken) + ' s' + '\n')
     print('Amount of generations: ' + str(functionsImplementations.generation))
+    file.write('Amount of generations: ' + str(functionsImplementations.generation) + '\n')
     print('Best fitness reached: ' + str(functionsImplementations.best_chromosome[utils.FITNESS]))
+    file.write('Best fitness reached: ' + str(functionsImplementations.best_chromosome[utils.FITNESS]) + '\n')
     print('Best chromosome: ' + str(functionsImplementations.best_chromosome[utils.CHROMOSOME]))
-    plt.show()
+    file.write('Best chromosome: ' + str(functionsImplementations.best_chromosome[utils.CHROMOSOME]) + '\n')
+
+    file.close()
+    # plt.show()

@@ -14,6 +14,8 @@ class GeneticAlgorithm(object):
             if not finished:
                 population = self.next_generation(population_fitness)
 
+        self.genetics.save_data()
+
         return population
 
     def next_generation(self, population_fitness):
