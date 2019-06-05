@@ -238,8 +238,6 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             return self.count_of_equal_generations >= self.generation_number_to_say_equals
 
         elif self.stop_condition == 'content':
-            print(best_fit)
-            print(self.count_of_equal_generations)
             are_equals = self.stop_condition_implementation.check_stop(best_fit, self.best_fitness_of_generation)
             self.best_fitness_of_generation = best_fit
             if are_equals:
