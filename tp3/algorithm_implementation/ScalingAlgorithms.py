@@ -15,7 +15,7 @@ class BoltzmannSelection(ScalingAlgorithm):
         self.step = step
 
     def update_parameters(self):
-        if self.temp > self.step:
+        if self.temp - self.step >= 1.0:
             self.temp -= self.step
 
     def scale(self, fits_population):

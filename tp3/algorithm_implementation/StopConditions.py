@@ -18,11 +18,8 @@ class StructureStopCondition(StopCondition):
 
 
 class ContentStopCondition(StopCondition):
-    def check_stop(self, best_fits, arg2=None):
-        for i in range(1, len(best_fits)):
-            if best_fits[i] != best_fits[i-1]:
-                return False
-        return True
+    def check_stop(self, best_fit, previous_best_fit):
+        return best_fit == previous_best_fit
 
 
 class OptimalStopCondition(StopCondition):

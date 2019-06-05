@@ -19,7 +19,7 @@ population_size=100
 k=50
 seed=cRYEJJgvmksuIiEnJZJmdtBzsJjkxCHdAMvsSJkWLvEwucvJuByqumCUHKSSPhYAAbJpfcMQjEmqlazvURqjTLQDfxpMrZNGaJQU
 
-stop_condition=structure
+stop_condition=content
 crossover_algorithm=one_point
 mutation_algorithm=uniform_gen
 
@@ -42,12 +42,12 @@ max_generation=1000
 fitness_max=30
 
 population_percentage_to_say_equals=0.7
-generation_number_to_say_equals=10
+generation_number_to_say_equals=50
 
 prob_mutation=0.2
 rate_mutation=0.2
 
-python main.py -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
+python3 main.py -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
 -frm $force_multiplier -agm $agility_multiplier -exm $expertise_multiplier -rsm $resistance_multiplier -lfm $life_multiplier \
 -w $weapons -b $boots -hm $helmets -g $gloves -s $shirts -sca $scaling_algorithm -it $initial_temperature  -ts $temperature_step \
 -rpm $replacement_method -sa1 $selection_algorithm_1 -sa2 $selection_algorithm_2 -sa3 $selection_algorithm_3 -sa4 $selection_algorithm_4 \

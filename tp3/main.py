@@ -368,4 +368,4 @@ if __name__ == "__main__":
     file.write('Best chromosome: ' + str(functionsImplementations.best_chromosome[utils.CHROMOSOME]) + '\n')
 
     file.close()
-    # plt.show()
+    plt.show()

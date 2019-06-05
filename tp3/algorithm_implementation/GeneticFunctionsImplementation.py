@@ -142,7 +142,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         if self.scaling_algorithm == 'boltzmann':
             self.scaling_algorithm_implementation = BoltzmannSelection(parameters.initial_temperature,
                                                                        parameters.temperature_step)
-        if self.scaling_algorithm == 'relative':
+        elif self.scaling_algorithm == 'relative':
             self.scaling_algorithm_implementation = RelativeScaling()
         else:
             self.scaling_algorithm_implementation = NoScaling()
@@ -168,10 +168,8 @@ class GeneticFunctionsImplementation(GeneticFunctions):
                                                                       self.selection_algorithm_implementation_3,
                                                                       parameters.percentage_for_replacement,
                                                                       self.selection_algorithm_implementation_4, self.k)
-
-
-        # ToDo: Verificar que esto esta bien cortado
         self.best_chromosome = (0, Chromosome(1))
+        self.best_fitness_of_generation = 0
 
         self.attack_multiplier = parameters.attack_multiplier
         self.defense_multiplier = parameters.defense_multiplier
@@ -230,24 +228,25 @@ class GeneticFunctionsImplementation(GeneticFunctions):
             return self.stop_condition_implementation.check_stop(self.generation, self.generation_max)
 
         elif self.stop_condition == 'structure':
-            finished = self.stop_condition_implementation.check_stop(fits_populations, self.previous_generation)
+            are_equals = self.stop_condition_implementation.check_stop(fits_populations, self.previous_generation)
             population_size_to_analyze = math.floor(len(fits_populations) * self.population_percentage_to_say_equals)
             self.previous_generation = fits_populations.copy()[0:population_size_to_analyze]
-
-            if finished:
+            if are_equals:
                 self.count_of_equal_generations += 1
             else:
                 self.count_of_equal_generations = 0
-
             return self.count_of_equal_generations >= self.generation_number_to_say_equals
 
         elif self.stop_condition == 'content':
-            self.best_fits.append(best_fit)
-            if self.generation % self.generation_number_to_say_equals == 0:
-                finished = self.stop_condition_implementation.check_stop(self.best_fits, None)
-                self.best_fits.clear()
-                return finished
-            return False
+            print(best_fit)
+            print(self.count_of_equal_generations)
+            are_equals = self.stop_condition_implementation.check_stop(best_fit, self.best_fitness_of_generation)
+            self.best_fitness_of_generation = best_fit
+            if are_equals:
+                self.count_of_equal_generations += 1
+            else:
+                self.count_of_equal_generations = 0
+            return self.count_of_equal_generations >= self.generation_number_to_say_equals
 
         else:
             return self.stop_condition_implementation.check_stop(best_fit, self.fitness_max)
@@ -295,7 +294,7 @@ class GeneticFunctionsImplementation(GeneticFunctions):
         self.max_fitness_plot.add(self.generation, max_fitness)
         self.average_fitness_plot.add(self.generation, avg_fitness)
         self.chromosome_diversity_plot.add(self.generation, len(different_chromosomes))
-        # plt.pause(0.001)
+        plt.pause(0.001)
 
     def save_data(self):
         self.max_fitness_plot.save(self.export_path + '_max_fitness.p')
