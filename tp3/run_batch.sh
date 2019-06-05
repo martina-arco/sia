@@ -20,7 +20,7 @@ k=50
 seed=cRYEJJgvmksuIiEnJZJmdtBzsJjkxCHdAMvsSJkWLvEwucvJuByqumCUHKSSPhYAAbJpfcMQjEmqlazvURqjTLQDfxpMrZNGaJQU
 export_path="data/last_run"
 
-stop_condition=optimal
+stop_condition=content
 crossover_algorithm=one_point
 mutation_algorithm=uniform_gen
 
@@ -43,7 +43,7 @@ max_generation=10000
 fitness_max=48
 
 population_percentage_to_say_equals=0.7
-generation_number_to_say_equals=100
+generation_number_to_say_equals=500
 
 prob_mutation=0.2
 rate_mutation=0.001
@@ -115,7 +115,7 @@ for i in 1 2 3
 do
     echo $i
     export_path="data/${i}"
-    python main.py -ex $export_path -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
+    python3 main.py -ex $export_path -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
     -frm $force_multiplier -agm $agility_multiplier -exm $expertise_multiplier -rsm $resistance_multiplier -lfm $life_multiplier \
     -w $weapons -b $boots -hm $helmets -g $gloves -s $shirts -sca $scaling_algorithm -it $initial_temperature  -ts $temperature_step \
     -rpm $i -sa1 $selection_algorithm_1 -sa2 $selection_algorithm_2 -sa3 $selection_algorithm_3 -sa4 $selection_algorithm_4 \
@@ -154,7 +154,7 @@ for i in 'elite' 'roulette' 'universal' 'tournament' 'probabilistic_tournament' 
 do
     echo $i
     export_path="data/rpm2_sel3_full_${i}"
-    python main.py -ex $export_path -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
+    python3 main.py -ex $export_path -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
     -frm $force_multiplier -agm $agility_multiplier -exm $expertise_multiplier -rsm $resistance_multiplier -lfm $life_multiplier \
     -w $weapons -b $boots -hm $helmets -g $gloves -s $shirts -sca $scaling_algorithm -it $initial_temperature  -ts $temperature_step \
     -rpm 2 -sa1 $selection_algorithm_1 -sa2 $selection_algorithm_2 -sa3 $i -sa4 $selection_algorithm_4 \
@@ -166,7 +166,7 @@ for i in 'elite' 'roulette' 'universal' 'tournament' 'probabilistic_tournament' 
 do
     echo $i
     export_path="data/sel5_${i}"
-    python main.py -ex $export_path -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
+    python3 main.py -ex $export_path -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
     -frm $force_multiplier -agm $agility_multiplier -exm $expertise_multiplier -rsm $resistance_multiplier -lfm $life_multiplier \
     -w $weapons -b $boots -hm $helmets -g $gloves -s $shirts -sca $scaling_algorithm -it $initial_temperature  -ts $temperature_step \
     -rpm $replacement_method -sa1 $selection_algorithm_1 -sa2 $selection_algorithm_2 -sa3 $selection_algorithm_3 -sa4 $selection_algorithm_4 \
