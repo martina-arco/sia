@@ -15,9 +15,9 @@ helmets=fulldata/cascos.tsv
 gloves=fulldata/guantes.tsv
 shirts=fulldata/pecheras.tsv
 
-population_size=100
+population_size=1000
 k=50
-seed=cRYEJJgvmksuIiEnJZJmdtBzsJjkxCHdAMvsSJkWLvEwucvJuByqumCUHKSSPhYAAbJpfcMQjEmqlazvURqjTLQDfxpMrZNGaJQU
+seed=cRYEJJgvmksuIiEnJZJmdtBzsJjkxCHdAMvsSJkWLvEwucvJuByqumCUHKSSPhYAAbJpfcMQjEmqlazvURqjTLQDfxpMrZNGaJQu
 
 stop_condition=content
 crossover_algorithm=one_point
@@ -25,18 +25,18 @@ mutation_algorithm=uniform_gen
 
 selection_algorithm_1=roulette
 selection_algorithm_2=probabilistic_tournament
-selection_algorithm_3=roulette
+selection_algorithm_3=elite
 selection_algorithm_4=probabilistic_tournament
-selection_algorithm_5=tournament
+selection_algorithm_5=elite
 
 scaling_algorithm=none
 initial_temperature=100
 temperature_step=1
 
-replacement_method=1
+replacement_method=2
 
 percentage_for_selection=0.5
-percentage_for_replacement=0.5
+percentage_for_replacement=0.01
 
 max_generation=1000
 fitness_max=30
@@ -45,9 +45,9 @@ population_percentage_to_say_equals=0.7
 generation_number_to_say_equals=50
 
 prob_mutation=0.2
-rate_mutation=0.2
+rate_mutation=0.1
 
-python3 main.py -sd $seed -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
+python3 main.py -ps $population_size -sc $stop_condition -ca $crossover_algorithm -ma $mutation_algorithm -atm $attack_multiplier -dfm $defense_multiplier \
 -frm $force_multiplier -agm $agility_multiplier -exm $expertise_multiplier -rsm $resistance_multiplier -lfm $life_multiplier \
 -w $weapons -b $boots -hm $helmets -g $gloves -s $shirts -sca $scaling_algorithm -it $initial_temperature  -ts $temperature_step \
 -rpm $replacement_method -sa1 $selection_algorithm_1 -sa2 $selection_algorithm_2 -sa3 $selection_algorithm_3 -sa4 $selection_algorithm_4 \
