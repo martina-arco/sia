@@ -189,7 +189,7 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
         delta5 = result.error - prev_error1;
         
         if(strcmp(optimizer, "eta") == 1)
-            if(delta1 < epsilon && delta2 < eta_epsilon && delta3 < eta_epsilon && delta4 < eta_epsilon && delta5 < eta_epsilon)
+            if(delta1 < eta_epsilon && delta2 < eta_epsilon && delta3 < eta_epsilon && delta4 < eta_epsilon && delta5 < eta_epsilon)
               rate = rate + a
             elseif(delta1 > eta_epsilon && delta2 > eta_epsilon && delta3 > eta_epsilon && delta4 > eta_epsilon && delta5 > eta_epsilon)
               rate = rate - b * rate

@@ -1,12 +1,12 @@
 max_epochs = 4000
 max_error = 0.02
-type = 'incremental'
+type = 'batch'
 learn_percentage = 0.9
 learning_rate = 0.03
 optimizer = 'eta'
 gamma = 0.9
-a = 0.01
-b = 0.9
+a = 0.001
+b = 0.1
 structure = [2, 50, 1]
 act_func = 'tanh'
 error_color = 'r';

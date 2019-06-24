@@ -22,7 +22,7 @@ En el archivo *run.m* se pueden setear los diferentes parámetros para poder con
 * **max_error:** Error máximo a alcanzar.
 * **learning_rate:** Factor de aprendizaje.
 * **act_func:** Qué función de activación se va  utilizar (tanh, exp).
-* **optimizer:** Optimizador (momentum, adagrad).
+* **optimizer:** Optimizador (momentum, adagrad, eta).
 * **gamma:** Parametros para EMA. Se usa en momentum.
 * **error_color:** Color a utilizar para graficar el error.
 * **rate_color:** Color a utilizar para graficar el factor de aprendizaje.
