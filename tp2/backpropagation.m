@@ -8,9 +8,9 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
   [P, N] = size(X);
   
   P = floor(P * learn_percentage);
-  batch_size = P
+  batch_size = P - 1;
   
-  if(type == 'incremental')
+  if(strcmp(type, 'incremental') == 1)
     batch_size = 1
   endif
 
@@ -188,7 +188,7 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
         end
         output = test(X, X_mean, X_std, S, W, B, structure, act_func, 1-learn_percentage);
         plot_error(epoch, output.mse, error_color, 3);
-        plot_error(epoch, sum_error/error_count, error_color, 1);
+        plot_mean_error(epoch, sum_error/error_count, error_color, 1);
         result.error = sum_error/error_count;
         hit_percentage = hits / error_count;
         plot_rate(epoch, avg_rate, rate_color, 2);
@@ -206,6 +206,18 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
   result.X_std = X_std;
   result.epochs = epoch - 1;
   result.act_func = act_func;
+endfunction
+
+function plot_mean_error(epoch, error, error_color, figure_number)
+  hold on
+  figure(figure_number);
+  semilogy(epoch, error, 'ok', 'Color', error_color);
+  title('Mean error', 'fontsize', 20);
+  xlabel('Epoch');
+  ylabel('Error');
+  set(gca,'FontSize',20)
+  drawnow
+  hold off
 endfunction
 
 function plot_error(epoch, error, error_color, figure_number)
