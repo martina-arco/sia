@@ -27,6 +27,10 @@ En el archivo *run.m* se pueden setear los diferentes parámetros para poder con
 * **error_color:** Color a utilizar para graficar el error.
 * **rate_color:** Color a utilizar para graficar el factor de aprendizaje.
 * **structure:** Vector con la arquitectura de la red, donde cada elemento es el número de neuronas en esa capa. Siempre debe empezar con 2 y terminar con 1 debido al tipo de problema. En el ejemplo se muestra una red con dos capas ocultas, la primera de 2 neuronas y la segunda de 5.
+* **a:** Parámetro de eta.
+* **b:** Parámetro de eta.
+* **eta_epsilon:** Parámetro de eta.
+
 ```
 Structure = [2, 2, 5, 1]
 ```
