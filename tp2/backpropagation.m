@@ -1,5 +1,5 @@
 %Algoritmo de Entrenamiento de BACKPROPAGATION para Redes Neuronales
-function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage, rate, dmse, error_color, rate_color, act_func, structure, optimizer, gamma, gamma2, epsilon)
+function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate, dmse, error_color, rate_color, act_func, structure, optimizer, gamma, gamma2, epsilon)
 
   mse = Inf;                  %Asumiendo Pesos Iniciales Malos
   epoch = 0; 
@@ -8,6 +8,11 @@ function result = backpropagation(X, S, max_epochs, batch_size, learn_percentage
   [P, N] = size(X);
   
   P = floor(P * learn_percentage);
+  batch_size = P
+  
+  if(type == 'incremental')
+    batch_size = 1
+  endif
 
   X_train = X(1:P, :);
   S_train = S(1:P, :);
