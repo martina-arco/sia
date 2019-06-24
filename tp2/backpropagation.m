@@ -159,9 +159,11 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
       %Calculo del mean square error
       mse = sum(e) / batch_size;
       
-      if(mse < epsilon)
-        hits++;
-      end
+      for i = 1 : 1 : batch_size
+        if(e(i) < epsilon)
+          hits++;
+        endif
+      endfor
       
       sum_error += mse;
       error_count++;
@@ -178,7 +180,7 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
         plot_error(epoch, output.mse, error_color, 3);
         plot_mean_error(epoch, sum_error/error_count, error_color, 1);
         result.error = sum_error/error_count;
-        hit_percentage = hits / error_count;
+        hit_percentage = hits / P;
         plot_rate(epoch, avg_rate, rate_color, 2);
         plot_hits(epoch, hit_percentage, rate_color, 4);
         
