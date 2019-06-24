@@ -11,11 +11,11 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
   P = floor(P * learn_percentage);
   batch_size = P - 1;
   
-  prev_error1 = Inf;
-  prev_error2 = Inf;
-  prev_error3 = Inf;
-  prev_error4 = Inf;
-  prev_error5 = Inf;
+  prev_error1 = 0;
+  prev_error2 = 0;
+  prev_error3 = 0;
+  prev_error4 = 0;
+  prev_error5 = 0;
   
   if(strcmp(type, 'incremental') == 1)
     batch_size = 1
@@ -190,7 +190,7 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
         
         if(strcmp(optimizer, "eta") == 1)
             if(prev_error1 < prev_error2 < prev_error3 < prev_error4 < prev_error5)
-              rate = rate + a;
+              rate = rate + a
             elseif(prev_error1 > prev_error2 > prev_error3 > prev_error4 > prev_error5)
               rate = rate - b * rate
             endif
