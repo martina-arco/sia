@@ -1,6 +1,6 @@
 %Algoritmo de Entrenamiento de BACKPROPAGATION para Redes Neuronales
 function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate, dmse, error_color, rate_color, 
-  act_func, structure, optimizer, gamma, epsilon, a, b)
+  act_func, structure, optimizer, gamma, epsilon, a, b, eta_epsilon)
 
   mse = Inf;                  %Asumiendo Pesos Iniciales Malos
   epoch = 0; 
@@ -182,19 +182,25 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
         plot_rate(epoch, avg_rate, rate_color, 2);
         plot_hits(epoch, hit_percentage, rate_color, 4);
         
-        delta1 = prev_error5 - prev_error4;
-        delta2 = prev_error4 - prev_error3;
-        delta3 = prev_error3 - prev_error2;
-        delta4 = prev_error2 - prev_error1;
-        delta5 = prev_error1 - result.error;
+        delta1 = prev_error4 - prev_error5;
+        delta2 = prev_error3 - prev_error4;
+        delta3 = prev_error2 - prev_error3;
+        delta4 = prev_error1 - prev_error2;
+        delta5 = result.error - prev_error1;
         
         if(strcmp(optimizer, "eta") == 1)
-            if(delta1 < epsilon && delta2 < epsilon && delta3 < epsilon && delta4 < epsilon && delta5 < epsilon)
+            if(delta1 < epsilon && delta2 < eta_epsilon && delta3 < eta_epsilon && delta4 < eta_epsilon && delta5 < eta_epsilon)
               rate = rate + a
-            elseif(delta1 > epsilon && delta2 > epsilon && delta3 > epsilon && delta4 > epsilon && delta5 > epsilon)
+            elseif(delta1 > eta_epsilon && delta2 > eta_epsilon && delta3 > eta_epsilon && delta4 > eta_epsilon && delta5 > eta_epsilon)
               rate = rate - b * rate
             endif
         endif
+        
+        prev_error5 = prev_error4;
+        prev_error4 = prev_error3;
+        prev_error3 = prev_error2;
+        prev_error2 = prev_error1;
+        prev_error1 = result.error;
         
         sum_error = 0;
         hits = 0;
