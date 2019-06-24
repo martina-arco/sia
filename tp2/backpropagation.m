@@ -182,16 +182,16 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
         plot_rate(epoch, avg_rate, rate_color, 2);
         plot_hits(epoch, hit_percentage, rate_color, 4);
         
-        prev_error5 = prev_error4;
-        prev_error4 = prev_error3;
-        prev_error3 = prev_error2;
-        prev_error2 = prev_error1;
-        prev_error1 = result.error;
+        delta1 = prev_error5 - prev_error4;
+        delta2 = prev_error4 - prev_error3;
+        delta3 = prev_error3 - prev_error2;
+        delta4 = prev_error2 - prev_error1;
+        delta5 = prev_error1 - result.error;
         
         if(strcmp(optimizer, "eta") == 1)
-            if(prev_error1 < prev_error2 < prev_error3 < prev_error4 < prev_error5)
+            if(delta1 < epsilon && delta2 < epsilon && delta3 < epsilon && delta4 < epsilon && delta5 < epsilon)
               rate = rate + a
-            elseif(prev_error1 > prev_error2 > prev_error3 > prev_error4 > prev_error5)
+            elseif(delta1 > epsilon && delta2 > epsilon && delta3 > epsilon && delta4 > epsilon && delta5 > epsilon)
               rate = rate - b * rate
             endif
         endif
