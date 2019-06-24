@@ -190,9 +190,13 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
         
         if(strcmp(optimizer, "eta") == 1)
             if(delta1 < eta_epsilon && delta2 < eta_epsilon && delta3 < eta_epsilon && delta4 < eta_epsilon && delta5 < eta_epsilon)
-              rate = rate + a
+              rate = rate + a;
             elseif(delta1 > -eta_epsilon)
-              rate = rate - b * rate
+              rate = rate - b * rate;
+              for i = depth-1 : -1 : 1
+                  W{i} = W{i} - W_update{i};
+                  B{i} = B{i} - B_update{i};
+              end
             endif
         endif
         
