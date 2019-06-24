@@ -1,5 +1,6 @@
 %Algoritmo de Entrenamiento de BACKPROPAGATION para Redes Neuronales
-function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate, dmse, error_color, rate_color, act_func, structure, optimizer, gamma, gamma2, epsilon)
+function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate, dmse, error_color, rate_color, 
+  act_func, structure, optimizer, gamma, epsilon, a, b)
 
   mse = Inf;                  %Asumiendo Pesos Iniciales Malos
   epoch = 0; 
@@ -9,6 +10,12 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
   
   P = floor(P * learn_percentage);
   batch_size = P - 1;
+  
+  prev_error1 = Inf;
+  prev_error2 = Inf;
+  prev_error3 = Inf;
+  prev_error4 = Inf;
+  prev_error5 = Inf;
   
   if(strcmp(type, 'incremental') == 1)
     batch_size = 1
@@ -130,25 +137,6 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
                 W_update{i} = rate * dW{i} ./ sqrt(dW_aux{i} + 1e-8);
                 B_update{i} = rate * dB{i} ./ sqrt(dB_aux{i} + 1e-8);
             end
-        case 'rmsprop'
-            for i = depth-1 : -1 : 1
-                dW_aux{i} = gamma * dW_aux{i} + (1 - gamma) * dW{i} .* dW{i};
-                dB_aux{i} = gamma * dB_aux{i} + (1 - gamma) * dB{i} .* dB{i};
-
-                W_update{i} = rate * dW{i} ./ sqrt(dW_aux{i} + 1e-8);
-                B_update{i} = rate * dB{i} ./ sqrt(dB_aux{i} + 1e-8);
-            end
-        case 'adam'
-            for i = depth-1 : -1 : 1
-                dW_aux{i} = gamma * dW_aux{i} + (1 - gamma) * dW{i};
-                dB_aux{i} = gamma * dB_aux{i} + (1 - gamma) * dB{i};
-
-                dW_aux2{i} = gamma2 * dW_aux2{i} + (1 - gamma2) * dW{i} .* dW{i};
-                dB_aux2{i} = gamma2 * dB_aux2{i} + (1 - gamma2) * dB{i} .* dB{i};
-
-                W_update{i} = rate * dW_aux{i} ./ sqrt(dW_aux2{i} + 1e-8);
-                B_update{i} = rate * dB_aux{i} ./ sqrt(dB_aux2{i} + 1e-8);
-            end
         otherwise
             for i = depth-1 : -1 : 1
                 W_update{i} = rate * dW{i};
@@ -193,6 +181,21 @@ function result = backpropagation(X, S, max_epochs, type, learn_percentage, rate
         hit_percentage = hits / error_count;
         plot_rate(epoch, avg_rate, rate_color, 2);
         plot_hits(epoch, hit_percentage, rate_color, 4);
+        
+        prev_error5 = prev_error4;
+        prev_error4 = prev_error3;
+        prev_error3 = prev_error2;
+        prev_error2 = prev_error1;
+        prev_error1 = result.error;
+        
+        if(strcmp(optimizer, "eta") == 1)
+            if(prev_error1 < prev_error2 < prev_error3 < prev_error4 < prev_error5)
+              rate = rate + a;
+            elseif(prev_error1 > prev_error2 > prev_error3 > prev_error4 > prev_error5)
+              rate = rate - b * rate
+            endif
+        endif
+        
         sum_error = 0;
         hits = 0;
         error_count = 0;
